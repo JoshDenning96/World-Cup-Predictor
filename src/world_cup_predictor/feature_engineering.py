@@ -3,6 +3,7 @@ from pathlib import Path
 from typing import Dict
 
 import pandas as pd
+import re
 
 
 ALIASES = {
@@ -10,6 +11,7 @@ ALIASES = {
     "Congo DR": "DR Congo",
     "Czechia": "Czech Republic",
     "Côte d'Ivoire": "Cote d'Ivoire",
+    "Ivory Coast": "Cote d'Ivoire",
     "IR Iran": "Iran",
     "Korea Republic": "South Korea",
     "Türkiye": "Turkey",
@@ -54,6 +56,83 @@ def standardize_results(results: pd.DataFrame) -> pd.DataFrame:
             results[col] = results[col].apply(normalize_team_name)
     results = parse_date_column(results, "date", fmt="%Y-%m-%d")
     return results
+
+
+def _normalize_fixture_slot(slot: str) -> str:
+    if pd.isna(slot):
+        return slot
+
+    value = str(slot).strip()
+    value = re.sub(r"\s+", " ", value)
+    value_lower = value.lower()
+
+    if "third" in value_lower:
+        match = re.search(r"Group\s+([A-L](?:/[A-L])*)", value, flags=re.I)
+        if match:
+            letters = [letter.upper() for letter in match.group(1).split("/")]
+            return "3" + "".join(letters)
+
+    if "win" in value_lower:
+        match = re.search(r"Group\s*([A-L])", value, flags=re.I)
+        if match:
+            return "1" + match.group(1).upper()
+
+    if "run" in value_lower:
+        match = re.search(r"Group\s*([A-L])", value, flags=re.I)
+        if match:
+            return "2" + match.group(1).upper()
+
+    winner_match = re.search(r"Winner\s*match\s*\d+", value, flags=re.I)
+    if winner_match:
+        return winner_match.group(0)
+
+    runnerup_match = re.search(r"Runner-up\s*match\s*\d+", value, flags=re.I)
+    if runnerup_match:
+        return runnerup_match.group(0)
+
+    return value
+
+
+def replace_candidate_pools(schedule: pd.DataFrame, replacements: dict[str, str]) -> pd.DataFrame:
+    schedule = schedule.copy()
+    for column in ["teams", "home_team", "away_team"]:
+        if column not in schedule.columns:
+            continue
+        values = schedule[column].astype(str)
+        for old, new in replacements.items():
+            values = values.str.replace(old, new, regex=False)
+        schedule[column] = values.replace("nan", pd.NA)
+    return schedule
+
+
+def standardize_fixtures_schedule(
+    schedule: pd.DataFrame,
+    qualifier_replacements: dict[str, str] | None = None,
+) -> pd.DataFrame:
+    schedule = schedule.copy()
+    schedule = standardize_schedule_utc(schedule)
+
+    if qualifier_replacements is not None:
+        schedule = replace_candidate_pools(schedule, qualifier_replacements)
+
+    if "teams" in schedule.columns and (
+        "home_team" not in schedule.columns or "away_team" not in schedule.columns
+    ):
+        def split_teams(row):
+            if pd.isna(row):
+                return pd.Series([pd.NA, pd.NA])
+            parts = re.split(r"\s+v\s+", str(row), maxsplit=1)
+            if len(parts) == 2:
+                return pd.Series([_normalize_fixture_slot(parts[0]), _normalize_fixture_slot(parts[1])])
+            return pd.Series([_normalize_fixture_slot(row), pd.NA])
+
+        schedule[["home_team", "away_team"]] = schedule["teams"].apply(split_teams)
+
+    for col in ["home_team", "away_team"]:
+        if col in schedule.columns:
+            schedule[col] = schedule[col].apply(normalize_team_name)
+
+    return schedule
 
 
 def standardize_schedule_utc(schedule: pd.DataFrame) -> pd.DataFrame:
@@ -172,4 +251,6 @@ def load_and_prepare_raw(raw_dir: Path) -> Dict[str, pd.DataFrame]:
     raw_data["ranking"] = standardize_ranking(raw_data["ranking"])
     raw_data["results"] = standardize_results(raw_data["results"])
     raw_data["schedule_utc"] = standardize_schedule_utc(raw_data["schedule_utc"])
+    if "schedule_fixtures" in raw_data:
+        raw_data["schedule_fixtures"] = standardize_fixtures_schedule(raw_data["schedule_fixtures"])
     return raw_data

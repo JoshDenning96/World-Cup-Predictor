@@ -23,6 +23,25 @@ def test_calculate_match_probabilities_sums_to_one():
     assert all(0.0 <= val <= 1.0 for val in probs.values())
 
 
+def test_calculate_match_probabilities_with_elo_uses_elo_probabilities():
+    strengths = pd.DataFrame(
+        {
+            "attack": [1.0, 1.0],
+            "defense": [1.0, 1.0],
+        },
+        index=["Spain", "Japan"],
+    )
+
+    probs = calculate_match_probabilities(
+        "Spain",
+        "Japan",
+        strengths,
+        elo_ratings={"Spain": 1600.0, "Japan": 1500.0},
+    )
+    assert pytest.approx(sum(probs.values()), rel=1e-6) == 1.0
+    assert probs["home_win"] > probs["away_win"]
+
+
 def test_aggregate_group_standings_computes_points_and_goal_difference():
     results = pd.DataFrame(
         {
@@ -74,3 +93,10 @@ def test_simulate_knockout_match_returns_probabilities():
     assert "result" in winner_probs.columns
     assert "probability" in winner_probs.columns
     assert winner_probs["probability"].between(0, 1).all()
+
+
+def test_round_of_32_third_place_mapping_contains_known_combo():
+    from world_cup_predictor.simulator import ROUND_OF_32_THIRD_PLACE_ASSIGNMENT_MAP
+
+    assert "EFGHIJKL" in ROUND_OF_32_THIRD_PLACE_ASSIGNMENT_MAP
+    assert ROUND_OF_32_THIRD_PLACE_ASSIGNMENT_MAP["EFGHIJKL"] == ["E", "J", "I", "F", "H", "G", "L", "K"]

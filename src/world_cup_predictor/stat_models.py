@@ -65,6 +65,40 @@ def predict_elo_win_probability(
     return elo_expected_score(home_rating + home_advantage, away_rating)
 
 
+def _elo_ratings_to_series(elo_ratings):
+    if isinstance(elo_ratings, pd.DataFrame):
+        if "team" in elo_ratings.columns and "elo_rating" in elo_ratings.columns:
+            return elo_ratings.set_index("team")["elo_rating"]
+        raise ValueError("Elo ratings DataFrame must contain 'team' and 'elo_rating' columns")
+    if isinstance(elo_ratings, dict):
+        return pd.Series(elo_ratings)
+    if isinstance(elo_ratings, pd.Series):
+        return elo_ratings
+    raise TypeError("elo_ratings must be a pandas Series, dict, or DataFrame")
+
+
+def predict_elo_match_probabilities(
+    home_team: str,
+    away_team: str,
+    elo_ratings,
+    home_advantage: float = 100.0,
+) -> Dict[str, float]:
+    """Predict the probabilities of home win, draw, and away win using Elo."""
+    ratings = _elo_ratings_to_series(elo_ratings)
+    if home_team not in ratings or away_team not in ratings:
+        raise KeyError("Both teams must exist in elo_ratings")
+
+    home_rating = float(ratings[home_team])
+    away_rating = float(ratings[away_team])
+    expected_home = elo_expected_score(home_rating + home_advantage, away_rating)
+    diff = abs((home_rating + home_advantage) - away_rating)
+    draw_prob = max(0.08, min(0.35, 0.35 - 0.10 * (diff / 100.0)))
+    home_win = expected_home * (1.0 - draw_prob)
+    away_win = (1.0 - expected_home) * (1.0 - draw_prob)
+
+    return {"home_win": home_win, "draw": draw_prob, "away_win": away_win}
+
+
 def fit_poisson_attack_defense(results: pd.DataFrame) -> pd.DataFrame:
     """Estimate attack and defense strength for each team from match results."""
     results = results.copy()
@@ -89,8 +123,23 @@ def predict_poisson_scores(
     strengths: pd.DataFrame,
     base_home_goals: float = 1.3,
     base_away_goals: float = 1.1,
+    elo_ratings=None,
+    home_advantage: float = 100.0,
 ) -> Tuple[float, float]:
     """Return expected home and away goal totals from the Poisson model."""
+    if elo_ratings is not None:
+        ratings = _elo_ratings_to_series(elo_ratings)
+        if home_team not in ratings or away_team not in ratings:
+            raise KeyError("Both teams must exist in elo_ratings")
+
+        home_rating = float(ratings[home_team])
+        away_rating = float(ratings[away_team])
+        diff = (home_rating + home_advantage) - away_rating
+        expected_margin = 0.4 * np.tanh(diff / 200.0)
+        expected_home = max(0.15, base_home_goals + expected_margin / 2.0)
+        expected_away = max(0.15, base_away_goals - expected_margin / 2.0)
+        return expected_home, expected_away
+
     if home_team not in strengths.index or away_team not in strengths.index:
         raise KeyError("Both teams must exist in the strength table")
 
@@ -98,9 +147,11 @@ def predict_poisson_scores(
     home_defense = float(strengths.loc[home_team, "defense"])
     away_attack = float(strengths.loc[away_team, "attack"])
     away_defense = float(strengths.loc[away_team, "defense"])
-
-    expected_home = base_home_goals * home_attack * away_defense
-    expected_away = base_away_goals * away_attack * home_defense
+    # Interpret `defense` as a factor that reduces expected opponent goals.
+    # A stronger defense (larger `defense` after normalization) should lower
+    # the expected goals conceded, so divide by the opponent's defense.
+    expected_home = base_home_goals * home_attack / away_defense
+    expected_away = base_away_goals * away_attack / home_defense
     return expected_home, expected_away
 
 
@@ -109,9 +160,17 @@ def simulate_match(
     away_team: str,
     strengths: pd.DataFrame,
     n_simulations: int = 1000,
+    elo_ratings=None,
+    home_advantage: float = 100.0,
 ) -> pd.DataFrame:
     """Simulate a match result distribution using Poisson goals."""
-    expected_home, expected_away = predict_poisson_scores(home_team, away_team, strengths)
+    expected_home, expected_away = predict_poisson_scores(
+        home_team,
+        away_team,
+        strengths,
+        elo_ratings=elo_ratings,
+        home_advantage=home_advantage,
+    )
     home_goals = np.random.poisson(expected_home, size=n_simulations)
     away_goals = np.random.poisson(expected_away, size=n_simulations)
     return pd.DataFrame({"home_goals": home_goals, "away_goals": away_goals})
