@@ -218,10 +218,28 @@ def fit_poisson_goal_models(
     if not X_home or not X_away:
         return None
 
+    # convert to numpy and filter out any rows containing NaN/inf which break
+    # sklearn validators (this can happen with sparse or malformed historical data)
+    Xh = np.asarray(X_home, dtype=float)
+    yh = np.asarray(y_home, dtype=float)
+    Xa = np.asarray(X_away, dtype=float)
+    ya = np.asarray(y_away, dtype=float)
+
+    mask_h = np.isfinite(Xh).all(axis=1) & np.isfinite(yh)
+    mask_a = np.isfinite(Xa).all(axis=1) & np.isfinite(ya)
+
+    Xh = Xh[mask_h]
+    yh = yh[mask_h]
+    Xa = Xa[mask_a]
+    ya = ya[mask_a]
+
+    if Xh.shape[0] == 0 or Xa.shape[0] == 0:
+        return None
+
     home_model = PoissonRegressor(alpha=0.0, max_iter=300)
     away_model = PoissonRegressor(alpha=0.0, max_iter=300)
-    home_model.fit(X_home, y_home)
-    away_model.fit(X_away, y_away)
+    home_model.fit(Xh, yh)
+    away_model.fit(Xa, ya)
 
     return {"home": home_model, "away": away_model}
 

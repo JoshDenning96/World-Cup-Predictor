@@ -3,10 +3,12 @@ from __future__ import annotations
 
 from argparse import ArgumentParser
 from pathlib import Path
+import re
 
 import pandas as pd
+from scipy.stats import spearmanr
 
-from .feature_engineering import load_and_prepare_raw
+from .feature_engineering import load_and_prepare_raw, normalize_team_name, standardize_ranking
 from .simulator import calculate_match_probabilities, simulate_group_tables, simulate_full_tournament
 from .stat_models import (
     fit_draw_probability_model,
@@ -20,8 +22,8 @@ def run_pipeline(
     raw_dir: Path,
     n_simulations: int = 200,
     run_full_tournament: bool = False,
-    elo_k: float = 20.0,
-    date_decay_half_life_days: float = 365.0,
+    elo_k: float = 10.0,
+    date_decay_half_life_days: float = 1825.0,
     train_draw_model: bool = True,
 ) -> dict:
     raw_dir = Path(raw_dir)
@@ -92,7 +94,90 @@ def run_pipeline(
         .reset_index(drop=True)
     )
 
+    result["qualified_elo_fifa_comparison"] = build_qualified_elo_fifa_comparison(raw_data, elo_ratings)
+
     return result
+
+
+def _extract_qualified_teams(schedule: pd.DataFrame) -> list[str]:
+    placeholder = re.compile(r"^(?:\d+[A-L]?|To be announced|TBA|1st|2nd|Winner|Loser|Playoff|Qualifier|Group|\d+.*)$", re.IGNORECASE)
+    teams = pd.concat([schedule["home_team"], schedule["away_team"]]).dropna().unique()
+    return sorted(
+        {
+            normalize_team_name(team.strip())
+            for team in teams
+            if isinstance(team, str) and not placeholder.match(team.strip())
+        }
+    )
+
+
+def build_qualified_elo_fifa_comparison(raw_data: dict[str, pd.DataFrame], elo_ratings: dict[str, float]) -> pd.DataFrame:
+    qualified_teams = _extract_qualified_teams(raw_data["schedule_utc"])
+    elo_df = pd.DataFrame(list(elo_ratings.items()), columns=["team", "elo"])
+    elo_df["team_clean"] = elo_df["team"].str.strip().str.lower()
+    elo_df["elo_rank"] = elo_df["elo"].rank(method="dense", ascending=False).astype(int)
+
+    ranking = standardize_ranking(raw_data["ranking"])
+    fifa_df = (
+        ranking.sort_values("rank_date", ascending=False)
+        .drop_duplicates("country_full")
+        [["country_full", "rank"]]
+        .rename(columns={"country_full": "fifa_team", "rank": "fifa_rank"})
+    )
+    fifa_df["team_clean"] = fifa_df["fifa_team"].str.strip().str.lower()
+
+    qualified_df = pd.DataFrame({"team": qualified_teams})
+    qualified_df["team_clean"] = qualified_df["team"].str.strip().str.lower()
+
+    merged = qualified_df.merge(
+        elo_df[["team_clean", "elo", "elo_rank"]], on="team_clean", how="left"
+    ).merge(
+        fifa_df[["team_clean", "fifa_team", "fifa_rank"]], on="team_clean", how="left"
+    )
+
+    merged["elo_minus_fifa_rank"] = merged["elo_rank"] - merged["fifa_rank"]
+    merged = merged[
+        ["team", "fifa_team", "elo", "elo_rank", "fifa_rank", "elo_minus_fifa_rank"]
+    ].sort_values("elo_rank")
+    return merged
+
+
+def optimize_elo_parameters(
+    raw_dir: Path,
+    k_values: list[float] | None = None,
+    half_life_values: list[float] | None = None,
+) -> tuple[pd.Series, pd.DataFrame]:
+    raw_data = load_and_prepare_raw(raw_dir)
+    if k_values is None:
+        k_values = [10.0, 20.0, 30.0, 40.0, 50.0, 75.0, 100.0]
+    if half_life_values is None:
+        half_life_values = [365.0, 730.0, 1095.0, 1460.0, 1825.0]
+
+    results = []
+    for k in k_values:
+        for half_life in half_life_values:
+            elo_ratings = fit_elo_ratings(
+                raw_data["results"], k=k, date_decay_half_life_days=half_life
+            )
+            comparison = build_qualified_elo_fifa_comparison(raw_data, elo_ratings)
+            comparison = comparison[comparison["fifa_rank"].notna()]
+            if len(comparison) >= 2:
+                corr, _ = spearmanr(comparison["elo_rank"], comparison["fifa_rank"])
+            else:
+                corr = float("nan")
+            results.append(
+                {
+                    "k": k,
+                    "date_decay_half_life_days": half_life,
+                    "spearman_correlation": corr,
+                }
+            )
+
+    result_df = pd.DataFrame(results).sort_values(
+        "spearman_correlation", ascending=False
+    ).reset_index(drop=True)
+    best_row = result_df.iloc[0]
+    return best_row, result_df
 
 
 def _build_parser() -> ArgumentParser:
@@ -117,13 +202,13 @@ def _build_parser() -> ArgumentParser:
     parser.add_argument(
         "--elo-k",
         type=float,
-        default=20.0,
+        default=10.0,
         help="Elo K-factor for rating updates.",
     )
     parser.add_argument(
         "--elo-half-life-days",
         type=float,
-        default=365.0,
+        default=1825.0,
         help="Half-life (days) for recency decay when fitting Elo.",
     )
     parser.add_argument(
@@ -208,6 +293,8 @@ def main() -> None:
             df_elo.to_excel(writer, sheet_name="elo_ratings", index=False)
             df_groups.to_excel(writer, sheet_name="predicted_group_tables", index=False)
             df_tourney.to_excel(writer, sheet_name="tournament_simulation", index=False)
+            df_comparison = result.get("qualified_elo_fifa_comparison", pd.DataFrame())
+            df_comparison.to_excel(writer, sheet_name="qualified_elo_fifa_comparison", index=False)
 
         print(f"\nMaster simulation workbook written to: {master_path}")
 

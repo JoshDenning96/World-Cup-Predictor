@@ -84,3 +84,19 @@ def test_standardize_fixtures_schedule_replaces_candidate_pools_and_splits_teams
 def test_normalize_team_name_maps_ivory_coast_to_cote_divoire():
     assert normalize_team_name("Ivory Coast") == "Cote d'Ivoire"
     assert normalize_team_name("Côte d'Ivoire") == "Cote d'Ivoire"
+
+
+def test_normalize_team_name_maps_common_aliases_to_canonical_fifa_names():
+    expected_aliases = {
+        "Cabo Verde": "Cape Verde",
+        "Côte d'Ivoire": "Cote d'Ivoire",
+        "Curacao": "Curaçao",
+        "Czechia": "Czech Republic",
+        "Congo DR": "DR Congo",
+        "IR Iran": "Iran",
+        "Korea Republic": "South Korea",
+        "USA": "United States",
+    }
+
+    for alias, canonical in expected_aliases.items():
+        assert normalize_team_name(alias) == canonical
