@@ -8,7 +8,12 @@ import pandas as pd
 
 from .feature_engineering import load_and_prepare_raw
 from .simulator import calculate_match_probabilities, simulate_group_tables, simulate_full_tournament
-from .stat_models import fit_elo_ratings, fit_poisson_attack_defense
+from .stat_models import (
+    fit_draw_probability_model,
+    fit_elo_ratings,
+    fit_poisson_attack_defense,
+    fit_poisson_goal_models,
+)
 
 
 def run_pipeline(raw_dir: Path, n_simulations: int = 200, run_full_tournament: bool = False) -> dict:
@@ -17,15 +22,25 @@ def run_pipeline(raw_dir: Path, n_simulations: int = 200, run_full_tournament: b
 
     strengths = fit_poisson_attack_defense(raw_data["results"])
     elo_ratings = fit_elo_ratings(raw_data["results"])
+    draw_probability_model = fit_draw_probability_model(raw_data["results"], elo_ratings)
+    poisson_goal_models = fit_poisson_goal_models(
+        raw_data["results"], strengths=strengths, elo_ratings=elo_ratings
+    )
 
     first_match = raw_data["schedule_utc"].iloc[0]
     first_match_probabilities = calculate_match_probabilities(
-        first_match["home_team"], first_match["away_team"], strengths
+        first_match["home_team"],
+        first_match["away_team"],
+        strengths,
+        elo_ratings=elo_ratings,
+        draw_probability_model=draw_probability_model,
     )
 
     result = {
         "strengths": strengths,
         "elo_ratings": elo_ratings,
+        "draw_probability_model": draw_probability_model,
+        "poisson_goal_models": poisson_goal_models,
         "first_match_probabilities": first_match_probabilities,
         "first_match": {
             "home_team": first_match["home_team"],
@@ -41,6 +56,8 @@ def run_pipeline(raw_dir: Path, n_simulations: int = 200, run_full_tournament: b
             strengths,
             n_simulations=n_simulations,
             elo_ratings=elo_ratings,
+            draw_probability_model=draw_probability_model,
+            poisson_goal_models=poisson_goal_models,
             return_group_tables=True,
         )
         result["tournament_simulation"] = full_simulation["tournament_simulation"]
@@ -51,6 +68,8 @@ def run_pipeline(raw_dir: Path, n_simulations: int = 200, run_full_tournament: b
             strengths,
             n_simulations=n_simulations,
             elo_ratings=elo_ratings,
+            draw_probability_model=draw_probability_model,
+            poisson_goal_models=poisson_goal_models,
         )
 
     result["group_probabilities"] = (

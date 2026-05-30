@@ -1,6 +1,7 @@
 from pathlib import Path
 
 import pandas as pd
+from sklearn.linear_model import LogisticRegression
 
 from world_cup_predictor.cli import run_pipeline
 

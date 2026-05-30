@@ -277,11 +277,17 @@ def calculate_match_probabilities(
     away_team: str,
     strengths: pd.DataFrame,
     elo_ratings=None,
+    draw_probability_model=None,
     max_goals: int = 6,
 ) -> Dict[str, float]:
     """Compute win/draw probabilities for a single match."""
     if elo_ratings is not None:
-        return predict_elo_match_probabilities(home_team, away_team, elo_ratings)
+        return predict_elo_match_probabilities(
+            home_team,
+            away_team,
+            elo_ratings,
+            draw_probability_model=draw_probability_model,
+        )
 
     expected_home, expected_away = predict_poisson_scores(home_team, away_team, strengths)
     home_probs = np.array([np.exp(-expected_home) * expected_home ** k / math.factorial(k) for k in range(max_goals + 1)])
@@ -411,6 +417,8 @@ def simulate_group_tables(
     strengths: pd.DataFrame,
     n_simulations: int = 500,
     elo_ratings=None,
+    draw_probability_model=None,
+    poisson_goal_models=None,
 ) -> pd.DataFrame:
     """Simulate group stage many times and return predicted group tables.
 
@@ -451,7 +459,14 @@ def simulate_group_tables(
                 )
                 continue
 
-            sim = simulate_match(home_team, away_team, strengths, n_simulations=1, elo_ratings=elo_ratings)
+            sim = simulate_match(
+                home_team,
+                away_team,
+                strengths,
+                n_simulations=1,
+                elo_ratings=elo_ratings,
+                poisson_goal_models=poisson_goal_models,
+            )
             home_goals = int(sim["home_goals"].iloc[0])
             away_goals = int(sim["away_goals"].iloc[0])
             all_results.append(
@@ -528,6 +543,8 @@ def simulate_full_tournament(
     strengths: pd.DataFrame,
     n_simulations: int = 500,
     elo_ratings=None,
+    draw_probability_model=None,
+    poisson_goal_models=None,
     return_group_tables: bool = False,
 ) -> pd.DataFrame | dict:
     """Simulate full tournament including knockout rounds.
@@ -638,7 +655,12 @@ def simulate_full_tournament(
 
     def resolve_knockout_winner(home: str, away: str) -> str:
         if elo_ratings is not None:
-            probs = predict_elo_match_probabilities(home, away, elo_ratings)
+            probs = predict_elo_match_probabilities(
+                home,
+                away,
+                elo_ratings,
+                draw_probability_model=draw_probability_model,
+            )
             outcome = np.random.choice(
                 ["home", "draw", "away"],
                 p=[probs["home_win"], probs["draw"], probs["away_win"]],
@@ -649,7 +671,14 @@ def simulate_full_tournament(
                 return away
             return home if np.random.rand() < probs["home_win"] / (probs["home_win"] + probs["away_win"] + 1e-12) else away
 
-        sim = simulate_match(home, away, strengths, n_simulations=1, elo_ratings=elo_ratings)
+        sim = simulate_match(
+            home,
+            away,
+            strengths,
+            n_simulations=1,
+            elo_ratings=elo_ratings,
+            poisson_goal_models=poisson_goal_models,
+        )
         hg = int(sim["home_goals"].iloc[0])
         ag = int(sim["away_goals"].iloc[0])
         if hg == ag:
@@ -667,7 +696,14 @@ def simulate_full_tournament(
             a = match["away_team"]
             if h not in strengths.index or a not in strengths.index:
                 continue
-            sim = simulate_match(h, a, strengths, n_simulations=1, elo_ratings=elo_ratings)
+            sim = simulate_match(
+                h,
+                a,
+                strengths,
+                n_simulations=1,
+                elo_ratings=elo_ratings,
+                poisson_goal_models=poisson_goal_models,
+            )
             all_results.append({
                 "group": match.get("group"),
                 "home_team": h,

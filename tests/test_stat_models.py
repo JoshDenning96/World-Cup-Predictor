@@ -3,8 +3,10 @@ import pytest
 
 from world_cup_predictor.stat_models import (
     elo_expected_score,
+    fit_draw_probability_model,
     fit_elo_ratings,
     fit_poisson_attack_defense,
+    fit_poisson_goal_models,
     predict_elo_match_probabilities,
     predict_elo_win_probability,
     predict_poisson_scores,
@@ -95,3 +97,41 @@ def test_predict_poisson_scores_with_elo_returns_expected_tuple():
     assert away > 0
     assert isinstance(home, float)
     assert isinstance(away, float)
+
+
+def test_fit_draw_probability_model_returns_calibrated_model():
+    results = pd.DataFrame(
+        {
+            "date": ["2025-01-01", "2025-01-02", "2025-01-03"],
+            "home_team": ["Spain", "Japan", "Spain"],
+            "away_team": ["Japan", "Spain", "Japan"],
+            "home_score": [1, 1, 0],
+            "away_score": [1, 2, 0],
+        }
+    )
+
+    ratings = {"Spain": 1600.0, "Japan": 1500.0}
+    model = fit_draw_probability_model(results, ratings)
+
+    assert model is not None
+    assert hasattr(model, "predict_proba")
+    assert model.predict_proba([[100.0]])[0][1] >= 0.0
+
+
+def test_fit_poisson_goal_models_returns_models():
+    results = pd.DataFrame(
+        {
+            "home_team": ["Spain", "Japan"],
+            "away_team": ["Japan", "Spain"],
+            "home_score": [2, 1],
+            "away_score": [1, 2],
+        }
+    )
+
+    strengths = fit_poisson_attack_defense(results)
+    models = fit_poisson_goal_models(results, strengths=strengths, elo_ratings={"Spain": 1600.0, "Japan": 1500.0})
+
+    assert models is not None
+    assert "home" in models and "away" in models
+    assert hasattr(models["home"], "predict")
+    assert hasattr(models["away"], "predict")

@@ -1,3 +1,4 @@
+import numpy as np
 import pandas as pd
 import pytest
 
@@ -40,6 +41,33 @@ def test_calculate_match_probabilities_with_elo_uses_elo_probabilities():
     )
     assert pytest.approx(sum(probs.values()), rel=1e-6) == 1.0
     assert probs["home_win"] > probs["away_win"]
+
+
+def test_calculate_match_probabilities_with_draw_model_uses_calibration():
+    strengths = pd.DataFrame(
+        {
+            "attack": [1.0, 1.0],
+            "defense": [1.0, 1.0],
+        },
+        index=["Spain", "Japan"],
+    )
+
+    from sklearn.linear_model import LogisticRegression
+
+    class DummyDrawModel:
+        def predict_proba(self, X):
+            return np.array([[0.8, 0.2] for _ in X])
+
+    probs = calculate_match_probabilities(
+        "Spain",
+        "Japan",
+        strengths,
+        elo_ratings={"Spain": 1600.0, "Japan": 1500.0},
+        draw_probability_model=DummyDrawModel(),
+    )
+
+    assert pytest.approx(sum(probs.values()), rel=1e-6) == 1.0
+    assert probs["draw"] == pytest.approx(0.2)
 
 
 def test_aggregate_group_standings_computes_points_and_goal_difference():
