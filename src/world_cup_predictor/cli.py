@@ -16,13 +16,26 @@ from .stat_models import (
 )
 
 
-def run_pipeline(raw_dir: Path, n_simulations: int = 200, run_full_tournament: bool = False) -> dict:
+def run_pipeline(
+    raw_dir: Path,
+    n_simulations: int = 200,
+    run_full_tournament: bool = False,
+    elo_k: float = 20.0,
+    date_decay_half_life_days: float = 365.0,
+    train_draw_model: bool = True,
+) -> dict:
     raw_dir = Path(raw_dir)
     raw_data = load_and_prepare_raw(raw_dir)
 
     strengths = fit_poisson_attack_defense(raw_data["results"])
-    elo_ratings = fit_elo_ratings(raw_data["results"])
-    draw_probability_model = fit_draw_probability_model(raw_data["results"], elo_ratings)
+    elo_ratings = fit_elo_ratings(
+        raw_data["results"], k=elo_k, date_decay_half_life_days=date_decay_half_life_days
+    )
+    draw_probability_model = (
+        fit_draw_probability_model(raw_data["results"], elo_ratings)
+        if train_draw_model
+        else None
+    )
     poisson_goal_models = fit_poisson_goal_models(
         raw_data["results"], strengths=strengths, elo_ratings=elo_ratings
     )
@@ -101,13 +114,38 @@ def _build_parser() -> ArgumentParser:
         action="store_true",
         help="Also run a full tournament simulation using ELO-based probabilities.",
     )
+    parser.add_argument(
+        "--elo-k",
+        type=float,
+        default=20.0,
+        help="Elo K-factor for rating updates.",
+    )
+    parser.add_argument(
+        "--elo-half-life-days",
+        type=float,
+        default=365.0,
+        help="Half-life (days) for recency decay when fitting Elo.",
+    )
+    parser.add_argument(
+        "--no-draw-model",
+        action="store_false",
+        dest="train_draw_model",
+        help="Disable training the draw-probability calibration model.",
+    )
     return parser
 
 
 def main() -> None:
     parser = _build_parser()
     args = parser.parse_args()
-    result = run_pipeline(args.raw_dir, n_simulations=args.simulations, run_full_tournament=args.full_tournament)
+    result = run_pipeline(
+        args.raw_dir,
+        n_simulations=args.simulations,
+        run_full_tournament=args.full_tournament,
+        elo_k=args.elo_k,
+        date_decay_half_life_days=args.elo_half_life_days,
+        train_draw_model=args.train_draw_model,
+    )
 
     print("\n=== World Cup Predictor Pipeline ===\n")
     print(f"Raw directory: {args.raw_dir}")
