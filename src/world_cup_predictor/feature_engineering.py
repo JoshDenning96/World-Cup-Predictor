@@ -42,10 +42,47 @@ def parse_date_column(df: pd.DataFrame, column: str, fmt: str | None = None) -> 
 
 def standardize_ranking(ranking: pd.DataFrame) -> pd.DataFrame:
     ranking = ranking.copy()
+
+    rename_map = {}
+    if "Team" in ranking.columns:
+        rename_map["Team"] = "country_full"
+    if "country" in ranking.columns and "country_full" not in ranking.columns:
+        rename_map["country"] = "country_full"
+    if "Rank" in ranking.columns:
+        rename_map["Rank"] = "rank"
+    if "Points" in ranking.columns:
+        rename_map["Points"] = "total_points"
+    if "Total Points" in ranking.columns and "total_points" not in ranking.columns:
+        rename_map["Total Points"] = "total_points"
+    if "Date" in ranking.columns and "rank_date" not in ranking.columns:
+        rename_map["Date"] = "rank_date"
+
+    ranking = ranking.rename(columns=rename_map)
+
+    if "country_full" not in ranking.columns:
+        raise KeyError(
+            "Ranking dataframe must contain 'country_full' or 'Team' / 'country' columns"
+        )
+
     ranking["country_full"] = ranking["country_full"].apply(normalize_team_name)
     if "country_abrv" in ranking.columns:
         ranking["country_abrv"] = ranking["country_abrv"].apply(normalize_team_name)
-    ranking = parse_date_column(ranking, "rank_date", fmt="%Y-%m-%d")
+
+    if "rank" in ranking.columns:
+        ranking["rank"] = ranking["rank"].astype(str).str.split(r"[\n\s]+", expand=True)[0]
+        ranking.loc[ranking["rank"] == "", "rank"] = pd.NA
+        ranking["rank"] = pd.to_numeric(ranking["rank"], errors="coerce").astype("Int64")
+
+    if "total_points" in ranking.columns:
+        ranking["total_points"] = ranking["total_points"].astype(str).str.replace(r"[\*\+]", "", regex=True).str.strip()
+        ranking.loc[ranking["total_points"] == "", "total_points"] = pd.NA
+        ranking["total_points"] = pd.to_numeric(ranking["total_points"], errors="coerce")
+
+    if "rank_date" not in ranking.columns:
+        ranking["rank_date"] = pd.NaT
+    else:
+        ranking = parse_date_column(ranking, "rank_date", fmt="%Y-%m-%d")
+
     return ranking
 
 

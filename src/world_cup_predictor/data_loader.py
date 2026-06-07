@@ -1,6 +1,6 @@
 """Data loading utilities for the World Cup Predictor."""
 from pathlib import Path
-from typing import Dict
+from typing import Dict, Optional
 
 import pandas as pd
 
@@ -13,12 +13,33 @@ RAW_FILES = {
 }
 
 
+def _find_latest_ranking_file(raw_dir: Path) -> Optional[Path]:
+    raw_dir = Path(raw_dir)
+    candidates = set()
+    candidates.add(raw_dir / RAW_FILES["ranking"])
+    candidates.update(raw_dir.glob("fifa_ranking*.csv"))
+    candidates.update(raw_dir.glob("fifa_rankings*.csv"))
+    candidates = [p for p in candidates if p.exists()]
+    if not candidates:
+        return None
+    return sorted(candidates, key=lambda p: p.name)[-1]
+
+
 def resolve_raw_path(raw_dir: Path, key: str) -> Path:
     raw_dir = Path(raw_dir)
     if key not in RAW_FILES:
         raise ValueError(
             f"Unknown raw data key '{key}'. Supported keys: {', '.join(RAW_FILES)}"
         )
+
+    if key == "ranking":
+        ranking_path = _find_latest_ranking_file(raw_dir)
+        if ranking_path is None:
+            raise FileNotFoundError(
+                f"No FIFA ranking file found in {raw_dir}."
+            )
+        return ranking_path
+
     return raw_dir / RAW_FILES[key]
 
 

@@ -4,6 +4,7 @@ from world_cup_predictor.feature_engineering import (
     attach_rankings_to_matches,
     normalize_team_name,
     standardize_fixtures_schedule,
+    standardize_ranking,
     standardize_schedule_utc,
 )
 
@@ -84,3 +85,22 @@ def test_standardize_fixtures_schedule_replaces_candidate_pools_and_splits_teams
 def test_normalize_team_name_maps_ivory_coast_to_cote_divoire():
     assert normalize_team_name("Ivory Coast") == "Cote d'Ivoire"
     assert normalize_team_name("Côte d'Ivoire") == "Cote d'Ivoire"
+
+
+def test_standardize_ranking_accepts_fifa_csv_header_variants():
+    df = pd.DataFrame(
+        {
+            "Rank": ["1\n2", "2\n1"],
+            "Team": ["France", "Spain"],
+            "Last Result": ["France\nCôte d'Ivoire\nFT\n1\n2", "Spain\nIraq\nFT\n1\n1"],
+            "Points": ["1877.32*", "1876.40*"],
+        }
+    )
+    cleaned = standardize_ranking(df)
+
+    assert cleaned.loc[0, "country_full"] == "France"
+    assert cleaned.loc[1, "country_full"] == "Spain"
+    assert cleaned.loc[0, "rank"] == 1
+    assert cleaned.loc[1, "rank"] == 2
+    assert cleaned.loc[0, "total_points"] == 1877.32
+    assert cleaned.loc[1, "total_points"] == 1876.40
