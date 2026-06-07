@@ -99,6 +99,50 @@ def predict_elo_match_probabilities(
     return {"home_win": home_win, "draw": draw_prob, "away_win": away_win}
 
 
+def apply_confederation_rating_offset(
+    elo_ratings,
+    ranking: pd.DataFrame,
+    confederation: str = "CONMEBOL",
+    offset: float = -15.0,
+    eligible_teams: list[str] | None = None,
+) -> Dict[str, float]:
+    """Apply a fixed Elo rating offset to teams from a given confederation.
+
+    The adjustment is only applied to teams that are present in both the Elo
+    ratings and the ranking dataset. If eligible_teams is provided, the offset
+    is limited to that subset.
+    """
+    ratings = _elo_ratings_to_series(elo_ratings).copy().astype(float)
+    if "country_full" not in ranking.columns:
+        raise KeyError("Ranking dataframe must contain a normalized team name column 'country_full'.")
+
+    eligible = {str(team) for team in eligible_teams} if eligible_teams is not None else None
+    if "confederation" not in ranking.columns:
+        if eligible is None:
+            return ratings.to_dict()
+
+        adjusted_ratings = ratings.copy()
+        for team in eligible:
+            if team in adjusted_ratings:
+                adjusted_ratings[team] = float(adjusted_ratings[team] + offset)
+        return adjusted_ratings.to_dict()
+    confed_teams = set(
+        ranking.loc[
+            ranking["confederation"] == confederation,
+            "country_full",
+        ].dropna().astype(str)
+    )
+    if eligible is not None:
+        confed_teams &= eligible
+
+    adjusted_ratings = ratings.copy()
+    for team in confed_teams:
+        if team in adjusted_ratings:
+            adjusted_ratings[team] = float(adjusted_ratings[team] + offset)
+
+    return adjusted_ratings.to_dict()
+
+
 def fit_poisson_attack_defense(results: pd.DataFrame) -> pd.DataFrame:
     """Estimate attack and defense strength for each team from match results."""
     results = results.copy()

@@ -2,6 +2,7 @@ import pandas as pd
 import pytest
 
 from world_cup_predictor.stat_models import (
+    apply_confederation_rating_offset,
     elo_expected_score,
     fit_elo_ratings,
     fit_poisson_attack_defense,
@@ -95,3 +96,47 @@ def test_predict_poisson_scores_with_elo_returns_expected_tuple():
     assert away > 0
     assert isinstance(home, float)
     assert isinstance(away, float)
+
+
+def test_apply_confederation_rating_offset_only_affects_qualified_conmebol_teams():
+    ratings = {"Brazil": 1600.0, "England": 1550.0, "Japan": 1500.0}
+    ranking = pd.DataFrame(
+        {
+            "country_full": ["Brazil", "England", "Japan"],
+            "confederation": ["CONMEBOL", "UEFA", "AFC"],
+        }
+    )
+
+    adjusted = apply_confederation_rating_offset(
+        ratings,
+        ranking,
+        confederation="CONMEBOL",
+        offset=-20.0,
+        eligible_teams=["Brazil", "Japan"],
+    )
+
+    assert adjusted["Brazil"] == 1580.0
+    assert adjusted["England"] == 1550.0
+    assert adjusted["Japan"] == 1500.0
+
+
+def test_apply_confederation_rating_offset_falls_back_without_confederation_column():
+    ratings = {"Argentina": 1900.0, "Spain": 1880.0}
+    ranking = pd.DataFrame(
+        {
+            "country_full": ["Argentina", "Spain"],
+            "rank": [1, 2],
+            "total_points": [1874.81, 1876.40],
+        }
+    )
+
+    adjusted = apply_confederation_rating_offset(
+        ratings,
+        ranking,
+        confederation="CONMEBOL",
+        offset=-80.0,
+        eligible_teams=["Argentina"],
+    )
+
+    assert adjusted["Argentina"] == 1820.0
+    assert adjusted["Spain"] == 1880.0
