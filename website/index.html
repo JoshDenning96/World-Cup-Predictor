@@ -32,20 +32,30 @@
         <div class="section-heading">
           <h2>Tournament winner probabilities</h2>
           <p>Top contenders ranked by likelihood of lifting the trophy.</p>
+          <div class="chart-controls">
+            <label for="winner-team-select">Team:</label>
+            <select id="winner-team-select"></select>
+          </div>
         </div>
         <div class="chart-card">
           <canvas id="winnerChart"></canvas>
         </div>
+        <div id="winner-team-detail" class="detail-card"></div>
       </section>
 
       <section class="section">
         <div class="section-heading">
           <h2>Advance probability</h2>
           <p>Teams most likely to progress beyond the group stage.</p>
+          <div class="chart-controls">
+            <label for="advance-team-select">Team:</label>
+            <select id="advance-team-select"></select>
+          </div>
         </div>
         <div class="chart-card">
           <canvas id="advanceChart"></canvas>
         </div>
+        <div id="advance-team-detail" class="detail-card"></div>
       </section>
 
       <section class="section">
@@ -82,8 +92,18 @@
         <div class="section-heading">
           <h2>Knockout stage projection</h2>
           <p>Projected bracket progression based on team probabilities for each knockout round.</p>
+          <div class="chart-controls">
+            <label for="knockout-team-select">Team:</label>
+            <select id="knockout-team-select"></select>
+            <label for="knockout-view-select">View:</label>
+            <select id="knockout-view-select">
+              <option value="Top 12">Top 12</option>
+              <option value="All">All teams</option>
+            </select>
+          </div>
         </div>
-        <div class="table-card knockout-card">
+          <div class="table-card knockout-card">
+          <div id="knockout-team-detail" class="detail-card"></div>
           <div class="knockout-table-header">
             <span>Team</span>
             <span>Round of 32</span>
@@ -102,6 +122,10 @@
           <h2>Bracket projection</h2>
           <p>Lane-style bracket visualization for top teams across knockout rounds.</p>
         </div>
++        <div id="third-place-key" class="detail-card" style="margin-top:0; font-size:12px; color:#cbd5e1;"></div>
++        <div id="third-place-explain" class="detail-card" style="margin-top:6px; font-size:12px; color:#94a3b8; line-height:1.2;">
++          Selection: prefers the top‑8 third‑placed teams by <strong>average points</strong> (tie‑breakers: goal difference, then probability of finishing 3rd). Falls back to a scored mapping, then the closest available table entry.
++        </div>
         <div class="bracket-card table-card">
           <!-- Full 32-team bracket — no selector needed -->
           <div class="bracket-container">
@@ -131,6 +155,6 @@
       </section>
     </div>
 
-    <script src="app.js"></script>
+    <script src="app.js?v=1"></script>
   </body>
 </html>

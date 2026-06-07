@@ -17,6 +17,8 @@ SOURCE_FILES = {
     "group_probabilities": "group_probabilities.csv",
 }
 
+SCHEDULE_FILE = ROOT / "data" / "raw" / "fifa-world-cup-2026-UTC.csv"
+
 
 def parse_value(value: str) -> Any:
     if value is None or value == "":
@@ -36,6 +38,36 @@ def load_csv(path: Path) -> list[dict[str, Any]]:
         for row in reader:
             parsed = {key: parse_value(value) for key, value in row.items()}
             rows.append(parsed)
+    return rows
+
+
+def load_knockout_schedule(path: Path) -> list[dict[str, Any]]:
+    if not path.exists():
+        return []
+
+    with path.open(newline="", encoding="utf-8") as handle:
+        reader = csv.DictReader(handle)
+        rows = []
+        for row in reader:
+            round_name = str(row.get("Round Number", "") or "").strip()
+            if not round_name.startswith("Round of") and round_name != "Finals":
+                continue
+            match_number = row.get("Match Number", "")
+            try:
+                match_number = int(match_number)
+            except (TypeError, ValueError):
+                match_number = None
+
+            rows.append(
+                {
+                    "match_number": match_number,
+                    "round": round_name,
+                    "date": str(row.get("Date", "") or "").strip(),
+                    "location": str(row.get("Location", "") or "").strip(),
+                    "home": str(row.get("Home Team", "") or "").strip(),
+                    "away": str(row.get("Away Team", "") or "").strip(),
+                }
+            )
     return rows
 
 
@@ -89,6 +121,8 @@ def export_json() -> None:
             output = {key: load_csv(CSV_DIR / filename) for key, filename in SOURCE_FILES.items()}
     else:
         output = {key: load_csv(CSV_DIR / filename) for key, filename in SOURCE_FILES.items()}
+
+    output["knockout_schedule"] = load_knockout_schedule(SCHEDULE_FILE)
 
     OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)
     OUTPUT_PATH.write_text(json.dumps(output, indent=2), encoding="utf-8")
