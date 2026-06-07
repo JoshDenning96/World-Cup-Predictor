@@ -1,0 +1,2494 @@
+{
+  "elo_ratings": [
+    {
+      "team": "Scotland",
+      "elo": 1689.05137202272
+    },
+    {
+      "team": "England",
+      "elo": 1890.266741973289
+    },
+    {
+      "team": "Wales",
+      "elo": 1672.460706062624
+    },
+    {
+      "team": "Northern Ireland",
+      "elo": 1561.923534760348
+    },
+    {
+      "team": "United States",
+      "elo": 1725.063775096638
+    },
+    {
+      "team": "Canada",
+      "elo": 1761.263553045111
+    },
+    {
+      "team": "Uruguay",
+      "elo": 1767.474436189896
+    },
+    {
+      "team": "Argentina",
+      "elo": 1907.728553297154
+    },
+    {
+      "team": "Austria",
+      "elo": 1742.757288816892
+    },
+    {
+      "team": "Hungary",
+      "elo": 1671.653069768003
+    },
+    {
+      "team": "Czechoslovakia",
+      "elo": 1692.701008341056
+    },
+    {
+      "team": "Belgium",
+      "elo": 1825.517739867533
+    },
+    {
+      "team": "France",
+      "elo": 1938.625091176372
+    },
+    {
+      "team": "Switzerland",
+      "elo": 1806.705796849299
+    },
+    {
+      "team": "Guernsey",
+      "elo": 1673.879905623233
+    },
+    {
+      "team": "Alderney",
+      "elo": 1186.24092681023
+    },
+    {
+      "team": "Jersey",
+      "elo": 1724.461290250834
+    },
+    {
+      "team": "Netherlands",
+      "elo": 1853.859134250375
+    },
+    {
+      "team": "Guyana",
+      "elo": 1459.564858799137
+    },
+    {
+      "team": "Trinidad and Tobago",
+      "elo": 1524.92273864257
+    },
+    {
+      "team": "Germany",
+      "elo": 1838.807688860366
+    },
+    {
+      "team": "Sweden",
+      "elo": 1686.668162760705
+    },
+    {
+      "team": "Norway",
+      "elo": 1740.916580482627
+    },
+    {
+      "team": "Denmark",
+      "elo": 1791.089263658306
+    },
+    {
+      "team": "Italy",
+      "elo": 1847.317812668908
+    },
+    {
+      "team": "Chile",
+      "elo": 1725.756969464625
+    },
+    {
+      "team": "Russia",
+      "elo": 1738.772382250331
+    },
+    {
+      "team": "Finland",
+      "elo": 1545.354305360502
+    },
+    {
+      "team": "Luxembourg",
+      "elo": 1396.614005882701
+    },
+    {
+      "team": "Catalonia",
+      "elo": 1585.418290081235
+    },
+    {
+      "team": "Philippines",
+      "elo": 1371.991289075185
+    },
+    {
+      "team": "China PR",
+      "elo": 1514.055125904043
+    },
+    {
+      "team": "Brazil",
+      "elo": 1847.80677960783
+    },
+    {
+      "team": "Basque Country",
+      "elo": 1695.248056341703
+    },
+    {
+      "team": "Japan",
+      "elo": 1809.937872743597
+    },
+    {
+      "team": "Paraguay",
+      "elo": 1680.587684355044
+    },
+    {
+      "team": "Romania",
+      "elo": 1622.734924870942
+    },
+    {
+      "team": "Greece",
+      "elo": 1697.817369649213
+    },
+    {
+      "team": "Egypt",
+      "elo": 1710.073085180316
+    },
+    {
+      "team": "Spain",
+      "elo": 1984.684416465005
+    },
+    {
+      "team": "Yugoslavia",
+      "elo": 1732.575493307396
+    },
+    {
+      "team": "Estonia",
+      "elo": 1429.393823169403
+    },
+    {
+      "team": "Suriname",
+      "elo": 1530.51766875767
+    },
+    {
+      "team": "Provence",
+      "elo": 1457.560770184468
+    },
+    {
+      "team": "Costa Rica",
+      "elo": 1669.164007913869
+    },
+    {
+      "team": "El Salvador",
+      "elo": 1481.130621422474
+    },
+    {
+      "team": "Guatemala",
+      "elo": 1579.381104664922
+    },
+    {
+      "team": "Poland",
+      "elo": 1706.881005539878
+    },
+    {
+      "team": "Portugal",
+      "elo": 1875.797597872201
+    },
+    {
+      "team": "Brittany",
+      "elo": 1509.070362733017
+    },
+    {
+      "team": "New Zealand",
+      "elo": 1637.932638059247
+    },
+    {
+      "team": "Australia",
+      "elo": 1761.589784394547
+    },
+    {
+      "team": "Latvia",
+      "elo": 1349.465300453947
+    },
+    {
+      "team": "Galicia",
+      "elo": 1516.769368933389
+    },
+    {
+      "team": "Central Spain",
+      "elo": 1500.366937609598
+    },
+    {
+      "team": "Mexico",
+      "elo": 1773.362960188436
+    },
+    {
+      "team": "Andalusia",
+      "elo": 1559.890856483476
+    },
+    {
+      "team": "Asturias",
+      "elo": 1513.317870937295
+    },
+    {
+      "team": "Lithuania",
+      "elo": 1342.571869120209
+    },
+    {
+      "team": "Turkey",
+      "elo": 1769.366800767883
+    },
+    {
+      "team": "Aruba",
+      "elo": 1283.621048346794
+    },
+    {
+      "team": "Cura\u00e7ao",
+      "elo": 1511.132351841227
+    },
+    {
+      "team": "Bulgaria",
+      "elo": 1501.665024896502
+    },
+    {
+      "team": "Ireland",
+      "elo": 1634.35612631266
+    },
+    {
+      "team": "South Africa",
+      "elo": 1617.110372135056
+    },
+    {
+      "team": "Haiti",
+      "elo": 1601.798982416538
+    },
+    {
+      "team": "Jamaica",
+      "elo": 1613.119973722379
+    },
+    {
+      "team": "Kenya",
+      "elo": 1484.054636558642
+    },
+    {
+      "team": "Uganda",
+      "elo": 1518.180603563566
+    },
+    {
+      "team": "Bolivia",
+      "elo": 1594.946552270289
+    },
+    {
+      "team": "Peru",
+      "elo": 1702.571721098765
+    },
+    {
+      "team": "Honduras",
+      "elo": 1599.883942873216
+    },
+    {
+      "team": "Belarus",
+      "elo": 1488.530556339319
+    },
+    {
+      "team": "Ukraine",
+      "elo": 1748.623036860705
+    },
+    {
+      "team": "Barbados",
+      "elo": 1281.322379450487
+    },
+    {
+      "team": "Nicaragua",
+      "elo": 1455.67328683821
+    },
+    {
+      "team": "Cuba",
+      "elo": 1435.220136340666
+    },
+    {
+      "team": "Martinique",
+      "elo": 1496.751040282156
+    },
+    {
+      "team": "Dominica",
+      "elo": 1283.28335491558
+    },
+    {
+      "team": "Silesia",
+      "elo": 1489.29968390187
+    },
+    {
+      "team": "Guadeloupe",
+      "elo": 1501.752344182882
+    },
+    {
+      "team": "Israel",
+      "elo": 1575.035646152906
+    },
+    {
+      "team": "Indonesia",
+      "elo": 1445.493716572801
+    },
+    {
+      "team": "French Guiana",
+      "elo": 1444.501090961668
+    },
+    {
+      "team": "Saint Lucia",
+      "elo": 1341.465774621162
+    },
+    {
+      "team": "Colombia",
+      "elo": 1843.337662168603
+    },
+    {
+      "team": "Panama",
+      "elo": 1705.161585753274
+    },
+    {
+      "team": "Venezuela",
+      "elo": 1716.149733906436
+    },
+    {
+      "team": "Ecuador",
+      "elo": 1753.355714509737
+    },
+    {
+      "team": "Saint Kitts and Nevis",
+      "elo": 1365.463529254669
+    },
+    {
+      "team": "Grenada",
+      "elo": 1344.465614224564
+    },
+    {
+      "team": "India",
+      "elo": 1342.657182726535
+    },
+    {
+      "team": "Slovakia",
+      "elo": 1646.496478166629
+    },
+    {
+      "team": "Manchukuo",
+      "elo": 1465.189276587497
+    },
+    {
+      "team": "Croatia",
+      "elo": 1838.180412784458
+    },
+    {
+      "team": "Lebanon",
+      "elo": 1459.410889122587
+    },
+    {
+      "team": "Puerto Rico",
+      "elo": 1372.198542699354
+    },
+    {
+      "team": "Afghanistan",
+      "elo": 1307.133232341205
+    },
+    {
+      "team": "Iran",
+      "elo": 1790.374799903863
+    },
+    {
+      "team": "Mongolia",
+      "elo": 1202.709880480123
+    },
+    {
+      "team": "Tanzania",
+      "elo": 1443.576901409317
+    },
+    {
+      "team": "Zimbabwe",
+      "elo": 1476.201312841148
+    },
+    {
+      "team": "Zambia",
+      "elo": 1536.362881186412
+    },
+    {
+      "team": "Iceland",
+      "elo": 1577.071349107768
+    },
+    {
+      "team": "Albania",
+      "elo": 1589.422814441971
+    },
+    {
+      "team": "Montenegro",
+      "elo": 1493.199711431706
+    },
+    {
+      "team": "Madagascar",
+      "elo": 1457.519515487417
+    },
+    {
+      "team": "Mauritius",
+      "elo": 1280.054898615695
+    },
+    {
+      "team": "R\u00e9union",
+      "elo": 1550.579662810823
+    },
+    {
+      "team": "Zanzibar",
+      "elo": 1500.505497743364
+    },
+    {
+      "team": "Djibouti",
+      "elo": 1170.727199580473
+    },
+    {
+      "team": "Ethiopia",
+      "elo": 1404.930954799194
+    },
+    {
+      "team": "DR Congo",
+      "elo": 1643.248937613124
+    },
+    {
+      "team": "South Korea",
+      "elo": 1796.472892955947
+    },
+    {
+      "team": "Vietnam",
+      "elo": 1494.969743362629
+    },
+    {
+      "team": "Macau",
+      "elo": 1087.241729677475
+    },
+    {
+      "team": "Dominican Republic",
+      "elo": 1452.776938733772
+    },
+    {
+      "team": "Cyprus",
+      "elo": 1367.324467054077
+    },
+    {
+      "team": "Sierra Leone",
+      "elo": 1461.491141053213
+    },
+    {
+      "team": "Nigeria",
+      "elo": 1711.315424358058
+    },
+    {
+      "team": "Syria",
+      "elo": 1540.67688808301
+    },
+    {
+      "team": "Serbia",
+      "elo": 1736.006316422333
+    },
+    {
+      "team": "Taiwan",
+      "elo": 1236.078814116987
+    },
+    {
+      "team": "Ghana",
+      "elo": 1610.030451050523
+    },
+    {
+      "team": "Myanmar",
+      "elo": 1248.478193231063
+    },
+    {
+      "team": "New Caledonia",
+      "elo": 1579.843802691199
+    },
+    {
+      "team": "Vanuatu",
+      "elo": 1466.904388773575
+    },
+    {
+      "team": "Fiji",
+      "elo": 1490.24945130632
+    },
+    {
+      "team": "Pakistan",
+      "elo": 1159.726094159893
+    },
+    {
+      "team": "Sri Lanka",
+      "elo": 1146.256702245218
+    },
+    {
+      "team": "German DR",
+      "elo": 1673.494895482014
+    },
+    {
+      "team": "Tahiti",
+      "elo": 1533.984031748158
+    },
+    {
+      "team": "Gambia",
+      "elo": 1504.85747958974
+    },
+    {
+      "team": "Hong Kong",
+      "elo": 1362.422545576303
+    },
+    {
+      "team": "Singapore",
+      "elo": 1352.785110120452
+    },
+    {
+      "team": "Malaysia",
+      "elo": 1481.58451995192
+    },
+    {
+      "team": "Guinea-Bissau",
+      "elo": 1408.036973417374
+    },
+    {
+      "team": "Saarland",
+      "elo": 1456.104441652606
+    },
+    {
+      "team": "Burundi",
+      "elo": 1418.421133384613
+    },
+    {
+      "team": "Cameroon",
+      "elo": 1671.918126286703
+    },
+    {
+      "team": "Kernow",
+      "elo": 1553.258711486968
+    },
+    {
+      "team": "Cambodia",
+      "elo": 1156.214369530729
+    },
+    {
+      "team": "Thailand",
+      "elo": 1527.493365337913
+    },
+    {
+      "team": "Vietnam Republic",
+      "elo": 1468.457228869697
+    },
+    {
+      "team": "Kyrgyzstan",
+      "elo": 1444.470967363953
+    },
+    {
+      "team": "Moldova",
+      "elo": 1340.898250186493
+    },
+    {
+      "team": "North Vietnam",
+      "elo": 1492.233038219719
+    },
+    {
+      "team": "Togo",
+      "elo": 1467.774142061951
+    },
+    {
+      "team": "North Korea",
+      "elo": 1520.426736713737
+    },
+    {
+      "team": "Sudan",
+      "elo": 1457.596664940408
+    },
+    {
+      "team": "Malta",
+      "elo": 1324.85063183931
+    },
+    {
+      "team": "Tunisia",
+      "elo": 1697.302949836961
+    },
+    {
+      "team": "Libya",
+      "elo": 1535.795456180956
+    },
+    {
+      "team": "Malawi",
+      "elo": 1465.624001247509
+    },
+    {
+      "team": "Morocco",
+      "elo": 1794.127215877377
+    },
+    {
+      "team": "Benin",
+      "elo": 1507.489155871325
+    },
+    {
+      "team": "Cape Verde",
+      "elo": 1613.867307338757
+    },
+    {
+      "team": "Cote d'Ivoire",
+      "elo": 1692.654159799539
+    },
+    {
+      "team": "Burkina Faso",
+      "elo": 1647.426466340063
+    },
+    {
+      "team": "Gabon",
+      "elo": 1531.885794616204
+    },
+    {
+      "team": "Congo",
+      "elo": 1402.704754606138
+    },
+    {
+      "team": "Mali",
+      "elo": 1654.525571687418
+    },
+    {
+      "team": "Central African Republic",
+      "elo": 1383.958967346527
+    },
+    {
+      "team": "Iraq",
+      "elo": 1657.362494892758
+    },
+    {
+      "team": "Saint Vincent and the Grenadines",
+      "elo": 1397.612426965677
+    },
+    {
+      "team": "Senegal",
+      "elo": 1834.532696531531
+    },
+    {
+      "team": "Laos",
+      "elo": 1115.879059376496
+    },
+    {
+      "team": "Chad",
+      "elo": 1320.557646503455
+    },
+    {
+      "team": "Niger",
+      "elo": 1434.778498482553
+    },
+    {
+      "team": "Mauritania",
+      "elo": 1453.347604162384
+    },
+    {
+      "team": "Liberia",
+      "elo": 1410.277183578772
+    },
+    {
+      "team": "Guinea",
+      "elo": 1562.532700733237
+    },
+    {
+      "team": "Algeria",
+      "elo": 1766.015610870764
+    },
+    {
+      "team": "Kuwait",
+      "elo": 1465.21768319526
+    },
+    {
+      "team": "Jordan",
+      "elo": 1657.105450244582
+    },
+    {
+      "team": "Papua New Guinea",
+      "elo": 1470.196840014869
+    },
+    {
+      "team": "Solomon Islands",
+      "elo": 1478.160962257501
+    },
+    {
+      "team": "Somalia",
+      "elo": 1178.921088293407
+    },
+    {
+      "team": "Saudi Arabia",
+      "elo": 1632.136853533887
+    },
+    {
+      "team": "Bermuda",
+      "elo": 1378.03024099827
+    },
+    {
+      "team": "Palestine",
+      "elo": 1521.749329343302
+    },
+    {
+      "team": "Bahrain",
+      "elo": 1511.573777163868
+    },
+    {
+      "team": "Yemen",
+      "elo": 1326.152547905402
+    },
+    {
+      "team": "Oman",
+      "elo": 1584.238902365006
+    },
+    {
+      "team": "Wallis Islands and Futuna",
+      "elo": 1425.952900406808
+    },
+    {
+      "team": "Corsica",
+      "elo": 1529.79152567925
+    },
+    {
+      "team": "Western Australia",
+      "elo": 1490.794828780471
+    },
+    {
+      "team": "Eswatini",
+      "elo": 1351.47731134306
+    },
+    {
+      "team": "Botswana",
+      "elo": 1440.077579373616
+    },
+    {
+      "team": "Qatar",
+      "elo": 1563.512188818953
+    },
+    {
+      "team": "Lesotho",
+      "elo": 1393.057968829371
+    },
+    {
+      "team": "Bahamas",
+      "elo": 1239.4976298166
+    },
+    {
+      "team": "Brunei",
+      "elo": 1111.906200689531
+    },
+    {
+      "team": "Cook Islands",
+      "elo": 1342.448639953275
+    },
+    {
+      "team": "Yemen DPR",
+      "elo": 1456.084932797161
+    },
+    {
+      "team": "United Arab Emirates",
+      "elo": 1598.823743908371
+    },
+    {
+      "team": "Faroe Islands",
+      "elo": 1362.250342233841
+    },
+    {
+      "team": "Nepal",
+      "elo": 1235.189352291312
+    },
+    {
+      "team": "Antigua and Barbuda",
+      "elo": 1279.621292152103
+    },
+    {
+      "team": "Bangladesh",
+      "elo": 1227.46455019003
+    },
+    {
+      "team": "Seychelles",
+      "elo": 1156.396982033323
+    },
+    {
+      "team": "Equatorial Guinea",
+      "elo": 1460.693043496117
+    },
+    {
+      "team": "Mozambique",
+      "elo": 1484.526012198091
+    },
+    {
+      "team": "Guam",
+      "elo": 1199.669751735974
+    },
+    {
+      "team": "Angola",
+      "elo": 1544.340516358302
+    },
+    {
+      "team": "S\u00e3o Tom\u00e9 and Pr\u00edncipe",
+      "elo": 1281.04610084893
+    },
+    {
+      "team": "Rwanda",
+      "elo": 1441.093810233416
+    },
+    {
+      "team": "Northern Cyprus",
+      "elo": 1575.46087844244
+    },
+    {
+      "team": "Armenia",
+      "elo": 1434.981937517069
+    },
+    {
+      "team": "Georgia",
+      "elo": 1595.070726171225
+    },
+    {
+      "team": "Azerbaijan",
+      "elo": 1394.152753457958
+    },
+    {
+      "team": "Kazakhstan",
+      "elo": 1433.194982643415
+    },
+    {
+      "team": "Comoros",
+      "elo": 1460.77748587127
+    },
+    {
+      "team": "Maldives",
+      "elo": 1209.605759395994
+    },
+    {
+      "team": "Tonga",
+      "elo": 1283.788825554064
+    },
+    {
+      "team": "Kiribati",
+      "elo": 1408.605851679581
+    },
+    {
+      "team": "Tuvalu",
+      "elo": 1384.044385584141
+    },
+    {
+      "team": "Samoa",
+      "elo": 1352.824919322465
+    },
+    {
+      "team": "Greenland",
+      "elo": 1457.756285437758
+    },
+    {
+      "team": "Liechtenstein",
+      "elo": 1115.015753545447
+    },
+    {
+      "team": "Bhutan",
+      "elo": 1073.674046245476
+    },
+    {
+      "team": "South Yemen",
+      "elo": 1487.590856707624
+    },
+    {
+      "team": "American Samoa",
+      "elo": 1236.279933258352
+    },
+    {
+      "team": "Niue",
+      "elo": 1478.444673589051
+    },
+    {
+      "team": "Belize",
+      "elo": 1370.781156735991
+    },
+    {
+      "team": "Cayman Islands",
+      "elo": 1230.453816620872
+    },
+    {
+      "team": "Anguilla",
+      "elo": 1153.161341829574
+    },
+    {
+      "team": "British Virgin Islands",
+      "elo": 1201.315634280296
+    },
+    {
+      "team": "Palau",
+      "elo": 1469.201223180953
+    },
+    {
+      "team": "Sint Maarten",
+      "elo": 1385.236711055023
+    },
+    {
+      "team": "Namibia",
+      "elo": 1453.404404939096
+    },
+    {
+      "team": "Ynys M\u00f4n",
+      "elo": 1620.503797806887
+    },
+    {
+      "team": "Shetland",
+      "elo": 1496.210521807516
+    },
+    {
+      "team": "\u00c5land Islands",
+      "elo": 1478.526024727259
+    },
+    {
+      "team": "Saint Martin",
+      "elo": 1350.402808048726
+    },
+    {
+      "team": "San Marino",
+      "elo": 1022.429119018502
+    },
+    {
+      "team": "Montserrat",
+      "elo": 1335.57385626855
+    },
+    {
+      "team": "Slovenia",
+      "elo": 1670.033588927814
+    },
+    {
+      "team": "Isle of Wight",
+      "elo": 1586.923781627718
+    },
+    {
+      "team": "Turkmenistan",
+      "elo": 1424.253126532261
+    },
+    {
+      "team": "Tajikistan",
+      "elo": 1455.325771064364
+    },
+    {
+      "team": "Uzbekistan",
+      "elo": 1709.699236157169
+    },
+    {
+      "team": "Eritrea",
+      "elo": 1324.202371674523
+    },
+    {
+      "team": "Isle of Man",
+      "elo": 1625.053128095386
+    },
+    {
+      "team": "Gibraltar",
+      "elo": 1213.204818745761
+    },
+    {
+      "team": "North Macedonia",
+      "elo": 1563.922976150573
+    },
+    {
+      "team": "Czech Republic",
+      "elo": 1701.00556205559
+    },
+    {
+      "team": "Bosnia and Herzegovina",
+      "elo": 1576.010614678542
+    },
+    {
+      "team": "Canary Islands",
+      "elo": 1503.638773846228
+    },
+    {
+      "team": "Andorra",
+      "elo": 1176.801038794926
+    },
+    {
+      "team": "Hitra",
+      "elo": 1424.091320363627
+    },
+    {
+      "team": "Fr\u00f8ya",
+      "elo": 1351.181551401139
+    },
+    {
+      "team": "United States Virgin Islands",
+      "elo": 1193.528680117834
+    },
+    {
+      "team": "Northern Mariana Islands",
+      "elo": 1258.522808666094
+    },
+    {
+      "team": "Turks and Caicos Islands",
+      "elo": 1289.014012028359
+    },
+    {
+      "team": "Micronesia",
+      "elo": 1453.836783685438
+    },
+    {
+      "team": "Gotland",
+      "elo": 1443.503154837134
+    },
+    {
+      "team": "Saare County",
+      "elo": 1389.06874752785
+    },
+    {
+      "team": "Rhodes",
+      "elo": 1543.458612604486
+    },
+    {
+      "team": "Monaco",
+      "elo": 1490.975838902277
+    },
+    {
+      "team": "Tibet",
+      "elo": 1390.7889202553
+    },
+    {
+      "team": "Orkney",
+      "elo": 1428.04275600752
+    },
+    {
+      "team": "Falkland Islands",
+      "elo": 1354.623412646792
+    },
+    {
+      "team": "Mayotte",
+      "elo": 1473.448352624361
+    },
+    {
+      "team": "Vatican City",
+      "elo": 1458.873884410224
+    },
+    {
+      "team": "Timor-Leste",
+      "elo": 1102.908731483211
+    },
+    {
+      "team": "Sark",
+      "elo": 1465.23948465998
+    },
+    {
+      "team": "Sealand",
+      "elo": 1492.059898941639
+    },
+    {
+      "team": "Occitania",
+      "elo": 1587.324531956389
+    },
+    {
+      "team": "Chechnya",
+      "elo": 1483.318547703782
+    },
+    {
+      "team": "Ambazonia",
+      "elo": 1467.17337073197
+    },
+    {
+      "team": "Western Isles",
+      "elo": 1479.024380179114
+    },
+    {
+      "team": "Kosovo",
+      "elo": 1605.637809199237
+    },
+    {
+      "team": "Republic of St. Pauli",
+      "elo": 1476.37046996047
+    },
+    {
+      "team": "G\u0103g\u0103uzia",
+      "elo": 1465.572642154432
+    },
+    {
+      "team": "Crimea",
+      "elo": 1519.089470801476
+    },
+    {
+      "team": "S\u00e1pmi",
+      "elo": 1456.168130647569
+    },
+    {
+      "team": "Romani people",
+      "elo": 1478.429561234774
+    },
+    {
+      "team": "Menorca",
+      "elo": 1523.05965361065
+    },
+    {
+      "team": "Iraqi Kurdistan",
+      "elo": 1563.756233866944
+    },
+    {
+      "team": "Padania",
+      "elo": 1603.744825237608
+    },
+    {
+      "team": "Arameans Suryoye",
+      "elo": 1531.490839170544
+    },
+    {
+      "team": "Gozo",
+      "elo": 1477.653446999171
+    },
+    {
+      "team": "Two Sicilies",
+      "elo": 1478.007301180857
+    },
+    {
+      "team": "Saint Barth\u00e9lemy",
+      "elo": 1454.425318657287
+    },
+    {
+      "team": "Saint Pierre and Miquelon",
+      "elo": 1444.665074326647
+    },
+    {
+      "team": "Bonaire",
+      "elo": 1351.759718115896
+    },
+    {
+      "team": "Chagos Islands",
+      "elo": 1433.393699429236
+    },
+    {
+      "team": "Raetia",
+      "elo": 1443.017209311955
+    },
+    {
+      "team": "Cilento",
+      "elo": 1492.594651536402
+    },
+    {
+      "team": "Darfur",
+      "elo": 1432.836676606568
+    },
+    {
+      "team": "Western Sahara",
+      "elo": 1488.521437326244
+    },
+    {
+      "team": "Tamil Eelam",
+      "elo": 1504.229767760117
+    },
+    {
+      "team": "South Sudan",
+      "elo": 1324.049850634303
+    },
+    {
+      "team": "Abkhazia",
+      "elo": 1548.661112012282
+    },
+    {
+      "team": "Artsakh",
+      "elo": 1521.503658408689
+    },
+    {
+      "team": "Madrid",
+      "elo": 1488.526135111166
+    },
+    {
+      "team": "Saugeais",
+      "elo": 1496.758376314293
+    },
+    {
+      "team": "Ellan Vannin",
+      "elo": 1537.524878299867
+    },
+    {
+      "team": "Somaliland",
+      "elo": 1488.93691565232
+    },
+    {
+      "team": "Franconia",
+      "elo": 1508.839074563502
+    },
+    {
+      "team": "County of Nice",
+      "elo": 1546.068444485683
+    },
+    {
+      "team": "South Ossetia",
+      "elo": 1485.681049324044
+    },
+    {
+      "team": "Seborga",
+      "elo": 1486.644068502343
+    },
+    {
+      "team": "Sz\u00e9kely Land",
+      "elo": 1479.428995548827
+    },
+    {
+      "team": "Luhansk PR",
+      "elo": 1495.058959289202
+    },
+    {
+      "team": "Donetsk PR",
+      "elo": 1507.396228949911
+    },
+    {
+      "team": "Panjab",
+      "elo": 1532.838204089093
+    },
+    {
+      "team": "Felvid\u00e9k",
+      "elo": 1514.668570764433
+    },
+    {
+      "team": "United Koreans in Japan",
+      "elo": 1489.933331014209
+    },
+    {
+      "team": "Western Armenia",
+      "elo": 1498.723353443583
+    },
+    {
+      "team": "D\u00e9lvid\u00e9k",
+      "elo": 1493.026949882448
+    },
+    {
+      "team": "K\u00e1rp\u00e1talja",
+      "elo": 1543.861404008267
+    },
+    {
+      "team": "Barawa",
+      "elo": 1425.905683218987
+    },
+    {
+      "team": "Ry\u016bky\u016b",
+      "elo": 1486.653522177703
+    },
+    {
+      "team": "Yorkshire",
+      "elo": 1530.040211383111
+    },
+    {
+      "team": "Surrey",
+      "elo": 1511.935080736337
+    },
+    {
+      "team": "Matabeleland",
+      "elo": 1510.55418233541
+    },
+    {
+      "team": "Cascadia",
+      "elo": 1527.029677068105
+    },
+    {
+      "team": "Kabylia",
+      "elo": 1491.030657357431
+    },
+    {
+      "team": "Parishes of Jersey",
+      "elo": 1506.761231619123
+    },
+    {
+      "team": "Chameria",
+      "elo": 1516.809851333682
+    },
+    {
+      "team": "Saint Helena",
+      "elo": 1442.47933095521
+    },
+    {
+      "team": "Yoruba Nation",
+      "elo": 1484.212125392127
+    },
+    {
+      "team": "Biafra",
+      "elo": 1508.087665348728
+    },
+    {
+      "team": "Mapuche",
+      "elo": 1494.740321924917
+    },
+    {
+      "team": "Maule Sur",
+      "elo": 1525.054669570099
+    },
+    {
+      "team": "Aymara",
+      "elo": 1480.205008504984
+    },
+    {
+      "team": "Elba Island",
+      "elo": 1505.311083663778
+    },
+    {
+      "team": "West Papua",
+      "elo": 1495.122400080551
+    },
+    {
+      "team": "Ticino",
+      "elo": 1476.636638580969
+    },
+    {
+      "team": "Hmong",
+      "elo": 1490.131048843788
+    },
+    {
+      "team": "Marshall Islands",
+      "elo": 1468.647681304934
+    }
+  ],
+  "group_tables": [
+    {
+      "group": "Group A",
+      "team": "Mexico",
+      "expected_rank": 2.2912,
+      "avg_points": 4.5279,
+      "avg_goal_difference": 0.6128,
+      "prob_1": 0.3129,
+      "prob_2": 0.2692,
+      "prob_3": 0.2317,
+      "prob_4": 0.1862
+    },
+    {
+      "group": "Group A",
+      "team": "Czech Republic",
+      "expected_rank": 2.3802,
+      "avg_points": 4.3163,
+      "avg_goal_difference": 0.2952,
+      "prob_1": 0.2769,
+      "prob_2": 0.2706,
+      "prob_3": 0.2479,
+      "prob_4": 0.2046
+    },
+    {
+      "group": "Group A",
+      "team": "South Korea",
+      "expected_rank": 2.4925,
+      "avg_points": 4.1503,
+      "avg_goal_difference": 0.0684,
+      "prob_1": 0.2472,
+      "prob_2": 0.2548,
+      "prob_3": 0.2563,
+      "prob_4": 0.2417
+    },
+    {
+      "group": "Group A",
+      "team": "South Africa",
+      "expected_rank": 2.8361,
+      "avg_points": 3.3963,
+      "avg_goal_difference": -0.9764,
+      "prob_1": 0.163,
+      "prob_2": 0.2054,
+      "prob_3": 0.2641,
+      "prob_4": 0.3675
+    },
+    {
+      "group": "Group B",
+      "team": "Switzerland",
+      "expected_rank": 2.1592,
+      "avg_points": 4.8562,
+      "avg_goal_difference": 1.0593,
+      "prob_1": 0.3589,
+      "prob_2": 0.2773,
+      "prob_3": 0.2095,
+      "prob_4": 0.1543
+    },
+    {
+      "group": "Group B",
+      "team": "Canada",
+      "expected_rank": 2.2581,
+      "avg_points": 4.5897,
+      "avg_goal_difference": 0.6819,
+      "prob_1": 0.3145,
+      "prob_2": 0.2852,
+      "prob_3": 0.228,
+      "prob_4": 0.1723
+    },
+    {
+      "group": "Group B",
+      "team": "Bosnia and Herzegovina",
+      "expected_rank": 2.7391,
+      "avg_points": 3.5692,
+      "avg_goal_difference": -0.7406,
+      "prob_1": 0.1729,
+      "prob_2": 0.2274,
+      "prob_3": 0.2874,
+      "prob_4": 0.3123
+    },
+    {
+      "group": "Group B",
+      "team": "Qatar",
+      "expected_rank": 2.8436,
+      "avg_points": 3.3743,
+      "avg_goal_difference": -1.0006,
+      "prob_1": 0.1537,
+      "prob_2": 0.2101,
+      "prob_3": 0.2751,
+      "prob_4": 0.3611
+    },
+    {
+      "group": "Group C",
+      "team": "Brazil",
+      "expected_rank": 2.1651,
+      "avg_points": 4.7641,
+      "avg_goal_difference": 0.9175,
+      "prob_1": 0.3626,
+      "prob_2": 0.268,
+      "prob_3": 0.2111,
+      "prob_4": 0.1583
+    },
+    {
+      "group": "Group C",
+      "team": "Scotland",
+      "expected_rank": 2.4774,
+      "avg_points": 4.17,
+      "avg_goal_difference": 0.1093,
+      "prob_1": 0.2461,
+      "prob_2": 0.2675,
+      "prob_3": 0.2493,
+      "prob_4": 0.2371
+    },
+    {
+      "group": "Group C",
+      "team": "Morocco",
+      "expected_rank": 2.5384,
+      "avg_points": 4.0176,
+      "avg_goal_difference": -0.1224,
+      "prob_1": 0.2349,
+      "prob_2": 0.2484,
+      "prob_3": 0.2601,
+      "prob_4": 0.2566
+    },
+    {
+      "group": "Group C",
+      "team": "Haiti",
+      "expected_rank": 2.8191,
+      "avg_points": 3.4264,
+      "avg_goal_difference": -0.9044,
+      "prob_1": 0.1564,
+      "prob_2": 0.2161,
+      "prob_3": 0.2795,
+      "prob_4": 0.348
+    },
+    {
+      "group": "Group D",
+      "team": "Turkey",
+      "expected_rank": 2.3184,
+      "avg_points": 4.4883,
+      "avg_goal_difference": 0.5596,
+      "prob_1": 0.3076,
+      "prob_2": 0.2625,
+      "prob_3": 0.2338,
+      "prob_4": 0.1961
+    },
+    {
+      "group": "Group D",
+      "team": "United States",
+      "expected_rank": 2.4026,
+      "avg_points": 4.3239,
+      "avg_goal_difference": 0.3276,
+      "prob_1": 0.2732,
+      "prob_2": 0.2613,
+      "prob_3": 0.2552,
+      "prob_4": 0.2103
+    },
+    {
+      "group": "Group D",
+      "team": "Australia",
+      "expected_rank": 2.5449,
+      "avg_points": 3.9664,
+      "avg_goal_difference": -0.2002,
+      "prob_1": 0.2354,
+      "prob_2": 0.2481,
+      "prob_3": 0.2527,
+      "prob_4": 0.2638
+    },
+    {
+      "group": "Group D",
+      "team": "Paraguay",
+      "expected_rank": 2.7341,
+      "avg_points": 3.5961,
+      "avg_goal_difference": -0.687,
+      "prob_1": 0.1838,
+      "prob_2": 0.2281,
+      "prob_3": 0.2583,
+      "prob_4": 0.3298
+    },
+    {
+      "group": "Group E",
+      "team": "Germany",
+      "expected_rank": 2.2064,
+      "avg_points": 4.7403,
+      "avg_goal_difference": 0.9154,
+      "prob_1": 0.3403,
+      "prob_2": 0.2796,
+      "prob_3": 0.2135,
+      "prob_4": 0.1666
+    },
+    {
+      "group": "Group E",
+      "team": "Ecuador",
+      "expected_rank": 2.319,
+      "avg_points": 4.4879,
+      "avg_goal_difference": 0.5307,
+      "prob_1": 0.3037,
+      "prob_2": 0.2663,
+      "prob_3": 0.2373,
+      "prob_4": 0.1927
+    },
+    {
+      "group": "Group E",
+      "team": "Cote d'Ivoire",
+      "expected_rank": 2.6024,
+      "avg_points": 3.8543,
+      "avg_goal_difference": -0.3185,
+      "prob_1": 0.2074,
+      "prob_2": 0.2501,
+      "prob_3": 0.2752,
+      "prob_4": 0.2673
+    },
+    {
+      "group": "Group E",
+      "team": "Cura\u00e7ao",
+      "expected_rank": 2.8722,
+      "avg_points": 3.2955,
+      "avg_goal_difference": -1.1276,
+      "prob_1": 0.1486,
+      "prob_2": 0.204,
+      "prob_3": 0.274,
+      "prob_4": 0.3734
+    },
+    {
+      "group": "Group F",
+      "team": "Netherlands",
+      "expected_rank": 2.183,
+      "avg_points": 4.7466,
+      "avg_goal_difference": 0.9067,
+      "prob_1": 0.3548,
+      "prob_2": 0.2706,
+      "prob_3": 0.2114,
+      "prob_4": 0.1632
+    },
+    {
+      "group": "Group F",
+      "team": "Japan",
+      "expected_rank": 2.5152,
+      "avg_points": 4.0237,
+      "avg_goal_difference": -0.0957,
+      "prob_1": 0.2343,
+      "prob_2": 0.2599,
+      "prob_3": 0.2621,
+      "prob_4": 0.2437
+    },
+    {
+      "group": "Group F",
+      "team": "Tunisia",
+      "expected_rank": 2.5428,
+      "avg_points": 4.0137,
+      "avg_goal_difference": -0.0771,
+      "prob_1": 0.2376,
+      "prob_2": 0.2455,
+      "prob_3": 0.2534,
+      "prob_4": 0.2635
+    },
+    {
+      "group": "Group F",
+      "team": "Sweden",
+      "expected_rank": 2.759,
+      "avg_points": 3.582,
+      "avg_goal_difference": -0.7339,
+      "prob_1": 0.1733,
+      "prob_2": 0.224,
+      "prob_3": 0.2731,
+      "prob_4": 0.3296
+    },
+    {
+      "group": "Group G",
+      "team": "Belgium",
+      "expected_rank": 2.1907,
+      "avg_points": 4.7502,
+      "avg_goal_difference": 0.874,
+      "prob_1": 0.3561,
+      "prob_2": 0.2615,
+      "prob_3": 0.218,
+      "prob_4": 0.1644
+    },
+    {
+      "group": "Group G",
+      "team": "Iran",
+      "expected_rank": 2.5374,
+      "avg_points": 4.0087,
+      "avg_goal_difference": -0.1035,
+      "prob_1": 0.2282,
+      "prob_2": 0.2563,
+      "prob_3": 0.2654,
+      "prob_4": 0.2501
+    },
+    {
+      "group": "Group G",
+      "team": "New Zealand",
+      "expected_rank": 2.6065,
+      "avg_points": 3.8993,
+      "avg_goal_difference": -0.2643,
+      "prob_1": 0.2166,
+      "prob_2": 0.2447,
+      "prob_3": 0.2543,
+      "prob_4": 0.2844
+    },
+    {
+      "group": "Group G",
+      "team": "Egypt",
+      "expected_rank": 2.6654,
+      "avg_points": 3.7238,
+      "avg_goal_difference": -0.5062,
+      "prob_1": 0.1991,
+      "prob_2": 0.2375,
+      "prob_3": 0.2623,
+      "prob_4": 0.3011
+    },
+    {
+      "group": "Group H",
+      "team": "Spain",
+      "expected_rank": 2.0884,
+      "avg_points": 4.9447,
+      "avg_goal_difference": 1.1919,
+      "prob_1": 0.3886,
+      "prob_2": 0.2741,
+      "prob_3": 0.1976,
+      "prob_4": 0.1397
+    },
+    {
+      "group": "Group H",
+      "team": "Uruguay",
+      "expected_rank": 2.364,
+      "avg_points": 4.4099,
+      "avg_goal_difference": 0.421,
+      "prob_1": 0.2811,
+      "prob_2": 0.2749,
+      "prob_3": 0.2429,
+      "prob_4": 0.2011
+    },
+    {
+      "group": "Group H",
+      "team": "Cape Verde",
+      "expected_rank": 2.7456,
+      "avg_points": 3.5614,
+      "avg_goal_difference": -0.7506,
+      "prob_1": 0.1667,
+      "prob_2": 0.2325,
+      "prob_3": 0.2893,
+      "prob_4": 0.3115
+    },
+    {
+      "group": "Group H",
+      "team": "Saudi Arabia",
+      "expected_rank": 2.802,
+      "avg_points": 3.4598,
+      "avg_goal_difference": -0.8623,
+      "prob_1": 0.1636,
+      "prob_2": 0.2185,
+      "prob_3": 0.2702,
+      "prob_4": 0.3477
+    },
+    {
+      "group": "Group I",
+      "team": "France",
+      "expected_rank": 2.1205,
+      "avg_points": 4.8618,
+      "avg_goal_difference": 1.0785,
+      "prob_1": 0.3796,
+      "prob_2": 0.2684,
+      "prob_3": 0.2039,
+      "prob_4": 0.1481
+    },
+    {
+      "group": "Group I",
+      "team": "Norway",
+      "expected_rank": 2.5061,
+      "avg_points": 4.0846,
+      "avg_goal_difference": 0.0199,
+      "prob_1": 0.2377,
+      "prob_2": 0.265,
+      "prob_3": 0.2508,
+      "prob_4": 0.2465
+    },
+    {
+      "group": "Group I",
+      "team": "Senegal",
+      "expected_rank": 2.5818,
+      "avg_points": 3.9517,
+      "avg_goal_difference": -0.1983,
+      "prob_1": 0.2185,
+      "prob_2": 0.2478,
+      "prob_3": 0.2671,
+      "prob_4": 0.2666
+    },
+    {
+      "group": "Group I",
+      "team": "Iraq",
+      "expected_rank": 2.7916,
+      "avg_points": 3.4683,
+      "avg_goal_difference": -0.9001,
+      "prob_1": 0.1642,
+      "prob_2": 0.2188,
+      "prob_3": 0.2782,
+      "prob_4": 0.3388
+    },
+    {
+      "group": "Group J",
+      "team": "Argentina",
+      "expected_rank": 2.1123,
+      "avg_points": 4.9181,
+      "avg_goal_difference": 1.1396,
+      "prob_1": 0.384,
+      "prob_2": 0.266,
+      "prob_3": 0.2037,
+      "prob_4": 0.1463
+    },
+    {
+      "group": "Group J",
+      "team": "Algeria",
+      "expected_rank": 2.5841,
+      "avg_points": 3.8635,
+      "avg_goal_difference": -0.3053,
+      "prob_1": 0.2145,
+      "prob_2": 0.257,
+      "prob_3": 0.2584,
+      "prob_4": 0.2701
+    },
+    {
+      "group": "Group J",
+      "team": "Jordan",
+      "expected_rank": 2.6332,
+      "avg_points": 3.8529,
+      "avg_goal_difference": -0.3593,
+      "prob_1": 0.2113,
+      "prob_2": 0.2357,
+      "prob_3": 0.2615,
+      "prob_4": 0.2915
+    },
+    {
+      "group": "Group J",
+      "team": "Austria",
+      "expected_rank": 2.6704,
+      "avg_points": 3.7491,
+      "avg_goal_difference": -0.475,
+      "prob_1": 0.1902,
+      "prob_2": 0.2413,
+      "prob_3": 0.2764,
+      "prob_4": 0.2921
+    },
+    {
+      "group": "Group K",
+      "team": "Colombia",
+      "expected_rank": 2.2251,
+      "avg_points": 4.6237,
+      "avg_goal_difference": 0.746,
+      "prob_1": 0.3342,
+      "prob_2": 0.2776,
+      "prob_3": 0.2171,
+      "prob_4": 0.1711
+    },
+    {
+      "group": "Group K",
+      "team": "Portugal",
+      "expected_rank": 2.2442,
+      "avg_points": 4.643,
+      "avg_goal_difference": 0.7904,
+      "prob_1": 0.3239,
+      "prob_2": 0.2744,
+      "prob_3": 0.2353,
+      "prob_4": 0.1664
+    },
+    {
+      "group": "Group K",
+      "team": "Uzbekistan",
+      "expected_rank": 2.7631,
+      "avg_points": 3.5984,
+      "avg_goal_difference": -0.6909,
+      "prob_1": 0.1732,
+      "prob_2": 0.2211,
+      "prob_3": 0.2751,
+      "prob_4": 0.3306
+    },
+    {
+      "group": "Group K",
+      "team": "DR Congo",
+      "expected_rank": 2.7676,
+      "avg_points": 3.5198,
+      "avg_goal_difference": -0.8455,
+      "prob_1": 0.1687,
+      "prob_2": 0.2269,
+      "prob_3": 0.2725,
+      "prob_4": 0.3319
+    },
+    {
+      "group": "Group L",
+      "team": "England",
+      "expected_rank": 2.1494,
+      "avg_points": 4.8201,
+      "avg_goal_difference": 1.0039,
+      "prob_1": 0.3643,
+      "prob_2": 0.277,
+      "prob_3": 0.2037,
+      "prob_4": 0.155
+    },
+    {
+      "group": "Group L",
+      "team": "Croatia",
+      "expected_rank": 2.4995,
+      "avg_points": 4.0726,
+      "avg_goal_difference": -0.0195,
+      "prob_1": 0.2401,
+      "prob_2": 0.26,
+      "prob_3": 0.2602,
+      "prob_4": 0.2397
+    },
+    {
+      "group": "Group L",
+      "team": "Panama",
+      "expected_rank": 2.5076,
+      "avg_points": 4.088,
+      "avg_goal_difference": -0.0016,
+      "prob_1": 0.2462,
+      "prob_2": 0.2493,
+      "prob_3": 0.2552,
+      "prob_4": 0.2493
+    },
+    {
+      "group": "Group L",
+      "team": "Ghana",
+      "expected_rank": 2.8435,
+      "avg_points": 3.3892,
+      "avg_goal_difference": -0.9828,
+      "prob_1": 0.1494,
+      "prob_2": 0.2137,
+      "prob_3": 0.2809,
+      "prob_4": 0.356
+    }
+  ],
+  "tournament_simulation": [
+    {
+      "team": "Spain",
+      "prob_Round_of_32": 0.8141,
+      "prob_Round_of_16": 0.5929,
+      "prob_Quarter_Finals": 0.4844,
+      "prob_Semi_Finals": 0.3998,
+      "prob_Finals": 0.2731,
+      "prob_Winner": 0.2017
+    },
+    {
+      "team": "Argentina",
+      "prob_Round_of_32": 0.7951,
+      "prob_Round_of_16": 0.5153,
+      "prob_Quarter_Finals": 0.3822,
+      "prob_Semi_Finals": 0.2913,
+      "prob_Finals": 0.1842,
+      "prob_Winner": 0.0993
+    },
+    {
+      "team": "England",
+      "prob_Round_of_32": 0.7563,
+      "prob_Round_of_16": 0.4803,
+      "prob_Quarter_Finals": 0.2468,
+      "prob_Semi_Finals": 0.1875,
+      "prob_Finals": 0.1173,
+      "prob_Winner": 0.075
+    },
+    {
+      "team": "France",
+      "prob_Round_of_32": 0.7777,
+      "prob_Round_of_16": 0.5689,
+      "prob_Quarter_Finals": 0.3964,
+      "prob_Semi_Finals": 0.2307,
+      "prob_Finals": 0.1273,
+      "prob_Winner": 0.0682
+    },
+    {
+      "team": "Portugal",
+      "prob_Round_of_32": 0.7094,
+      "prob_Round_of_16": 0.509,
+      "prob_Quarter_Finals": 0.2322,
+      "prob_Semi_Finals": 0.1779,
+      "prob_Finals": 0.1054,
+      "prob_Winner": 0.0581
+    },
+    {
+      "team": "Belgium",
+      "prob_Round_of_32": 0.7873,
+      "prob_Round_of_16": 0.4734,
+      "prob_Quarter_Finals": 0.3191,
+      "prob_Semi_Finals": 0.123,
+      "prob_Finals": 0.0666,
+      "prob_Winner": 0.0379
+    },
+    {
+      "team": "Colombia",
+      "prob_Round_of_32": 0.7083,
+      "prob_Round_of_16": 0.491,
+      "prob_Quarter_Finals": 0.2012,
+      "prob_Semi_Finals": 0.1459,
+      "prob_Finals": 0.0789,
+      "prob_Winner": 0.0356
+    },
+    {
+      "team": "Croatia",
+      "prob_Round_of_32": 0.6354,
+      "prob_Round_of_16": 0.3441,
+      "prob_Quarter_Finals": 0.1496,
+      "prob_Semi_Finals": 0.1057,
+      "prob_Finals": 0.059,
+      "prob_Winner": 0.0318
+    },
+    {
+      "team": "Germany",
+      "prob_Round_of_32": 0.7652,
+      "prob_Round_of_16": 0.5131,
+      "prob_Quarter_Finals": 0.341,
+      "prob_Semi_Finals": 0.2003,
+      "prob_Finals": 0.0781,
+      "prob_Winner": 0.0316
+    },
+    {
+      "team": "Mexico",
+      "prob_Round_of_32": 0.7257,
+      "prob_Round_of_16": 0.468,
+      "prob_Quarter_Finals": 0.2863,
+      "prob_Semi_Finals": 0.127,
+      "prob_Finals": 0.0683,
+      "prob_Winner": 0.0316
+    },
+    {
+      "team": "South Korea",
+      "prob_Round_of_32": 0.6545,
+      "prob_Round_of_16": 0.4249,
+      "prob_Quarter_Finals": 0.2701,
+      "prob_Semi_Finals": 0.1248,
+      "prob_Finals": 0.0689,
+      "prob_Winner": 0.0309
+    },
+    {
+      "team": "Brazil",
+      "prob_Round_of_32": 0.7969,
+      "prob_Round_of_16": 0.4759,
+      "prob_Quarter_Finals": 0.2559,
+      "prob_Semi_Finals": 0.1296,
+      "prob_Finals": 0.0691,
+      "prob_Winner": 0.0272
+    },
+    {
+      "team": "Netherlands",
+      "prob_Round_of_32": 0.7959,
+      "prob_Round_of_16": 0.4793,
+      "prob_Quarter_Finals": 0.2481,
+      "prob_Semi_Finals": 0.137,
+      "prob_Finals": 0.0621,
+      "prob_Winner": 0.0258
+    },
+    {
+      "team": "Switzerland",
+      "prob_Round_of_32": 0.7818,
+      "prob_Round_of_16": 0.4526,
+      "prob_Quarter_Finals": 0.3004,
+      "prob_Semi_Finals": 0.1007,
+      "prob_Finals": 0.0474,
+      "prob_Winner": 0.0226
+    },
+    {
+      "team": "Uruguay",
+      "prob_Round_of_32": 0.7441,
+      "prob_Round_of_16": 0.3364,
+      "prob_Quarter_Finals": 0.1934,
+      "prob_Semi_Finals": 0.1151,
+      "prob_Finals": 0.0463,
+      "prob_Winner": 0.0189
+    },
+    {
+      "team": "Senegal",
+      "prob_Round_of_32": 0.6331,
+      "prob_Round_of_16": 0.3662,
+      "prob_Quarter_Finals": 0.1884,
+      "prob_Semi_Finals": 0.0883,
+      "prob_Finals": 0.0386,
+      "prob_Winner": 0.0174
+    },
+    {
+      "team": "Iran",
+      "prob_Round_of_32": 0.6904,
+      "prob_Round_of_16": 0.3618,
+      "prob_Quarter_Finals": 0.2147,
+      "prob_Semi_Finals": 0.0688,
+      "prob_Finals": 0.0303,
+      "prob_Winner": 0.0163
+    },
+    {
+      "team": "Algeria",
+      "prob_Round_of_32": 0.6314,
+      "prob_Round_of_16": 0.2803,
+      "prob_Quarter_Finals": 0.1585,
+      "prob_Semi_Finals": 0.0904,
+      "prob_Finals": 0.0391,
+      "prob_Winner": 0.0131
+    },
+    {
+      "team": "Austria",
+      "prob_Round_of_32": 0.606,
+      "prob_Round_of_16": 0.256,
+      "prob_Quarter_Finals": 0.1358,
+      "prob_Semi_Finals": 0.0713,
+      "prob_Finals": 0.0321,
+      "prob_Winner": 0.0116
+    },
+    {
+      "team": "Japan",
+      "prob_Round_of_32": 0.6932,
+      "prob_Round_of_16": 0.3631,
+      "prob_Quarter_Finals": 0.1626,
+      "prob_Semi_Finals": 0.0782,
+      "prob_Finals": 0.03,
+      "prob_Winner": 0.0114
+    },
+    {
+      "team": "Ecuador",
+      "prob_Round_of_32": 0.7285,
+      "prob_Round_of_16": 0.4074,
+      "prob_Quarter_Finals": 0.226,
+      "prob_Semi_Finals": 0.1056,
+      "prob_Finals": 0.0322,
+      "prob_Winner": 0.0112
+    },
+    {
+      "team": "Turkey",
+      "prob_Round_of_32": 0.7588,
+      "prob_Round_of_16": 0.4661,
+      "prob_Quarter_Finals": 0.1798,
+      "prob_Semi_Finals": 0.0623,
+      "prob_Finals": 0.0249,
+      "prob_Winner": 0.0109
+    },
+    {
+      "team": "Australia",
+      "prob_Round_of_32": 0.6757,
+      "prob_Round_of_16": 0.398,
+      "prob_Quarter_Finals": 0.1533,
+      "prob_Semi_Finals": 0.0535,
+      "prob_Finals": 0.0219,
+      "prob_Winner": 0.0106
+    },
+    {
+      "team": "Czech Republic",
+      "prob_Round_of_32": 0.6995,
+      "prob_Round_of_16": 0.3796,
+      "prob_Quarter_Finals": 0.199,
+      "prob_Semi_Finals": 0.0731,
+      "prob_Finals": 0.0307,
+      "prob_Winner": 0.0104
+    },
+    {
+      "team": "Morocco",
+      "prob_Round_of_32": 0.6847,
+      "prob_Round_of_16": 0.3385,
+      "prob_Quarter_Finals": 0.1562,
+      "prob_Semi_Finals": 0.0733,
+      "prob_Finals": 0.0342,
+      "prob_Winner": 0.0098
+    },
+    {
+      "team": "Canada",
+      "prob_Round_of_32": 0.7607,
+      "prob_Round_of_16": 0.3861,
+      "prob_Quarter_Finals": 0.2376,
+      "prob_Semi_Finals": 0.0696,
+      "prob_Finals": 0.0253,
+      "prob_Winner": 0.0094
+    },
+    {
+      "team": "Panama",
+      "prob_Round_of_32": 0.6305,
+      "prob_Round_of_16": 0.2386,
+      "prob_Quarter_Finals": 0.0649,
+      "prob_Semi_Finals": 0.0357,
+      "prob_Finals": 0.0151,
+      "prob_Winner": 0.0067
+    },
+    {
+      "team": "United States",
+      "prob_Round_of_32": 0.7385,
+      "prob_Round_of_16": 0.4014,
+      "prob_Quarter_Finals": 0.1332,
+      "prob_Semi_Finals": 0.0378,
+      "prob_Finals": 0.0133,
+      "prob_Winner": 0.0056
+    },
+    {
+      "team": "Uzbekistan",
+      "prob_Round_of_32": 0.5155,
+      "prob_Round_of_16": 0.2592,
+      "prob_Quarter_Finals": 0.0613,
+      "prob_Semi_Finals": 0.0331,
+      "prob_Finals": 0.0126,
+      "prob_Winner": 0.0043
+    },
+    {
+      "team": "Egypt",
+      "prob_Round_of_32": 0.6315,
+      "prob_Round_of_16": 0.2608,
+      "prob_Quarter_Finals": 0.1272,
+      "prob_Semi_Finals": 0.0316,
+      "prob_Finals": 0.0103,
+      "prob_Winner": 0.0042
+    },
+    {
+      "team": "Norway",
+      "prob_Round_of_32": 0.657,
+      "prob_Round_of_16": 0.3114,
+      "prob_Quarter_Finals": 0.1202,
+      "prob_Semi_Finals": 0.0383,
+      "prob_Finals": 0.0123,
+      "prob_Winner": 0.0037
+    },
+    {
+      "team": "Cote d'Ivoire",
+      "prob_Round_of_32": 0.6254,
+      "prob_Round_of_16": 0.2922,
+      "prob_Quarter_Finals": 0.1423,
+      "prob_Semi_Finals": 0.0498,
+      "prob_Finals": 0.0127,
+      "prob_Winner": 0.0026
+    },
+    {
+      "team": "New Zealand",
+      "prob_Round_of_32": 0.6594,
+      "prob_Round_of_16": 0.2218,
+      "prob_Quarter_Finals": 0.0921,
+      "prob_Semi_Finals": 0.0194,
+      "prob_Finals": 0.0057,
+      "prob_Winner": 0.0021
+    },
+    {
+      "team": "Paraguay",
+      "prob_Round_of_32": 0.6042,
+      "prob_Round_of_16": 0.285,
+      "prob_Quarter_Finals": 0.0802,
+      "prob_Semi_Finals": 0.021,
+      "prob_Finals": 0.0065,
+      "prob_Winner": 0.0021
+    },
+    {
+      "team": "South Africa",
+      "prob_Round_of_32": 0.5177,
+      "prob_Round_of_16": 0.2246,
+      "prob_Quarter_Finals": 0.0877,
+      "prob_Semi_Finals": 0.0206,
+      "prob_Finals": 0.0076,
+      "prob_Winner": 0.0021
+    },
+    {
+      "team": "Jordan",
+      "prob_Round_of_32": 0.6159,
+      "prob_Round_of_16": 0.2085,
+      "prob_Quarter_Finals": 0.0911,
+      "prob_Semi_Finals": 0.0383,
+      "prob_Finals": 0.0122,
+      "prob_Winner": 0.002
+    },
+    {
+      "team": "Scotland",
+      "prob_Round_of_32": 0.7075,
+      "prob_Round_of_16": 0.2559,
+      "prob_Quarter_Finals": 0.0876,
+      "prob_Semi_Finals": 0.0266,
+      "prob_Finals": 0.0088,
+      "prob_Winner": 0.0019
+    },
+    {
+      "team": "Tunisia",
+      "prob_Round_of_32": 0.6844,
+      "prob_Round_of_16": 0.2674,
+      "prob_Quarter_Finals": 0.0857,
+      "prob_Semi_Finals": 0.0298,
+      "prob_Finals": 0.0087,
+      "prob_Winner": 0.0018
+    },
+    {
+      "team": "Iraq",
+      "prob_Round_of_32": 0.5461,
+      "prob_Round_of_16": 0.1952,
+      "prob_Quarter_Finals": 0.0563,
+      "prob_Semi_Finals": 0.0145,
+      "prob_Finals": 0.003,
+      "prob_Winner": 0.0014
+    },
+    {
+      "team": "Ghana",
+      "prob_Round_of_32": 0.4997,
+      "prob_Round_of_16": 0.1268,
+      "prob_Quarter_Finals": 0.0253,
+      "prob_Semi_Finals": 0.0118,
+      "prob_Finals": 0.0039,
+      "prob_Winner": 0.0013
+    },
+    {
+      "team": "Saudi Arabia",
+      "prob_Round_of_32": 0.5776,
+      "prob_Round_of_16": 0.1584,
+      "prob_Quarter_Finals": 0.061,
+      "prob_Semi_Finals": 0.0242,
+      "prob_Finals": 0.007,
+      "prob_Winner": 0.0013
+    },
+    {
+      "team": "Cape Verde",
+      "prob_Round_of_32": 0.6089,
+      "prob_Round_of_16": 0.1472,
+      "prob_Quarter_Finals": 0.0556,
+      "prob_Semi_Finals": 0.0235,
+      "prob_Finals": 0.0045,
+      "prob_Winner": 0.0011
+    },
+    {
+      "team": "DR Congo",
+      "prob_Round_of_32": 0.5001,
+      "prob_Round_of_16": 0.2112,
+      "prob_Quarter_Finals": 0.0393,
+      "prob_Semi_Finals": 0.0177,
+      "prob_Finals": 0.0052,
+      "prob_Winner": 0.0011
+    },
+    {
+      "team": "Sweden",
+      "prob_Round_of_32": 0.6063,
+      "prob_Round_of_16": 0.2132,
+      "prob_Quarter_Finals": 0.0653,
+      "prob_Semi_Finals": 0.0231,
+      "prob_Finals": 0.0059,
+      "prob_Winner": 0.001
+    },
+    {
+      "team": "Bosnia and Herzegovina",
+      "prob_Round_of_32": 0.5806,
+      "prob_Round_of_16": 0.1413,
+      "prob_Quarter_Finals": 0.0459,
+      "prob_Semi_Finals": 0.0059,
+      "prob_Finals": 0.0011,
+      "prob_Winner": 0.0002
+    },
+    {
+      "team": "Haiti",
+      "prob_Round_of_32": 0.5811,
+      "prob_Round_of_16": 0.15,
+      "prob_Quarter_Finals": 0.0375,
+      "prob_Semi_Finals": 0.0077,
+      "prob_Finals": 0.0011,
+      "prob_Winner": 0.0002
+    },
+    {
+      "team": "Qatar",
+      "prob_Round_of_32": 0.5382,
+      "prob_Round_of_16": 0.1276,
+      "prob_Quarter_Finals": 0.0413,
+      "prob_Semi_Finals": 0.005,
+      "prob_Finals": 0.001,
+      "prob_Winner": 0.0001
+    },
+    {
+      "team": "Cura\u00e7ao",
+      "prob_Round_of_32": 0.5144,
+      "prob_Round_of_16": 0.1243,
+      "prob_Quarter_Finals": 0.0302,
+      "prob_Semi_Finals": 0.0041,
+      "prob_Finals": 0.0004,
+      "prob_Winner": 0.0
+    }
+  ],
+  "group_probabilities": [
+    {
+      "team": "Spain",
+      "advance_probability": 0.6627000000000001
+    },
+    {
+      "team": "Argentina",
+      "advance_probability": 0.65
+    },
+    {
+      "team": "France",
+      "advance_probability": 0.648
+    },
+    {
+      "team": "England",
+      "advance_probability": 0.6413
+    },
+    {
+      "team": "Switzerland",
+      "advance_probability": 0.6362
+    },
+    {
+      "team": "Brazil",
+      "advance_probability": 0.6306
+    },
+    {
+      "team": "Netherlands",
+      "advance_probability": 0.6254
+    },
+    {
+      "team": "Germany",
+      "advance_probability": 0.6199
+    },
+    {
+      "team": "Belgium",
+      "advance_probability": 0.6176
+    },
+    {
+      "team": "Colombia",
+      "advance_probability": 0.6118
+    },
+    {
+      "team": "Canada",
+      "advance_probability": 0.5997
+    },
+    {
+      "team": "Portugal",
+      "advance_probability": 0.5983
+    },
+    {
+      "team": "Mexico",
+      "advance_probability": 0.5821000000000001
+    },
+    {
+      "team": "Turkey",
+      "advance_probability": 0.5701
+    },
+    {
+      "team": "Ecuador",
+      "advance_probability": 0.5700000000000001
+    },
+    {
+      "team": "Uruguay",
+      "advance_probability": 0.556
+    },
+    {
+      "team": "Czech Republic",
+      "advance_probability": 0.5475
+    },
+    {
+      "team": "United States",
+      "advance_probability": 0.5345
+    },
+    {
+      "team": "Scotland",
+      "advance_probability": 0.5136000000000001
+    },
+    {
+      "team": "Norway",
+      "advance_probability": 0.5027
+    },
+    {
+      "team": "South Korea",
+      "advance_probability": 0.502
+    },
+    {
+      "team": "Croatia",
+      "advance_probability": 0.5001
+    },
+    {
+      "team": "Panama",
+      "advance_probability": 0.4955
+    },
+    {
+      "team": "Japan",
+      "advance_probability": 0.49420000000000003
+    },
+    {
+      "team": "Iran",
+      "advance_probability": 0.48449999999999993
+    },
+    {
+      "team": "Australia",
+      "advance_probability": 0.4835
+    },
+    {
+      "team": "Morocco",
+      "advance_probability": 0.4833
+    },
+    {
+      "team": "Tunisia",
+      "advance_probability": 0.4831
+    },
+    {
+      "team": "Algeria",
+      "advance_probability": 0.47150000000000003
+    },
+    {
+      "team": "Senegal",
+      "advance_probability": 0.4663
+    },
+    {
+      "team": "New Zealand",
+      "advance_probability": 0.4613
+    },
+    {
+      "team": "Cote d'Ivoire",
+      "advance_probability": 0.4575
+    },
+    {
+      "team": "Jordan",
+      "advance_probability": 0.44699999999999995
+    },
+    {
+      "team": "Egypt",
+      "advance_probability": 0.4366
+    },
+    {
+      "team": "Austria",
+      "advance_probability": 0.4315
+    },
+    {
+      "team": "Paraguay",
+      "advance_probability": 0.4119
+    },
+    {
+      "team": "Bosnia and Herzegovina",
+      "advance_probability": 0.4003
+    },
+    {
+      "team": "Cape Verde",
+      "advance_probability": 0.3992
+    },
+    {
+      "team": "Sweden",
+      "advance_probability": 0.3973
+    },
+    {
+      "team": "DR Congo",
+      "advance_probability": 0.39559999999999995
+    },
+    {
+      "team": "Uzbekistan",
+      "advance_probability": 0.3943
+    },
+    {
+      "team": "Iraq",
+      "advance_probability": 0.383
+    },
+    {
+      "team": "Saudi Arabia",
+      "advance_probability": 0.3821
+    },
+    {
+      "team": "Haiti",
+      "advance_probability": 0.3725
+    },
+    {
+      "team": "South Africa",
+      "advance_probability": 0.3684
+    },
+    {
+      "team": "Qatar",
+      "advance_probability": 0.3638
+    },
+    {
+      "team": "Ghana",
+      "advance_probability": 0.3631
+    },
+    {
+      "team": "Cura\u00e7ao",
+      "advance_probability": 0.3526
+    }
+  ]
+}

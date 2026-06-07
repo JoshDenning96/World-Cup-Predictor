@@ -25,6 +25,27 @@ predictions = predictor.predict_match(team1, team2)
 
 Run the pipeline and optionally simulate the full tournament using ELO-based probabilities.
 
+## Web visualization
+A static dashboard is available in the `website/` folder. It renders the latest simulation results using the exported data from `data/processed`.
+
+To use it:
+```bash
+python3 scripts/export_simulation_json.py
+python3 -m http.server 8000 --directory website
+```
+
+Then open `http://127.0.0.1:8000` in your browser.
+
+The site loads the following JSON payload generated from the latest processed CSV outputs:
+- `elo_ratings`
+- `group_tables`
+- `tournament_simulation`
+- `group_probabilities`
+
+## CLI
+
+Run the pipeline and optionally simulate the full tournament using ELO-based probabilities.
+
 Group-stage simulation (default):
 ```bash
 PYTHONPATH=src python -m world_cup_predictor.cli --simulations 200

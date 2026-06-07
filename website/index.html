@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>World Cup Predictor Dashboard</title>
+    <link rel="stylesheet" href="styles.css" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  </head>
+  <body>
+    <div class="page-shell">
+      <header class="hero-card">
+        <div>
+          <p class="eyebrow">World Cup Predictor</p>
+          <h1>Simulation Results Dashboard</h1>
+          <p class="hero-copy">
+            Explore predicted group standings, tournament probabilities, and team performance from the latest World Cup simulation run.
+          </p>
+        </div>
+        <div class="hero-badge">Professional simulation visualizer</div>
+      </header>
+
+      <section class="section section-summary" id="summary-section">
+        <div class="section-heading">
+          <h2>Simulation overview</h2>
+          <p>High-level measures from the latest exported dataset.</p>
+        </div>
+        <div class="summary-grid" id="summary-cards"></div>
+      </section>
+
+      <section class="section">
+        <div class="section-heading">
+          <h2>Tournament winner probabilities</h2>
+          <p>Top contenders ranked by likelihood of lifting the trophy.</p>
+        </div>
+        <div class="chart-card">
+          <canvas id="winnerChart"></canvas>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="section-heading">
+          <h2>Advance probability</h2>
+          <p>Teams most likely to progress beyond the group stage.</p>
+        </div>
+        <div class="chart-card">
+          <canvas id="advanceChart"></canvas>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="section-heading">
+          <div>
+            <h2>Group stage preview</h2>
+            <p>Select a group to inspect expected rank, average points, and finishing probabilities.</p>
+          </div>
+          <div class="group-filter">
+            <label for="group-select">Group:</label>
+            <select id="group-select"></select>
+          </div>
+        </div>
+        <div class="table-card">
+          <table id="group-table">
+            <thead>
+              <tr>
+                <th>Team</th>
+                <th>Rank</th>
+                <th>Avg. points</th>
+                <th>Goal diff</th>
+                <th>1st</th>
+                <th>2nd</th>
+                <th>3rd</th>
+                <th>4th</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="section-heading">
+          <h2>Knockout stage projection</h2>
+          <p>Projected bracket progression based on team probabilities for each knockout round.</p>
+        </div>
+        <div class="table-card knockout-card">
+          <div class="knockout-table-header">
+            <span>Team</span>
+            <span>Round of 32</span>
+            <span>Round of 16</span>
+            <span>Quarter Finals</span>
+            <span>Semi Finals</span>
+            <span>Finals</span>
+            <span>Winner</span>
+          </div>
+          <div id="knockout-rows" class="knockout-rows"></div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="section-heading">
+          <h2>Bracket projection</h2>
+          <p>Lane-style bracket visualization for top teams across knockout rounds.</p>
+        </div>
+        <div class="bracket-card table-card">
+          <!-- Full 32-team bracket — no selector needed -->
+          <div class="bracket-container">
+            <svg id="bracket-svg" viewBox="0 0 1100 600" preserveAspectRatio="xMidYMid meet"></svg>
+          </div>
+        </div>
+      </section>
+
+      <section class="section section-links">
+        <div class="section-heading">
+          <h2>How to use</h2>
+          <p>Export the latest simulation data and host this dashboard locally.</p>
+        </div>
+        <div class="feature-list">
+          <div>
+            <strong>1.</strong> Run the export script:
+            <code>python3 scripts/export_simulation_json.py</code>
+          </div>
+          <div>
+            <strong>2.</strong> Start a local server from the website folder:
+            <code>python3 -m http.server 8000 --directory website</code>
+          </div>
+          <div>
+            <strong>3.</strong> Open <a href="http://127.0.0.1:8000">http://127.0.0.1:8000</a> in your browser.
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <script src="app.js"></script>
+  </body>
+</html>
