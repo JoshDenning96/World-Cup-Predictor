@@ -1,5 +1,20 @@
 const DATA_URL = "data/master_simulation.json";
+const API_RUN_URL = "/api/run_simulation";
 let state = {};
+
+function replaceElement(el) {
+  if (!el || !el.parentNode) return el;
+  const clone = el.cloneNode(false);
+  el.parentNode.replaceChild(clone, el);
+  return clone;
+}
+
+function setSimulationStatus(text) {
+  const status = document.getElementById("simulation-status");
+  if (status) {
+    status.textContent = text;
+  }
+}
 
 function formatPercent(value) {
   if (value === null || value === undefined) return "—";
@@ -35,8 +50,9 @@ function getTopAdvanceTeams(data, count = 10) {
 
 function renderSummary(data) {
   const winner = getTopTeamsByWinProbability(data, 1)[0];
+  const simulationCount = data.simulations ?? (data.tournament_simulation?.length ? data.tournament_simulation.length : null);
   const cards = [
-    createSummaryCard("Simulation runs", data.tournament_simulation.length ? `${data.tournament_simulation.length} teams` : "N/A"),
+    createSummaryCard("Simulation runs", simulationCount ? `${simulationCount} runs` : "N/A"),
     createSummaryCard("Best champion", winner ? winner.team : "N/A", formatPercent(winner?.prob_Winner ?? 0)),
     createSummaryCard("Top advance chance", data.group_probabilities.length ? data.group_probabilities[0].team : "N/A", formatPercent(data.group_probabilities[0]?.advance_probability ?? 0)),
     createSummaryCard("Exported groups", `${new Set(data.group_tables.map((row) => row.group)).size} groups`),
@@ -172,8 +188,9 @@ function sortTeamsAlphabetically(teams) {
 }
 
 function populateTeamSelect(selectId, teams, onChange, defaultTeam) {
-  const select = document.getElementById(selectId);
+  let select = document.getElementById(selectId);
   if (!select) return;
+  select = replaceElement(select);
   const options = sortTeamsAlphabetically(teams);
   select.innerHTML = options.map((team) => `<option value="${team}">${team}</option>`).join("");
   if (defaultTeam && options.includes(defaultTeam)) {
@@ -183,8 +200,9 @@ function populateTeamSelect(selectId, teams, onChange, defaultTeam) {
 }
 
 function populateViewSelect(selectId, defaultValue = 'Top 12') {
-  const select = document.getElementById(selectId);
+  let select = document.getElementById(selectId);
   if (!select) return;
+  select = replaceElement(select);
   select.innerHTML = `
     <option value="Top 12">Top 12</option>
     <option value="All">All teams</option>
@@ -194,6 +212,76 @@ function populateViewSelect(selectId, defaultValue = 'Top 12') {
     const currentTeam = document.getElementById('knockout-team-select')?.value || null;
     renderKnockoutProjection(state, currentTeam, select.value);
   });
+}
+
+async function runSimulation(simulations) {
+  setSimulationStatus(`Running ${simulations} simulations...`);
+  const button = document.getElementById("simulation-run-button");
+  if (button) button.disabled = true;
+
+  try {
+    const response = await fetch(API_RUN_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ simulations }),
+    });
+    if (!response.ok) {
+      const text = await response.text();
+      throw new Error(`Simulation request failed: ${response.status} ${response.statusText} ${text}`);
+    }
+    const data = await response.json();
+    renderDashboard(data);
+    const saved = data.saved_filename ? ` Saved to ${data.saved_filename}` : "";
+    setSimulationStatus(`Loaded ${simulations} simulations.${saved}`);
+  } catch (error) {
+    console.error(error);
+    const message = error.message || String(error);
+    if (/501/.test(message) || /Unsupported method/.test(message)) {
+      setSimulationStatus("Server does not support POST. Run this app with `python3 server.py` instead of a static http.server.");
+    } else {
+      setSimulationStatus(`Error: ${message}`);
+    }
+  } finally {
+    if (button) button.disabled = false;
+  }
+}
+
+function renderDashboard(data) {
+  state = data;
+  renderSummary(state);
+
+  const winnerDefault = getTopTeamsByWinProbability(state, 1)[0]?.team;
+  const advanceDefault = state.group_probabilities[0]?.team;
+  const knockoutDefault = winnerDefault || advanceDefault;
+
+  populateTeamSelect(
+    "winner-team-select",
+    state.tournament_simulation.map((row) => row.team),
+    (team) => renderWinnerChart(state, team),
+    winnerDefault,
+  );
+  populateTeamSelect(
+    "advance-team-select",
+    state.group_probabilities.map((row) => row.team),
+    (team) => renderAdvanceChart(state, team),
+    advanceDefault,
+  );
+  populateViewSelect('knockout-view-select', 'Top 12');
+  populateTeamSelect(
+    "knockout-team-select",
+    state.tournament_simulation.map((row) => row.team),
+    (team) => {
+      const view = document.getElementById('knockout-view-select')?.value || 'Top 12';
+      renderKnockoutProjection(state, team, view);
+    },
+    knockoutDefault,
+  );
+
+  renderWinnerChart(state, winnerDefault);
+  renderAdvanceChart(state, advanceDefault);
+  renderKnockoutProjection(state, knockoutDefault, document.getElementById('knockout-view-select')?.value || 'Top 12');
+  populateGroupSelect(state);
+  renderBracket(state, 32);
 }
 
 function renderKnockoutProjection(data, selectedTeam, viewMode = 'Top 12') {
@@ -260,8 +348,10 @@ function renderKnockoutProjection(data, selectedTeam, viewMode = 'Top 12') {
 }
 
 function populateGroupSelect(data) {
+  let select = document.getElementById("group-select");
+  if (!select) return;
+  select = replaceElement(select);
   const groups = [...new Set(data.group_tables.map((row) => row.group))].sort();
-  const select = document.getElementById("group-select");
   select.innerHTML = groups.map((group) => `<option value="${group}">${group}</option>`).join("");
   select.addEventListener("change", (event) => renderGroupTable(data, event.target.value));
   if (groups.length) {
@@ -847,42 +937,17 @@ function renderBracket(data, count = 32) {
 
 async function initializeDashboard() {
   try {
-    state = await loadData();
-    renderSummary(state);
+    const loadedState = await loadData();
+    renderDashboard(loadedState);
 
-    const winnerDefault = getTopTeamsByWinProbability(state, 1)[0]?.team;
-    const advanceDefault = state.group_probabilities[0]?.team;
-    const knockoutDefault = winnerDefault || advanceDefault;
-
-    populateTeamSelect(
-      "winner-team-select",
-      state.tournament_simulation.map((row) => row.team),
-      (team) => renderWinnerChart(state, team),
-      winnerDefault,
-    );
-    populateTeamSelect(
-      "advance-team-select",
-      state.group_probabilities.map((row) => row.team),
-      (team) => renderAdvanceChart(state, team),
-      advanceDefault,
-    );
-    populateViewSelect('knockout-view-select', 'Top 12');
-    populateTeamSelect(
-      "knockout-team-select",
-      state.tournament_simulation.map((row) => row.team),
-      (team) => {
-        const view = document.getElementById('knockout-view-select')?.value || 'Top 12';
-        renderKnockoutProjection(state, team, view);
-      },
-      knockoutDefault,
-    );
-
-    renderWinnerChart(state, winnerDefault);
-    renderAdvanceChart(state, advanceDefault);
-    renderKnockoutProjection(state, knockoutDefault, document.getElementById('knockout-view-select')?.value || 'Top 12');
-    populateGroupSelect(state);
-    // Always render full 32-team bracket
-    renderBracket(state, 32);
+    const simulationButton = document.getElementById("simulation-run-button");
+    if (simulationButton) {
+      simulationButton.addEventListener("click", () => {
+        const countInput = document.getElementById("simulation-count");
+        const simulations = Number(countInput?.value) || 200;
+        runSimulation(simulations);
+      });
+    }
   } catch (error) {
     const errorDetails = error?.stack || error?.message || String(error);
     document.body.innerHTML = `<div class="page-shell"><div class="hero-card"><h1>Unable to load dashboard data</h1><p>${error?.message || 'Unknown error'}</p><pre style="white-space: pre-wrap; color: #f9fafb; margin-top: 12px;">${errorDetails}</pre></div></div>`;

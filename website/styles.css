@@ -143,6 +143,37 @@ body {
   margin-top: 12px;
 }
 
+.simulation-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+  margin-top: 16px;
+}
+
+.simulation-controls label {
+  font-size: 0.95rem;
+  color: #e2e8f0;
+}
+
+.simulation-controls input,
+.simulation-controls button {
+  padding: 10px 14px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: rgba(15, 23, 42, 0.85);
+  color: #f8fafc;
+}
+
+.simulation-controls input {
+  width: 100px;
+}
+
+.simulation-status {
+  font-size: 0.92rem;
+  color: #cbd5e1;
+}
+
 .chart-controls label {
   font-size: 0.95rem;
   color: #e2e8f0;

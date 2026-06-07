@@ -25,6 +25,12 @@
           <h2>Simulation overview</h2>
           <p>High-level measures from the latest exported dataset.</p>
         </div>
+        <div class="simulation-controls">
+          <label for="simulation-count">Simulations</label>
+          <input id="simulation-count" type="number" min="1" value="200" />
+          <button id="simulation-run-button" type="button">Run simulation</button>
+          <span id="simulation-status" class="simulation-status">Loaded current dataset</span>
+        </div>
         <div class="summary-grid" id="summary-cards"></div>
       </section>
 
@@ -145,8 +151,8 @@
             <code>python3 scripts/export_simulation_json.py</code>
           </div>
           <div>
-            <strong>2.</strong> Start a local server from the website folder:
-            <code>python3 -m http.server 8000 --directory website</code>
+            <strong>2.</strong> Start the interactive server from the repo root:
+            <code>python3 server.py</code>
           </div>
           <div>
             <strong>3.</strong> Open <a href="http://127.0.0.1:8000">http://127.0.0.1:8000</a> in your browser.
