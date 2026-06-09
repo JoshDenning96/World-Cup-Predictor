@@ -17,6 +17,9 @@ RAW_DIR = ROOT / "data" / "raw"
 SAVE_DIR = WEB_DIR / "data" / "saved_simulations"
 SCHEDULE_FILE = RAW_DIR / "fifa-world-cup-2026-UTC.csv"
 
+# Default CONMEBOL Elo offset applied by the website server
+DEFAULT_CONMEBOL_OFFSET = -20.0
+
 sys.path.insert(0, str(SRC_DIR))
 
 try:
@@ -90,7 +93,12 @@ class SimulationHandler(SimpleHTTPRequestHandler):
             return
 
         try:
-            result = run_pipeline(RAW_DIR, n_simulations=simulations, run_full_tournament=True)
+            result = run_pipeline(
+                RAW_DIR,
+                n_simulations=simulations,
+                run_full_tournament=True,
+                conmebol_offset=DEFAULT_CONMEBOL_OFFSET,
+            )
             tournament_simulation = result["tournament_simulation"].to_dict(orient="records")
             group_tables = result["group_tables"].to_dict(orient="records")
             group_probabilities = result["group_probabilities"].to_dict(orient="records")
