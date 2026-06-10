@@ -53,11 +53,20 @@ function renderSummary(data) {
   const simulationCount = data.simulations ?? (data.tournament_simulation?.length ? data.tournament_simulation.length : null);
   const cards = [
     createSummaryCard("Simulation runs", simulationCount ? `${simulationCount} runs` : "N/A"),
+    // show CONMEBOL offset when provided by the server response
+    data.conmebol_offset !== undefined && data.conmebol_offset !== null
+      ? createSummaryCard(
+          "CONMEBOL offset",
+          `${data.conmebol_offset >= 0 ? '+' : ''}${Number(data.conmebol_offset).toFixed(1)} Elo points`,
+          "Negative weakens CONMEBOL teams",
+        )
+      : null,
     createSummaryCard("Best champion", winner ? winner.team : "N/A", formatPercent(winner?.prob_Winner ?? 0)),
     createSummaryCard("Top advance chance", data.group_probabilities.length ? data.group_probabilities[0].team : "N/A", formatPercent(data.group_probabilities[0]?.advance_probability ?? 0)),
     createSummaryCard("Exported groups", `${new Set(data.group_tables.map((row) => row.group)).size} groups`),
   ];
-  document.getElementById("summary-cards").innerHTML = cards.join("");
+  // filter out any null entries
+  document.getElementById("summary-cards").innerHTML = cards.filter(Boolean).join("");
 }
 
 function renderChart(canvasId, labels, values, label, backgroundColor) {
@@ -215,7 +224,20 @@ function populateViewSelect(selectId, defaultValue = 'Top 12') {
 }
 
 async function runSimulation(simulations) {
-  setSimulationStatus(`Running ${simulations} simulations...`);
+  const countInput = document.getElementById("simulation-count");
+  const offsetInput = document.getElementById("conmebol-offset");
+  const simulationCount = countInput ? Number.parseInt(countInput.value, 10) : simulations;
+  const rawOffset = offsetInput ? Number.parseFloat(offsetInput.value) : NaN;
+  const conmebolOffset = Number.isNaN(rawOffset) ? 0 : rawOffset;
+
+  // validate conmebol offset before sending
+  if (!validateConmebolOffset()) {
+    setSimulationStatus("Invalid CONMEBOL offset — must be between -200 and 200.");
+    if (button) button.disabled = false;
+    return;
+  }
+
+  setSimulationStatus(`Running ${simulationCount} simulations...`);
   const button = document.getElementById("simulation-run-button");
   if (button) button.disabled = true;
 
@@ -223,13 +245,26 @@ async function runSimulation(simulations) {
     const response = await fetch(API_RUN_URL, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ simulations }),
+      body: JSON.stringify({ simulations: simulationCount, conmebol_offset: conmebolOffset }),
     });
     if (!response.ok) {
       const text = await response.text();
       throw new Error(`Simulation request failed: ${response.status} ${response.statusText} ${text}`);
     }
     const data = await response.json();
+    // persist chosen offset for next load
+    try {
+      if (data && data.conmebol_offset !== undefined && data.conmebol_offset !== null) {
+        localStorage.setItem('last_conmebol_offset', String(data.conmebol_offset));
+      } else {
+        localStorage.setItem('last_conmebol_offset', String(conmebolOffset));
+      }
+      if (data && data.saved_filename) {
+        localStorage.setItem('last_saved_simulation', String(data.saved_filename));
+      }
+    } catch (err) {
+      // ignore localStorage errors
+    }
     renderDashboard(data);
     const saved = data.saved_filename ? ` Saved to ${data.saved_filename}` : "";
     setSimulationStatus(`Loaded ${simulations} simulations.${saved}`);
@@ -244,6 +279,25 @@ async function runSimulation(simulations) {
   } finally {
     if (button) button.disabled = false;
   }
+}
+
+function validateConmebolOffset() {
+  const offsetEl = document.getElementById('conmebol-offset');
+  const errEl = document.getElementById('conmebol-offset-error');
+  if (!offsetEl) return true;
+  const val = Number.parseFloat(offsetEl.value);
+  if (Number.isNaN(val)) {
+    if (errEl) { errEl.style.display = 'block'; errEl.textContent = 'Invalid number'; }
+    return false;
+  }
+  const min = Number.parseFloat(offsetEl.getAttribute('min')) || -Infinity;
+  const max = Number.parseFloat(offsetEl.getAttribute('max')) || Infinity;
+  if (val < min || val > max) {
+    if (errEl) { errEl.style.display = 'block'; errEl.textContent = `Value out of range (${min} to ${max})`; }
+    return false;
+  }
+  if (errEl) { errEl.style.display = 'none'; }
+  return true;
 }
 
 function renderDashboard(data) {
@@ -939,6 +993,21 @@ async function initializeDashboard() {
   try {
     const loadedState = await loadData();
     renderDashboard(loadedState);
+    // Auto-populate CONMEBOL offset from loaded data or localStorage
+    try {
+      const offsetEl = document.getElementById('conmebol-offset');
+      if (offsetEl) {
+        if (loadedState && loadedState.conmebol_offset !== undefined && loadedState.conmebol_offset !== null) {
+          offsetEl.value = String(loadedState.conmebol_offset);
+        } else if (localStorage.getItem('last_conmebol_offset') !== null) {
+          offsetEl.value = localStorage.getItem('last_conmebol_offset');
+        }
+        // validate on init
+        validateConmebolOffset();
+      }
+    } catch (err) {
+      // ignore
+    }
 
     const simulationButton = document.getElementById("simulation-run-button");
     if (simulationButton) {
@@ -947,6 +1016,11 @@ async function initializeDashboard() {
         const simulations = Number(countInput?.value) || 200;
         runSimulation(simulations);
       });
+    }
+    // live-validate input
+    const offsetInput = document.getElementById('conmebol-offset');
+    if (offsetInput) {
+      offsetInput.addEventListener('input', () => validateConmebolOffset());
     }
   } catch (error) {
     const errorDetails = error?.stack || error?.message || String(error);

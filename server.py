@@ -88,6 +88,7 @@ class SimulationHandler(SimpleHTTPRequestHandler):
             body = self.rfile.read(content_length).decode("utf-8") if content_length > 0 else ""
             payload = json.loads(body) if body else {}
             simulations = int(payload.get("simulations", 200))
+            conmebol_offset = float(payload.get("conmebol_offset", DEFAULT_CONMEBOL_OFFSET))
         except Exception as exc:
             self.send_error(400, f"Invalid request body: {exc}")
             return
@@ -97,7 +98,7 @@ class SimulationHandler(SimpleHTTPRequestHandler):
                 RAW_DIR,
                 n_simulations=simulations,
                 run_full_tournament=True,
-                conmebol_offset=DEFAULT_CONMEBOL_OFFSET,
+                conmebol_offset=conmebol_offset,
             )
             tournament_simulation = result["tournament_simulation"].to_dict(orient="records")
             group_tables = result["group_tables"].to_dict(orient="records")
@@ -110,6 +111,7 @@ class SimulationHandler(SimpleHTTPRequestHandler):
             save_path = SAVE_DIR / filename
             output = {
                 "simulations": simulations,
+                "conmebol_offset": conmebol_offset,
                 "tournament_simulation": tournament_simulation,
                 "group_tables": group_tables,
                 "group_probabilities": group_probabilities,
