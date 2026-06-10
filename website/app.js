@@ -335,7 +335,7 @@ function renderDashboard(data) {
   renderAdvanceChart(state, advanceDefault);
   renderKnockoutProjection(state, knockoutDefault, document.getElementById('knockout-view-select')?.value || 'Top 12');
   populateGroupSelect(state);
-  renderBracket(state, 32);
+  renderBracket(state, 32).catch(err => console.error('Failed to render bracket:', err));
 }
 
 function renderKnockoutProjection(data, selectedTeam, viewMode = 'Top 12') {
@@ -425,7 +425,10 @@ async function loadData() {
   }
 }
 
-function renderBracket(data, count = 32) {
+async function renderBracket(data, count = 32) {
+  // Wait for assignment table to load
+  await assignmentTablePromise;
+
   const svg = document.getElementById('bracket-svg');
   if (!svg) return;
 
@@ -470,9 +473,23 @@ function renderBracket(data, count = 32) {
   });
   Object.keys(groupMap).forEach((g) => groupMap[g].sort((a, b) => (a.expected_rank || 99) - (b.expected_rank || 99)));
 
-  const _R32_WINNER_GROUP_ORDER = ["A", "B", "D", "E", "G", "I", "K", "L"];
-  const _THIRD_PLACE_ASSIGNMENT_TABLE_TEXT = `
-1 EFGHIJKL 3E 3J 3I 3F 3H 3G 3L 3K
+  let assignmentTableCache = null;
+  async function loadR32ThirdPlaceAssignments() {
+    if (assignmentTableCache) return assignmentTableCache;
+    try {
+      const response = await fetch('data/r32_third_place_assignments.json');
+      assignmentTableCache = await response.json();
+    } catch (e) {
+      console.error('Failed to load R32 third-place assignments:', e);
+      assignmentTableCache = {};
+    }
+    return assignmentTableCache;
+  }
+  // Load assignments and store in cache synchronously
+  const assignmentTablePromise = loadR32ThirdPlaceAssignments().then(table => {
+    assignmentTableCache = table;
+    return table;
+  });
 2 D FGHIJKL 3H 3G 3I 3D 3J 3F 3L 3K
 3 DE GHIJKL 3E 3J 3I 3D 3H 3G 3L 3K
 4 DEF HIJKL 3E 3J 3I 3D 3H 3F 3L 3K
@@ -563,20 +580,9 @@ function renderBracket(data, count = 32) {
 90 BC E G IJKL 3E 3J 3B 3C 3I 3G 3L 3K
 `;
 
-  function parseThirdPlaceAssignmentText(text) {
-    const mapping = {};
-    text.split(/\r?\n/).forEach((line) => {
-      const trimmed = line.trim();
-      if (!trimmed || trimmed.startsWith("No.") || trimmed.startsWith("Third-placed")) return;
-      const tokens = trimmed.split(/\s+/);
-      if (tokens.length < 10) return;
-      const lastEight = tokens.slice(-8);
-      if (!lastEight.every((tok) => tok.startsWith("3"))) return;
-      const groupTokens = tokens.slice(1, -8).join("").replace(/\s+/g, "");
-      const groupKey = groupTokens.split("").sort().join("");
-      mapping[groupKey] = lastEight.map((tok) => tok.slice(1));
-    });
-    return mapping;
+  function parseThirdPlaceAssignmentText(assignmentTable) {
+    // assignmentTable is already parsed JSON, just return it
+    return assignmentTable || {};
   }
 
   function normalizeGroupName(letter) {
@@ -657,7 +663,7 @@ function renderBracket(data, count = 32) {
       return a.letter.localeCompare(b.letter);
     });
 
-    const assignmentTable = parseThirdPlaceAssignmentText(_THIRD_PLACE_ASSIGNMENT_TABLE_TEXT);
+    const assignmentTable = parseThirdPlaceAssignmentText(assignmentTableCache);
 
     // Primary strategy: use the top-8 third-placed teams by avg_points, then GD, then prob_3.
     // Build the "desiredKey" from those eight letters and use it if present in the static table.
