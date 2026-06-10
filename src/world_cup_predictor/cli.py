@@ -141,6 +141,7 @@ def run_pipeline(
             n_simulations=n_simulations,
             elo_ratings=elo_ratings,
             return_group_tables=True,
+            fixtures_schedule=raw_data.get("schedule_fixtures"),
         )
         result["tournament_simulation"] = full_simulation["tournament_simulation"]
         result["group_tables"] = full_simulation["group_tables"]

@@ -350,12 +350,34 @@ def simulate_group_tables(
     return out
 
 
+def _parse_knockout_bracket(fixtures_schedule: pd.DataFrame) -> dict[int, tuple[int, int]]:
+    """Parse 'Winner match X v Winner match Y' rows into a bracket dependency map.
+
+    Returns {match_num: (home_source_match_num, away_source_match_num)}.
+    """
+    bracket: dict[int, tuple[int, int]] = {}
+    winner_re = re.compile(r"Winner match (\d+) v Winner match (\d+)", re.IGNORECASE)
+    for _, row in fixtures_schedule.iterrows():
+        teams_str = str(row.get("teams", "") or "")
+        m = winner_re.match(teams_str)
+        if not m:
+            continue
+        mn_str = str(row.get("match_number", "")).replace("Match", "").strip()
+        try:
+            match_num = int(mn_str)
+            bracket[match_num] = (int(m.group(1)), int(m.group(2)))
+        except ValueError:
+            pass
+    return bracket
+
+
 def simulate_full_tournament(
     schedule: pd.DataFrame,
     strengths: pd.DataFrame,
     n_simulations: int = 500,
     elo_ratings=None,
     return_group_tables: bool = False,
+    fixtures_schedule: pd.DataFrame | None = None,
 ) -> pd.DataFrame | dict:
     """Simulate full tournament including knockout rounds.
 
@@ -378,6 +400,26 @@ def simulate_full_tournament(
         raise ValueError("No knockout matches found in schedule")
 
     round_order = list(dict.fromkeys(knockout["round_number"]))
+
+    # build bracket tree and match→stage lookup from fixtures if provided
+    bracket: dict[int, tuple[int, int]] = {}
+    match_stage: dict[int, str] = {}
+    if fixtures_schedule is not None:
+        bracket = _parse_knockout_bracket(fixtures_schedule)
+        for _, row in knockout.iterrows():
+            try:
+                mn = int(row["match_number"])
+                rnd = str(row["round_number"])
+                if "16" in rnd:
+                    match_stage[mn] = "Round of 16"
+                elif "Quarter" in rnd:
+                    match_stage[mn] = "Quarter Finals"
+                elif "Semi" in rnd:
+                    match_stage[mn] = "Semi Finals"
+                elif "Final" in rnd:
+                    match_stage[mn] = "Finals"
+            except (ValueError, TypeError, KeyError):
+                pass
 
     # counters for stages
     stages = [
@@ -533,6 +575,7 @@ def simulate_full_tournament(
 
         # initial knockout: process Round of 32 by resolving placeholders
         prev_winners = []
+        match_winners: dict[int, str] = {}
         for rnd in round_order:
             round_matches = knockout[knockout["round_number"] == rnd]
             # Round of 32: resolve slots directly from placeholders
@@ -594,42 +637,67 @@ def simulate_full_tournament(
 
                     winner = resolve_knockout_winner(home, away)
                     prev_winners.append(winner)
+                    try:
+                        match_winners[int(match["match_number"])] = winner
+                    except (ValueError, TypeError, KeyError):
+                        pass
 
             else:
-                # for later rounds, pair previous winners sequentially
-                next_winners = []
-                for i in range(0, len(prev_winners), 2):
-                    try:
-                        home = prev_winners[i]
-                        away = prev_winners[i + 1]
-                    except IndexError:
-                        continue
-                    if home is None or away is None:
-                        continue
+                if bracket:
+                    # skip — handled by the bracket tree after R32
+                    pass
+                else:
+                    # fallback: pair previous winners sequentially
+                    next_winners = []
+                    for i in range(0, len(prev_winners), 2):
+                        try:
+                            home = prev_winners[i]
+                            away = prev_winners[i + 1]
+                        except IndexError:
+                            continue
+                        if home is None or away is None:
+                            continue
 
-                    if "16" in str(rnd):
-                        stage_counts[home]["Round of 16"] += 1
-                        stage_counts[away]["Round of 16"] += 1
-                    elif "Quarter" in str(rnd):
-                        stage_counts[home]["Quarter Finals"] += 1
-                        stage_counts[away]["Quarter Finals"] += 1
-                    elif "Semi" in str(rnd):
-                        stage_counts[home]["Semi Finals"] += 1
-                        stage_counts[away]["Semi Finals"] += 1
-                    elif "Final" in str(rnd):
-                        stage_counts[home]["Finals"] += 1
-                        stage_counts[away]["Finals"] += 1
+                        if "16" in str(rnd):
+                            stage_counts[home]["Round of 16"] += 1
+                            stage_counts[away]["Round of 16"] += 1
+                        elif "Quarter" in str(rnd):
+                            stage_counts[home]["Quarter Finals"] += 1
+                            stage_counts[away]["Quarter Finals"] += 1
+                        elif "Semi" in str(rnd):
+                            stage_counts[home]["Semi Finals"] += 1
+                            stage_counts[away]["Semi Finals"] += 1
+                        elif "Final" in str(rnd):
+                            stage_counts[home]["Finals"] += 1
+                            stage_counts[away]["Finals"] += 1
 
-                    winner = resolve_knockout_winner(home, away)
-                    next_winners.append(winner)
+                        winner = resolve_knockout_winner(home, away)
+                        next_winners.append(winner)
 
-                prev_winners = next_winners
+                    prev_winners = next_winners
 
-        # final winner
-        if prev_winners:
+        # if bracket provided, simulate R16 through final using the official bracket tree
+        champ = None
+        if bracket and match_winners:
+            for match_num in sorted(bracket.keys()):
+                home_src, away_src = bracket[match_num]
+                home = match_winners.get(home_src)
+                away = match_winners.get(away_src)
+                if home is None or away is None:
+                    continue
+                stage = match_stage.get(match_num)
+                if stage:
+                    stage_counts[home][stage] += 1
+                    stage_counts[away][stage] += 1
+                winner = resolve_knockout_winner(home, away)
+                match_winners[match_num] = winner
+            final_match = max(bracket.keys())
+            champ = match_winners.get(final_match)
+        elif prev_winners:
             champ = prev_winners[0]
-            if champ:
-                stage_counts[champ]["Winner"] += 1
+
+        if champ:
+            stage_counts[champ]["Winner"] += 1
 
     # assemble full tournament probabilities
     rows = []
