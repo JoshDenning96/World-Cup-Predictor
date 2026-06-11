@@ -234,7 +234,9 @@ def _build_round_of_32_third_place_assignment_map(
     group_key = "".join(sorted(best_third_groups))
     assignment = ROUND_OF_32_THIRD_PLACE_ASSIGNMENT_MAP.get(group_key)
     if assignment is None:
-        return None
+        # Table doesn't cover this combination (e.g. group A qualifies).
+        # Fall back: assign best 8 third-place teams alphabetically to bracket slots.
+        assignment = sorted(best_third_groups)
 
     return dict(zip(_R32_WINNER_GROUP_ORDER, assignment))
 
@@ -278,12 +280,13 @@ def calculate_match_probabilities(
     strengths: pd.DataFrame,
     elo_ratings=None,
     max_goals: int = 6,
+    home_advantage: float = 0.0,
 ) -> Dict[str, float]:
     """Compute win/draw probabilities for a single match."""
     if elo_ratings is not None:
-        return predict_elo_match_probabilities(home_team, away_team, elo_ratings)
+        return predict_elo_match_probabilities(home_team, away_team, elo_ratings, home_advantage=home_advantage)
 
-    expected_home, expected_away = predict_poisson_scores(home_team, away_team, strengths)
+    expected_home, expected_away = predict_poisson_scores(home_team, away_team, strengths, home_advantage=home_advantage)
     home_probs = np.array([np.exp(-expected_home) * expected_home ** k / math.factorial(k) for k in range(max_goals + 1)])
     away_probs = np.array([np.exp(-expected_away) * expected_away ** k / math.factorial(k) for k in range(max_goals + 1)])
 
@@ -335,6 +338,7 @@ def simulate_group_stage(
     strengths: pd.DataFrame,
     n_simulations: int = 500,
     elo_ratings=None,
+    home_advantage: float = 0.0,
 ) -> pd.DataFrame:
     """Simulate a group stage and estimate advancement probabilities.
 
@@ -362,7 +366,7 @@ def simulate_group_stage(
                 )
                 continue
 
-            sim = simulate_match(home_team, away_team, strengths, n_simulations=1, elo_ratings=elo_ratings)
+            sim = simulate_match(home_team, away_team, strengths, n_simulations=1, elo_ratings=elo_ratings, home_advantage=home_advantage)
             home_goals = int(sim["home_goals"].iloc[0])
             away_goals = int(sim["away_goals"].iloc[0])
             all_results.append(
@@ -396,9 +400,10 @@ def simulate_knockout_match(
     away_team: str,
     strengths: pd.DataFrame,
     n_simulations: int = 500,
+    home_advantage: float = 0.0,
 ) -> pd.DataFrame:
     """Simulate a knockout match and return counts for each possible winner."""
-    sim = simulate_match(home_team, away_team, strengths, n_simulations=n_simulations)
+    sim = simulate_match(home_team, away_team, strengths, n_simulations=n_simulations, home_advantage=home_advantage)
     outcomes = sim.apply(
         lambda row: "home" if row["home_goals"] > row["away_goals"] else "away" if row["away_goals"] > row["home_goals"] else "draw",
         axis=1,
@@ -411,6 +416,8 @@ def simulate_group_tables(
     strengths: pd.DataFrame,
     n_simulations: int = 500,
     elo_ratings=None,
+    actual_results: dict | None = None,
+    home_advantage: float = 0.0,
 ) -> pd.DataFrame:
     """Simulate group stage many times and return predicted group tables.
 
@@ -420,6 +427,9 @@ def simulate_group_tables(
 
     If `elo_ratings` is provided, match outcomes inside each simulation are
     sampled using the Elo model through `simulate_match(..., elo_ratings=elo_ratings)`.
+
+    If `actual_results` is provided (dict keyed by str(match_number)), those
+    matches use the fixed actual scores instead of being simulated.
     """
     if "group" not in schedule.columns:
         raise KeyError("Schedule must include a 'group' column")
@@ -430,7 +440,7 @@ def simulate_group_tables(
     groups = list(pd.unique(schedule["group"]))
     group_teams: Dict[str, list] = {}
     for g in groups:
-        homes = set(schedule.loc[schedule["group"] == g, "home_team"]) 
+        homes = set(schedule.loc[schedule["group"] == g, "home_team"])
         aways = set(schedule.loc[schedule["group"] == g, "away_team"])
         group_teams[g] = sorted(homes.union(aways))
 
@@ -438,6 +448,8 @@ def simulate_group_tables(
     rank_counts = {g: {t: [0] * len(group_teams[g]) for t in group_teams[g]} for g in group_teams}
     pts_sums = {g: {t: 0 for t in group_teams[g]} for g in group_teams}
     gd_sums = {g: {t: 0 for t in group_teams[g]} for g in group_teams}
+
+    _actuals = actual_results or {}
 
     for _ in range(n_simulations):
         all_results = []
@@ -451,9 +463,15 @@ def simulate_group_tables(
                 )
                 continue
 
-            sim = simulate_match(home_team, away_team, strengths, n_simulations=1, elo_ratings=elo_ratings)
-            home_goals = int(sim["home_goals"].iloc[0])
-            away_goals = int(sim["away_goals"].iloc[0])
+            _mn = match.get("match_number")
+            mn_key = str(int(_mn)) if _mn is not None and str(_mn) != "" else ""
+            if mn_key in _actuals:
+                home_goals = int(_actuals[mn_key]["home_goals"])
+                away_goals = int(_actuals[mn_key]["away_goals"])
+            else:
+                sim = simulate_match(home_team, away_team, strengths, n_simulations=1, elo_ratings=elo_ratings, home_advantage=home_advantage)
+                home_goals = int(sim["home_goals"].iloc[0])
+                away_goals = int(sim["away_goals"].iloc[0])
             all_results.append(
                 {
                     "group": match["group"],
@@ -523,12 +541,33 @@ def simulate_group_tables(
     return out
 
 
+def _actual_knockout_winner(mn_key, home, away, actuals, simulate_fn):
+    """Return the winner of a knockout match, using actuals if available."""
+    if mn_key and mn_key in actuals:
+        a = actuals[mn_key]
+        w = str(a.get("winner", ""))
+        if w == "home":
+            return home
+        if w == "away":
+            return away
+        hg = int(a.get("home_goals", 0))
+        ag = int(a.get("away_goals", 0))
+        if hg > ag:
+            return home
+        if ag > hg:
+            return away
+    return simulate_fn(home, away)
+
+
 def simulate_full_tournament(
     schedule: pd.DataFrame,
     strengths: pd.DataFrame,
     n_simulations: int = 500,
     elo_ratings=None,
     return_group_tables: bool = False,
+    actual_results: dict | None = None,
+    home_advantage: float = 0.0,
+    progress_callback=None,
 ) -> pd.DataFrame | dict:
     """Simulate full tournament including knockout rounds.
 
@@ -638,7 +677,7 @@ def simulate_full_tournament(
 
     def resolve_knockout_winner(home: str, away: str) -> str:
         if elo_ratings is not None:
-            probs = predict_elo_match_probabilities(home, away, elo_ratings)
+            probs = predict_elo_match_probabilities(home, away, elo_ratings, home_advantage=home_advantage)
             outcome = np.random.choice(
                 ["home", "draw", "away"],
                 p=[probs["home_win"], probs["draw"], probs["away_win"]],
@@ -647,19 +686,20 @@ def simulate_full_tournament(
                 return home
             if outcome == "away":
                 return away
-            return home if np.random.rand() < probs["home_win"] / (probs["home_win"] + probs["away_win"] + 1e-12) else away
+            # Drawn after 90 mins → penalty shootout is ~50/50
+            return home if np.random.rand() < 0.5 else away
 
-        sim = simulate_match(home, away, strengths, n_simulations=1, elo_ratings=elo_ratings)
+        sim = simulate_match(home, away, strengths, n_simulations=1, elo_ratings=elo_ratings, home_advantage=home_advantage)
         hg = int(sim["home_goals"].iloc[0])
         ag = int(sim["away_goals"].iloc[0])
         if hg == ag:
-            probs = calculate_match_probabilities(home, away, strengths, elo_ratings=elo_ratings)
-            hw = probs["home_win"]
-            aw = probs["away_win"]
-            return home if np.random.rand() < hw / (hw + aw + 1e-12) else away
+            # Drawn after 90 mins → penalty shootout is ~50/50
+            return home if np.random.rand() < 0.5 else away
         return home if hg > ag else away
 
-    for _ in range(n_simulations):
+    _actuals = actual_results or {}
+
+    for _iter in range(n_simulations):
         # simulate matches
         all_results = []
         for _, match in group_sched.iterrows():
@@ -667,13 +707,21 @@ def simulate_full_tournament(
             a = match["away_team"]
             if h not in strengths.index or a not in strengths.index:
                 continue
-            sim = simulate_match(h, a, strengths, n_simulations=1, elo_ratings=elo_ratings)
+            _mn = match.get("match_number")
+            mn_key = str(int(_mn)) if _mn is not None and str(_mn) != "" else ""
+            if mn_key in _actuals:
+                home_score = int(_actuals[mn_key]["home_goals"])
+                away_score = int(_actuals[mn_key]["away_goals"])
+            else:
+                sim = simulate_match(h, a, strengths, n_simulations=1, elo_ratings=elo_ratings, home_advantage=home_advantage)
+                home_score = int(sim["home_goals"].iloc[0])
+                away_score = int(sim["away_goals"].iloc[0])
             all_results.append({
                 "group": match.get("group"),
                 "home_team": h,
                 "away_team": a,
-                "home_score": int(sim["home_goals"].iloc[0]),
-                "away_score": int(sim["away_goals"].iloc[0]),
+                "home_score": home_score,
+                "away_score": away_score,
             })
 
         results_df = pd.DataFrame(all_results)
@@ -751,7 +799,7 @@ def simulate_full_tournament(
                                 return team
                     return None
 
-                for _, match in round_matches.iterrows():
+                for _, match in round_matches.sort_values("match_number").iterrows():
                     h_slot = str(match.get("home_team", "")).strip()
                     a_slot = str(match.get("away_team", "")).strip()
 
@@ -759,19 +807,22 @@ def simulate_full_tournament(
                     away = resolve_r32_third_place(a_slot, h_slot)
 
                     if home is None or away is None:
-                        # cannot resolve; skip match
                         continue
 
                     stage_counts[home]["Round of 32"] += 1
                     stage_counts[away]["Round of 32"] += 1
 
-                    winner = resolve_knockout_winner(home, away)
+                    _mn = match.get("match_number")
+                    mn_key = str(int(_mn)) if _mn is not None and str(_mn) not in ("", "nan") else ""
+                    winner = _actual_knockout_winner(mn_key, home, away, _actuals, resolve_knockout_winner)
                     prev_winners.append(winner)
 
             else:
-                # for later rounds, pair previous winners sequentially
+                # for later rounds, pair previous winners by sequential bracket position
                 next_winners = []
-                for i in range(0, len(prev_winners), 2):
+                rm_sorted = list(round_matches.sort_values("match_number").iterrows())
+                for idx, (_, rm) in enumerate(rm_sorted):
+                    i = idx * 2
                     try:
                         home = prev_winners[i]
                         away = prev_winners[i + 1]
@@ -793,7 +844,9 @@ def simulate_full_tournament(
                         stage_counts[home]["Finals"] += 1
                         stage_counts[away]["Finals"] += 1
 
-                    winner = resolve_knockout_winner(home, away)
+                    _mn = rm.get("match_number")
+                    mn_key = str(int(_mn)) if _mn is not None and str(_mn) not in ("", "nan") else ""
+                    winner = _actual_knockout_winner(mn_key, home, away, _actuals, resolve_knockout_winner)
                     next_winners.append(winner)
 
                 prev_winners = next_winners
@@ -803,6 +856,9 @@ def simulate_full_tournament(
             champ = prev_winners[0]
             if champ:
                 stage_counts[champ]["Winner"] += 1
+
+        if progress_callback is not None:
+            progress_callback(_iter + 1, n_simulations)
 
     # assemble full tournament probabilities
     rows = []
