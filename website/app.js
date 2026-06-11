@@ -427,6 +427,22 @@ async function loadData() {
 
 async function renderBracket(data, count = 32) {
   // Wait for assignment table to load
+  let assignmentTableCache = null;
+  async function loadR32ThirdPlaceAssignments() {
+    if (assignmentTableCache) return assignmentTableCache;
+    try {
+      const response = await fetch('data/r32_third_place_assignments.json');
+      assignmentTableCache = await response.json();
+    } catch (e) {
+      console.error('Failed to load R32 third-place assignments:', e);
+      assignmentTableCache = {};
+    }
+    return assignmentTableCache;
+  }
+  const assignmentTablePromise = loadR32ThirdPlaceAssignments().then(table => {
+    assignmentTableCache = table;
+    return table;
+  });
   await assignmentTablePromise;
 
   const svg = document.getElementById('bracket-svg');
@@ -472,114 +488,6 @@ async function renderBracket(data, count = 32) {
     groupMap[r.group].push(r);
   });
   Object.keys(groupMap).forEach((g) => groupMap[g].sort((a, b) => (a.expected_rank || 99) - (b.expected_rank || 99)));
-
-  let assignmentTableCache = null;
-  async function loadR32ThirdPlaceAssignments() {
-    if (assignmentTableCache) return assignmentTableCache;
-    try {
-      const response = await fetch('data/r32_third_place_assignments.json');
-      assignmentTableCache = await response.json();
-    } catch (e) {
-      console.error('Failed to load R32 third-place assignments:', e);
-      assignmentTableCache = {};
-    }
-    return assignmentTableCache;
-  }
-  // Load assignments and store in cache synchronously
-  const assignmentTablePromise = loadR32ThirdPlaceAssignments().then(table => {
-    assignmentTableCache = table;
-    return table;
-  });
-2 D FGHIJKL 3H 3G 3I 3D 3J 3F 3L 3K
-3 DE GHIJKL 3E 3J 3I 3D 3H 3G 3L 3K
-4 DEF HIJKL 3E 3J 3I 3D 3H 3F 3L 3K
-5 DEFG IJKL 3E 3G 3I 3D 3J 3F 3L 3K
-6 DEFGH JKL 3E 3G 3J 3D 3H 3F 3L 3K
-7 DEFGHI KL 3E 3G 3I 3D 3H 3F 3L 3K
-8 DEFGHIJ L 3E 3G 3J 3D 3H 3F 3L 3I
-9 DEFGHIJK 3E 3G 3J 3D 3H 3F 3I 3K
-10 C FGHIJKL 3H 3G 3I 3C 3J 3F 3L 3K
-11 C E GHIJKL 3E 3J 3I 3C 3H 3G 3L 3K
-12 C EF HIJKL 3E 3J 3I 3C 3H 3F 3L 3K
-13 C EFG IJKL 3E 3G 3I 3C 3J 3F 3L 3K
-14 C EFGH JKL 3E 3G 3J 3C 3H 3F 3L 3K
-15 C EFGHI KL 3E 3G 3I 3C 3H 3F 3L 3K
-16 C EFGHIJ L 3E 3G 3J 3C 3H 3F 3L 3I
-17 C EFGHIJK 3E 3G 3J 3C 3H 3F 3I 3K
-18 CD GHIJKL 3H 3G 3I 3C 3J 3D 3L 3K
-19 CD F HIJKL 3C 3J 3I 3D 3H 3F 3L 3K
-20 CD FG IJKL 3C 3G 3I 3D 3J 3F 3L 3K
-21 CD FGH JKL 3C 3G 3J 3D 3H 3F 3L 3K
-22 CD FGHI KL 3C 3G 3I 3D 3H 3F 3L 3K
-23 CD FGHIJ L 3C 3G 3J 3D 3H 3F 3L 3I
-24 CD FGHIJK 3C 3G 3J 3D 3H 3F 3I 3K
-25 CDE HIJKL 3E 3J 3I 3C 3H 3D 3L 3K
-26 CDE G IJKL 3E 3G 3I 3C 3J 3D 3L 3K
-27 CDE GH JKL 3E 3G 3J 3C 3H 3D 3L 3K
-28 CDE GHI KL 3E 3G 3I 3C 3H 3D 3L 3K
-29 CDE GHIJ L 3E 3G 3J 3C 3H 3D 3L 3I
-30 CDE GHIJK 3E 3G 3J 3C 3H 3D 3I 3K
-31 CDEF IJKL 3C 3J 3E 3D 3I 3F 3L 3K
-32 CDEF H JKL 3C 3J 3E 3D 3H 3F 3L 3K
-33 CDEF HI KL 3C 3E 3I 3D 3H 3F 3L 3K
-34 CDEF HIJ L 3C 3J 3E 3D 3H 3F 3L 3I
-36 CDEFG JKL 3C 3G 3E 3D 3J 3F 3L 3K
-37 CDEFG I KL 3C 3G 3E 3D 3I 3F 3L 3K
-38 CDEFG IJ L 3C 3G 3E 3D 3J 3F 3L 3I
-39 CDEFG IJK 3C 3G 3E 3D 3J 3F 3I 3K
-40 CDEFGH KL 3C 3G 3E 3D 3H 3F 3L 3K
-41 CDEFGH J L 3C 3G 3J 3D 3H 3F 3L 3E
-42 CDEFGH JK 3C 3G 3J 3D 3H 3F 3E 3K
-43 CDEFGHI L 3C 3G 3E 3D 3H 3F 3L 3I
-44 CDEFGHI K 3C 3G 3E 3D 3H 3F 3I 3K
-45 CDEFGHIJ 3C 3G 3J 3D 3H 3F 3E 3I
-46 B FGHIJKL 3H 3J 3B 3F 3I 3G 3L 3K
-47 B E GHIJKL 3E 3J 3I 3B 3H 3G 3L 3K
-48 B EF HIJKL 3E 3J 3B 3F 3I 3H 3L 3K
-49 B EFG IJKL 3E 3J 3B 3F 3I 3G 3L 3K
-50 B EFGH JKL 3E 3G 3J 3B 3H 3F 3L 3K
-51 B EFGHI KL 3E 3G 3B 3F 3I 3H 3L 3K
-52 B EFGHIJ L 3E 3J 3B 3F 3H 3G 3L 3I
-53 B EFGHIJK 3E 3J 3B 3F 3H 3G 3I 3K
-54 B D GHIJKL 3H 3J 3B 3D 3I 3G 3L 3K
-55 B D F HIJKL 3H 3J 3B 3D 3I 3F 3L 3K
-56 B D FG IJKL 3I 3G 3B 3D 3J 3F 3L 3K
-57 B D FGH JKL 3H 3G 3B 3D 3J 3F 3L 3K
-58 B D FGHI KL 3H 3G 3B 3D 3I 3F 3L 3K
-59 B D FGHIJ L 3H 3G 3B 3D 3J 3F 3L 3I
-60 B D FGHIJK 3H 3G 3B 3D 3J 3F 3I 3K
-61 B DE HIJKL 3E 3J 3B 3D 3I 3H 3L 3K
-62 B DE G IJKL 3E 3J 3B 3D 3I 3G 3L 3K
-63 B DE GH JKL 3E 3J 3B 3D 3H 3G 3L 3K
-64 B DE GHI KL 3E 3G 3B 3D 3I 3H 3L 3K
-65 B DE GHIJ L 3E 3J 3B 3D 3H 3G 3L 3I
-66 B DE GHIJK 3E 3G 3B 3D 3H 3G 3I 3K
-67 B DEF IJKL 3E 3J 3B 3D 3I 3F 3L 3K
-68 B DEF H JKL 3E 3J 3B 3D 3H 3F 3L 3K
-69 B DEF HI KL 3E 3I 3B 3D 3H 3F 3L 3K
-70 B DEF HIJ L 3E 3J 3B 3D 3H 3F 3L 3I
-71 B DEF HIJK 3E 3J 3B 3D 3H 3F 3I 3K
-72 B DEFG JKL 3E 3G 3B 3D 3J 3F 3L 3K
-73 B DEFG I KL 3E 3G 3B 3D 3I 3F 3L 3K
-74 B DEFG IJ L 3E 3G 3B 3D 3J 3F 3L 3I
-75 B DEFG IJK 3E 3G 3B 3D 3J 3F 3I 3K
-76 B DEFGH KL 3E 3G 3B 3D 3H 3F 3L 3K
-77 B DEFGH J L 3H 3G 3B 3D 3J 3F 3L 3E
-78 B DEFGH JK 3H 3G 3B 3D 3J 3F 3E 3K
-79 B DEFGHI L 3E 3G 3B 3D 3H 3F 3L 3I
-80 B DEFGHI K 3E 3G 3B 3D 3H 3F 3I 3K
-81 B DEFGHIJ 3H 3G 3B 3D 3J 3F 3E 3I
-82 BC GHIJKL 3H 3J 3B 3C 3I 3G 3L 3K
-83 BC F HIJKL 3H 3J 3B 3C 3I 3F 3L 3K
-84 BC FG IJKL 3I 3G 3B 3C 3J 3F 3L 3K
-85 BC FGH JKL 3H 3G 3B 3C 3J 3F 3L 3K
-86 BC FGHI KL 3H 3G 3B 3C 3I 3F 3L 3K
-87 BC FGHIJ L 3H 3G 3B 3C 3J 3F 3L 3I
-88 BC FGHIJK 3H 3G 3B 3C 3J 3F 3I 3K
-89 BC E HIJKL 3E 3J 3B 3C 3I 3H 3L 3K
-90 BC E G IJKL 3E 3J 3B 3C 3I 3G 3L 3K
-`;
-
   function parseThirdPlaceAssignmentText(assignmentTable) {
     // assignmentTable is already parsed JSON, just return it
     return assignmentTable || {};
