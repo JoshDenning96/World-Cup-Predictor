@@ -1,84 +1,85 @@
 # World Cup 2026 Predictor
 
-A Monte Carlo simulation dashboard for the FIFA World Cup 2026. Run simulations, track how win probabilities shift as the tournament progresses, and update the bracket with real results as matches are played.
+A simulation dashboard for the FIFA World Cup 2026. Run simulations, track how win probabilities shift as the tournament progresses, and update the bracket with real results as matches are played.
 
-## Features
+## What does it do?
 
-- **Full simulation mode** — simulate the entire tournament from scratch using Elo ratings
-- **Actuals + simulation mode** — lock in real results as they happen and simulate forward from the current state
-- **Interactive bracket** — projected bracket with colour-coded win probabilities; green dots indicate positions confirmed by actual results
-- **Simulation history chart** — track how team win probabilities change across simulation runs over time
-- **Group stage tables** — expected standings and finishing probabilities per group
-- **Tournament & advance probability charts** — top contenders ranked by likelihood
+It simulates the World Cup thousands of times and tells you how likely each team is to win. As real matches are played, you can enter the results and re-run the simulation — the probabilities update to reflect what's actually happened.
 
-## How it works
+## Setting it up
 
-Match outcomes are determined using FIFA Elo ratings. The rating difference between two teams sets the win/draw/loss probabilities for each simulated match. Knockout draws are resolved as a 50/50 coin flip (simulating a penalty shootout). A −20 Elo point adjustment is applied by default to all qualified CONMEBOL teams.
+You'll need to do this once. It takes about 5 minutes.
 
-The simulation is run N times (user-selected) and probabilities reflect how often each outcome occurred — not a single prediction.
+### Step 1 — Check you have Python installed
 
-## Getting started
+Open **Terminal** (on Mac, press `Cmd + Space` and type "Terminal") and type:
 
-**1. Install dependencies**
 ```bash
-pip install -r requirements.txt
+python3 --version
 ```
 
-**2. Start the server**
+If you see something like `Python 3.11.0` you're good. If you get an error, download Python from [python.org](https://www.python.org/downloads/) and install it, then come back here.
+
+### Step 2 — Download the project
+
+Still in Terminal, run this to download the project to your computer:
+
+```bash
+git clone https://github.com/JoshDenning96/World-Cup-Predictor
+```
+
+Then move into the project folder:
+
+```bash
+cd World-Cup-Predictor
+```
+
+### Step 3 — Install the required packages
+
+```bash
+pip3 install -r requirements.txt
+```
+
+This downloads a few Python libraries the project needs. It only takes a minute.
+
+### Step 4 — Start the server
+
 ```bash
 python3 server.py
 ```
 
-**3. Open the dashboard**
+You should see something like `Serving website at http://127.0.0.1:8000`. Leave this Terminal window open — it needs to keep running.
 
-Navigate to [http://127.0.0.1:8000](http://127.0.0.1:8000) in your browser.
+### Step 5 — Open the dashboard
 
-## Entering actual results
+Open your browser and go to:
 
-Switch to **Actuals + simulation** mode using the dropdown in the dashboard. The actuals panel shows tabs for each group (A–L) and each knockout round (R32, R16, QF, SF, Final).
+**[http://127.0.0.1:8000](http://127.0.0.1:8000)**
 
-- **Group stage** — enter home and away scores for each match
-- **Knockout rounds** — click the winning team's button (score doesn't matter, only the winner advances)
+That's it! You should see the dashboard.
 
-Once results are entered, click **Run simulation** to simulate the tournament forward from the current state. Bracket positions confirmed by actual results are shown with a green dot.
+---
 
-To clear all entered results, use the **Reset all results** button in the actuals panel.
+> **Next time** you want to use it, you only need Step 4 and 5 — just open Terminal, navigate to the folder (`cd World-Cup-Predictor`) and run `python3 server.py`.
 
-## Project structure
+---
 
-```
-.
-├── server.py                        # Local web server + simulation API
-├── src/world_cup_predictor/
-│   ├── simulator.py                 # Monte Carlo tournament simulation
-│   ├── stat_models.py               # Elo match probability model
-│   └── cli.py                       # Command-line interface
-├── website/
-│   ├── index.html                   # Dashboard UI
-│   ├── app.js                       # Frontend logic
-│   ├── styles.css                   # Styles
-│   └── data/
-│       ├── master_simulation.json   # Latest simulation (loaded on page start)
-│       ├── actual_results.json      # Persisted actual match results
-│       └── saved_simulations/       # Simulation history (generated at runtime)
-├── data/raw/                        # FIFA 2026 schedule and fixture data
-└── tests/                           # Test suite
-```
+## How to use it
 
-## CLI
+**Running a simulation:**
+Click **Run simulation** at the top of the page. You can choose how many simulations to run — more simulations = more accurate probabilities but takes a bit longer. 200–500 is a good balance.
 
-Run the simulation directly from the command line:
+**Entering real results:**
+1. Switch the mode dropdown from **Full simulation** to **Actuals + simulation**
+2. An actuals panel will appear — use the tabs to navigate between groups (A–L) and knockout rounds (R32, R16, etc.)
+3. Enter scores for group matches, or click the winning team for knockout matches
+4. Click **Run simulation** to re-simulate the tournament from the current state
 
-```bash
-# Group stage only
-PYTHONPATH=src python -m world_cup_predictor.cli --simulations 200
+Bracket positions confirmed by actual results are shown with a green dot.
 
-# Full tournament
-PYTHONPATH=src python -m world_cup_predictor.cli --simulations 1000 --full-tournament
+## How it works
 
-# With CONMEBOL adjustment
-PYTHONPATH=src python -m world_cup_predictor.cli --simulations 1000 --full-tournament --conmebol-offset -20
-```
+Match outcomes are determined using FIFA Elo ratings. The rating difference between two teams sets the win/draw/loss probabilities for each simulated match. Knockout draws are resolved as a 50/50 coin flip (simulating a penalty shootout). A −20 Elo point adjustment is applied by default to all qualified CONMEBOL teams.
 
 ## License
 
