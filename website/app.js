@@ -747,7 +747,7 @@ function renderChart(canvasId, labels, values, label, backgroundColor) {
         },
         y: {
           ticks: {
-            callback: (value) => `${value * 100}%`,
+            callback: (value) => `${(value * 100).toFixed(0)}%`,
             color: "#dbeafe",
           },
           grid: { color: "rgba(255,255,255,0.05)" },
@@ -953,7 +953,7 @@ function clearProgress() {
 async function runSimulation(simulations) {
   const countInput = document.getElementById("simulation-count");
   const simulationCount = countInput ? Number.parseInt(countInput.value, 10) : simulations;
-  const conmebolOffset = -20;
+  const conmebolOffset = -45;
 
   const modeLabel = simulationMode === 'actuals' ? ' (actuals + simulation)' : '';
   setSimulationStatus(`Running ${simulationCount} simulations${modeLabel}…`);

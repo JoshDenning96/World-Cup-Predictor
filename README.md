@@ -105,7 +105,7 @@ Bracket positions confirmed by actual results are shown with a green dot.
 
 ## How it works
 
-Match outcomes are determined using FIFA Elo ratings. The rating difference between two teams sets the win/draw/loss probabilities for each simulated match. Knockout draws are resolved as a 50/50 coin flip (simulating a penalty shootout). A −20 Elo point adjustment is applied by default to all qualified CONMEBOL teams.
+Match outcomes are determined using FIFA Elo ratings. The rating difference between two teams sets the win/draw/loss probabilities for each simulated match. Knockout draws are resolved as a 50/50 coin flip (simulating a penalty shootout). A −45 Elo point adjustment is applied by default to all qualified CONMEBOL teams.
 
 ## License
 
