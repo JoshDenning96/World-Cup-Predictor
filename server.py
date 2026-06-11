@@ -22,7 +22,7 @@ UTC_SCHEDULE_FILE = RAW_DIR / "fifa-world-cup-2026-UTC.csv"
 ACTUAL_RESULTS_FILE = WEB_DIR / "data" / "actual_results.json"
 
 # Default CONMEBOL Elo offset applied by the website server
-DEFAULT_CONMEBOL_OFFSET = -20.0
+DEFAULT_CONMEBOL_OFFSET = -45.0
 
 sys.path.insert(0, str(SRC_DIR))
 
