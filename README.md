@@ -34,7 +34,7 @@ If you see something like `Python 3.11.0` you're good. If you get an error, down
 
 ### Step 3 — Download the project
 
-Run this to download the project to your computer:
+Run this to download the project to your computer (it will automatically create a `World-Cup-Predictor` folder):
 
 ```bash
 git clone https://github.com/JoshDenning96/World-Cup-Predictor
@@ -42,7 +42,7 @@ git clone https://github.com/JoshDenning96/World-Cup-Predictor
 
 If you get a "git not found" error on Windows, download Git from [git-scm.com](https://git-scm.com/download/win), install it, then open a fresh Command Prompt and try again.
 
-Then move into the project folder:
+Then move into the newly created folder:
 
 ```bash
 cd World-Cup-Predictor
