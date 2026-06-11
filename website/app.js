@@ -6,11 +6,27 @@ let state = {};
 // Columns per the FIFA 2026 third-place table header: 1A, 1B, 1D, 1E, 1G, 1I, 1K, 1L
 const _R32_WINNER_GROUP_ORDER = ['A', 'B', 'D', 'E', 'G', 'I', 'K', 'L'];
 
-// Official 2026 FIFA WC bracket order for the 16 R32 match numbers.
-// Consecutive pairs feed the same R16 match:
-//   (73,76)→R16#89, (74,75)→R16#90, (77,80)→R16#91, (78,79)→R16#92  [left half]
-//   (83,86)→R16#93, (84,87)→R16#94, (81,82)→R16#95, (85,88)→R16#96  [right half]
-const _R32_BRACKET_ORDER = [73, 76, 74, 75, 77, 80, 78, 79, 83, 86, 84, 87, 81, 82, 85, 88];
+// Derive the visual R32 bracket order (left half then right half) by traversing the
+// knockout_schedule tree from the Final down to each R32 leaf.
+function buildBracketOrder(schedule) {
+  const byMatch = {};
+  schedule.forEach((m) => { byMatch[m.match_number] = m; });
+
+  const parseFeeder = (s) => { const m = /^W(\d+)$/.exec(String(s)); return m ? Number(m[1]) : null; };
+
+  function leavesOf(matchNum) {
+    const match = byMatch[matchNum];
+    if (!match || match.round === 'Round of 32') return [matchNum];
+    const h = parseFeeder(match.home), a = parseFeeder(match.away);
+    return [...(h ? leavesOf(h) : []), ...(a ? leavesOf(a) : [])];
+  }
+
+  const finalMatch = schedule.find((m) => m.round === 'Finals');
+  if (!finalMatch) return null;
+  const lsf = parseFeeder(finalMatch.home), rsf = parseFeeder(finalMatch.away);
+  if (!lsf || !rsf) return null;
+  return [...leavesOf(lsf), ...leavesOf(rsf)];
+}
 
 function replaceElement(el) {
   if (!el || !el.parentNode) return el;
@@ -750,10 +766,12 @@ async function renderBracket(data, count = 32) {
 
   const viewW = 1700;
   // Re-order r32Matches to follow the official bracket path so R16 pairings are correct.
-  const matchById = Object.fromEntries(r32Matches.map((m) => [m.id, m]));
-  const ordered = _R32_BRACKET_ORDER.map((id) => matchById[id]).filter(Boolean);
-  // Fall back to original order if the schedule doesn't contain all expected match numbers.
-  if (ordered.length === 16) r32Matches = ordered;
+  const bracketOrder = buildBracketOrder(data.knockout_schedule || []);
+  if (bracketOrder) {
+    const matchById = Object.fromEntries(r32Matches.map((m) => [m.id, m]));
+    const ordered = bracketOrder.map((id) => matchById[id]).filter(Boolean);
+    if (ordered.length === 16) r32Matches = ordered;
+  }
 
   const leftR32 = [];
   const rightR32 = [];

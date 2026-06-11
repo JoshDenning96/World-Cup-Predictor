@@ -17,7 +17,7 @@ SOURCE_FILES = {
     "group_probabilities": "group_probabilities.csv",
 }
 
-SCHEDULE_FILE = ROOT / "data" / "raw" / "fifa-world-cup-2026-UTC.csv"
+FIXTURES_FILE = ROOT / "data" / "raw" / "FIFA2026_schedule_Fixtures.csv"
 
 
 def parse_value(value: str) -> Any:
@@ -41,33 +41,91 @@ def load_csv(path: Path) -> list[dict[str, Any]]:
     return rows
 
 
+def _parse_fixture_slot(s: str) -> str:
+    """Convert a human-readable team slot to a bracket code.
+
+    Examples:
+      'Group A runners-up'            -> '2A'
+      'Group E winners'               -> '1E'
+      'Group A/B/C/D/F third place'   -> '3ABCDF'
+      'Winner match 74'               -> 'W74'
+      'Runner-up match 101'           -> 'RU101'
+    """
+    import re
+    s = s.strip()
+    m = re.match(r"Group ([A-L])\s+runners[-\s]*up", s, re.IGNORECASE)
+    if m:
+        return f"2{m.group(1).upper()}"
+    m = re.match(r"Group ([A-L])\s+winners?", s, re.IGNORECASE)
+    if m:
+        return f"1{m.group(1).upper()}"
+    m = re.match(r"Group ([A-L/]+)\s+third\s+place", s, re.IGNORECASE)
+    if m:
+        return "3" + m.group(1).upper().replace("/", "")
+    m = re.match(r"Winner\s+match\s+(\d+)", s, re.IGNORECASE)
+    if m:
+        return f"W{m.group(1)}"
+    m = re.match(r"Runner[-\s]*up\s+match\s+(\d+)", s, re.IGNORECASE)
+    if m:
+        return f"RU{m.group(1)}"
+    return s
+
+
+def _round_name(match_number: int) -> str:
+    if 73 <= match_number <= 88:
+        return "Round of 32"
+    if 89 <= match_number <= 96:
+        return "Round of 16"
+    if 97 <= match_number <= 100:
+        return "Quarter Finals"
+    if 101 <= match_number <= 102:
+        return "Semi Finals"
+    if match_number == 104:
+        return "Finals"
+    return ""
+
+
 def load_knockout_schedule(path: Path) -> list[dict[str, Any]]:
+    """Load the full knockout bracket from the FIFA2026_schedule_Fixtures.csv file.
+
+    Produces bracket-code slots for R32 (e.g. '1E', '3ABCDF') and feeder
+    references for later rounds (e.g. 'W74').  Match 103 (third-place play-off)
+    is omitted intentionally.
+    """
+    import re
     if not path.exists():
         return []
 
+    rows: list[dict[str, Any]] = []
     with path.open(newline="", encoding="utf-8") as handle:
         reader = csv.DictReader(handle)
-        rows = []
         for row in reader:
-            round_name = str(row.get("Round Number", "") or "").strip()
-            if not round_name.startswith("Round of") and round_name != "Finals":
+            mn_raw = str(row.get("match_number", "") or "").strip()
+            m = re.match(r"Match\s+(\d+)", mn_raw, re.IGNORECASE)
+            if not m:
                 continue
-            match_number = row.get("Match Number", "")
-            try:
-                match_number = int(match_number)
-            except (TypeError, ValueError):
-                match_number = None
+            match_number = int(m.group(1))
+            round_name = _round_name(match_number)
+            if not round_name:
+                continue  # group stage or third-place play-off
 
-            rows.append(
-                {
-                    "match_number": match_number,
-                    "round": round_name,
-                    "date": str(row.get("Date", "") or "").strip(),
-                    "location": str(row.get("Location", "") or "").strip(),
-                    "home": str(row.get("Home Team", "") or "").strip(),
-                    "away": str(row.get("Away Team", "") or "").strip(),
-                }
-            )
+            teams = str(row.get("teams", "") or "").strip()
+            parts = re.split(r"\s+v\s+", teams, maxsplit=1)
+            if len(parts) != 2:
+                continue
+            home = _parse_fixture_slot(parts[0])
+            away = _parse_fixture_slot(parts[1])
+
+            rows.append({
+                "match_number": match_number,
+                "round": round_name,
+                "home": home,
+                "away": away,
+                "location": str(row.get("stadium", "") or "").strip(),
+                "date": str(row.get("date", "") or "").strip(),
+            })
+
+    rows.sort(key=lambda r: r["match_number"])
     return rows
 
 
@@ -122,7 +180,7 @@ def export_json() -> None:
     else:
         output = {key: load_csv(CSV_DIR / filename) for key, filename in SOURCE_FILES.items()}
 
-    output["knockout_schedule"] = load_knockout_schedule(SCHEDULE_FILE)
+    output["knockout_schedule"] = load_knockout_schedule(FIXTURES_FILE)
 
     OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)
     OUTPUT_PATH.write_text(json.dumps(output, indent=2), encoding="utf-8")
