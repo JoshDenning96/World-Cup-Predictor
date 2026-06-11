@@ -157,18 +157,19 @@ function computeActualGroupStandings() {
     const ar = actualResultsCache[String(m.match_number)];
     if (!ar) return;
     const g = m.group;
-    [m.home_team, m.away_team].forEach((t) => {
+    const home = toSimName(m.home_team), away = toSimName(m.away_team);
+    [home, away].forEach((t) => {
       if (!pts[g]) { pts[g] = {}; gf[g] = {}; ga[g] = {}; }
       pts[g][t] = pts[g][t] || 0;
       gf[g][t] = gf[g][t] || 0;
       ga[g][t] = ga[g][t] || 0;
     });
     const hg = ar.home_goals, ag = ar.away_goals;
-    gf[g][m.home_team] += hg; ga[g][m.home_team] += ag;
-    gf[g][m.away_team] += ag; ga[g][m.away_team] += hg;
-    if (hg > ag) pts[g][m.home_team] += 3;
-    else if (ag > hg) pts[g][m.away_team] += 3;
-    else { pts[g][m.home_team] += 1; pts[g][m.away_team] += 1; }
+    gf[g][home] += hg; ga[g][home] += ag;
+    gf[g][away] += ag; ga[g][away] += hg;
+    if (hg > ag) pts[g][home] += 3;
+    else if (ag > hg) pts[g][away] += 3;
+    else { pts[g][home] += 1; pts[g][away] += 1; }
   });
   const result = {};
   Object.keys(pts).forEach((g) => {
@@ -196,18 +197,19 @@ function computeThirdPlaceQualifiers() {
   const groupStats = {};
   groupScheduleCache.forEach((m) => {
     const g = m.group.replace(/^Group\s+/i, '').trim();
+    const home = toSimName(m.home_team), away = toSimName(m.away_team);
     if (!groupStats[g]) groupStats[g] = {};
-    [m.home_team, m.away_team].forEach((t) => {
+    [home, away].forEach((t) => {
       if (!groupStats[g][t]) groupStats[g][t] = { pts: 0, gf: 0, ga: 0 };
     });
     const ar = actualResultsCache[String(m.match_number)];
     if (!ar) return;
     const hg = Number(ar.home_goals), ag = Number(ar.away_goals);
-    groupStats[g][m.home_team].gf += hg; groupStats[g][m.home_team].ga += ag;
-    groupStats[g][m.away_team].gf += ag; groupStats[g][m.away_team].ga += hg;
-    if (hg > ag) groupStats[g][m.home_team].pts += 3;
-    else if (ag > hg) groupStats[g][m.away_team].pts += 3;
-    else { groupStats[g][m.home_team].pts += 1; groupStats[g][m.away_team].pts += 1; }
+    groupStats[g][home].gf += hg; groupStats[g][home].ga += ag;
+    groupStats[g][away].gf += ag; groupStats[g][away].ga += hg;
+    if (hg > ag) groupStats[g][home].pts += 3;
+    else if (ag > hg) groupStats[g][away].pts += 3;
+    else { groupStats[g][home].pts += 1; groupStats[g][away].pts += 1; }
   });
 
   // Get 3rd-place team per group — only for groups that have at least one actual result.
@@ -1052,14 +1054,30 @@ async function renderBracket(data, count = 32) {
 
   // Map team display names to ISO country codes for emoji flags
   const teamIsoMap = {
-    'Mexico': 'MX', 'Czech Republic': 'CZ', 'Switzerland': 'CH', 'Canada': 'CA',
-    'Brazil': 'BR', 'Scotland': 'GB', 'Turkey': 'TR', 'United States': 'US',
-    'Germany': 'DE', 'Ecuador': 'EC', 'Netherlands': 'NL', 'Japan': 'JP',
-    'Belgium': 'BE', 'Iran': 'IR', 'Spain': 'ES', 'Uruguay': 'UY',
-    'France': 'FR', 'Norway': 'NO', 'Argentina': 'AR', 'Algeria': 'DZ',
-    'Colombia': 'CO', 'Portugal': 'PT', 'England': 'GB', 'Croatia': 'HR',
-    'Cape Verde': 'CV', 'Bosnia and Herzegovina': 'BA', 'Ghana': 'GH', 'Haiti': 'HT',
-    'Iraq': 'IQ', 'Austria': 'AT', "Cote d'Ivoire": 'CI', 'Uzbekistan': 'UZ',
+    // Group A
+    'Mexico': 'MX', 'Czech Republic': 'CZ', 'South Korea': 'KR', 'South Africa': 'ZA',
+    // Group B
+    'Switzerland': 'CH', 'Canada': 'CA', 'Bosnia and Herzegovina': 'BA', 'Qatar': 'QA',
+    // Group C
+    'Brazil': 'BR', 'Morocco': 'MA', 'Scotland': 'GB', 'Haiti': 'HT',
+    // Group D
+    'Turkey': 'TR', 'United States': 'US', 'Australia': 'AU', 'Paraguay': 'PY',
+    // Group E
+    'Germany': 'DE', 'Ecuador': 'EC', "Cote d'Ivoire": 'CI', 'Curaçao': 'CW',
+    // Group F
+    'Netherlands': 'NL', 'Japan': 'JP', 'Sweden': 'SE', 'Tunisia': 'TN',
+    // Group G
+    'Belgium': 'BE', 'Iran': 'IR', 'Egypt': 'EG', 'New Zealand': 'NZ',
+    // Group H
+    'Spain': 'ES', 'Uruguay': 'UY', 'Saudi Arabia': 'SA', 'Cape Verde': 'CV',
+    // Group I
+    'France': 'FR', 'Norway': 'NO', 'Senegal': 'SN', 'Iraq': 'IQ',
+    // Group J
+    'Argentina': 'AR', 'Austria': 'AT', 'Algeria': 'DZ', 'Jordan': 'JO',
+    // Group K
+    'Portugal': 'PT', 'Colombia': 'CO', 'DR Congo': 'CD', 'Uzbekistan': 'UZ',
+    // Group L
+    'England': 'GB', 'Croatia': 'HR', 'Ghana': 'GH', 'Panama': 'PA',
   };
 
   function isoToEmoji(cc) {
