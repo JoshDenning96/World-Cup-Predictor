@@ -97,6 +97,7 @@ def run_pipeline(
     run_full_tournament: bool = False,
     conmebol_offset: float = 0.0,
     actual_results: dict | None = None,
+    progress_callback=None,
 ) -> dict:
     raw_dir = Path(raw_dir)
     raw_data = load_and_prepare_raw(raw_dir)
@@ -143,6 +144,7 @@ def run_pipeline(
             elo_ratings=elo_ratings,
             return_group_tables=True,
             actual_results=actual_results,
+            progress_callback=progress_callback,
         )
         result["tournament_simulation"] = full_simulation["tournament_simulation"]
         result["group_tables"] = full_simulation["group_tables"]

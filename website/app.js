@@ -3,10 +3,12 @@ const GROUP_SCHEDULE_URL = "data/group_schedule.json";
 const API_RUN_URL = "/api/run_simulation";
 const API_SAVE_ACTUAL_URL = "/api/save_actual";
 const API_ACTUAL_RESULTS_URL = "/api/actual_results";
+const API_HISTORY_URL = "/api/simulation_history";
 let state = {};
 let simulationMode = 'full'; // 'full' | 'actuals'
 let actualResultsCache = {}; // keyed by String(match_number)
 let groupScheduleCache = []; // loaded once on startup
+let _actualsActiveTab = 'Group A';
 
 // FIFA/schedule names → simulation dataset names.
 // The group schedule uses official FIFA names; the simulation uses its own variants.
@@ -58,9 +60,9 @@ function replaceElement(el) {
 
 function setSimulationStatus(text) {
   const status = document.getElementById("simulation-status");
-  if (status) {
-    status.textContent = text;
-  }
+  if (status) status.textContent = text;
+  const actualsStatus = document.getElementById("actuals-sim-status");
+  if (actualsStatus) actualsStatus.textContent = text;
 }
 
 const ACTUALS_STORAGE_KEY = 'wc2026_actual_results';
@@ -377,87 +379,125 @@ function buildKnockoutResolution() {
 
 function matchRow(mn, homeLabel, awayLabel, dateStr, isKnockout) {
   const saved = actualResultsCache[String(mn)];
+  const inputStyle = 'width:36px;text-align:center;padding:2px 4px;border-radius:4px;border:1px solid rgba(255,255,255,0.15);background:rgba(15,23,42,0.8);color:#f8fafc;font-size:12px;';
+
+  if (isKnockout) {
+    const winnerVal = saved ? (saved.winner || (saved.home_goals > saved.away_goals ? 'home' : saved.away_goals > saved.home_goals ? 'away' : '')) : '';
+    const homeActive = winnerVal === 'home';
+    const awayActive = winnerVal === 'away';
+    const btnBase = 'padding:4px 10px;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;border:1px solid;transition:background 0.15s;';
+    const homeBtn = `<button type="button" class="ko-winner-btn" data-side="home" style="${btnBase}${homeActive ? 'background:rgba(74,222,128,0.2);border-color:rgba(74,222,128,0.5);color:#4ade80;' : 'background:rgba(255,255,255,0.04);border-color:rgba(255,255,255,0.1);color:#94a3b8;'}">${homeLabel}</button>`;
+    const awayBtn = `<button type="button" class="ko-winner-btn" data-side="away" style="${btnBase}${awayActive ? 'background:rgba(74,222,128,0.2);border-color:rgba(74,222,128,0.5);color:#4ade80;' : 'background:rgba(255,255,255,0.04);border-color:rgba(255,255,255,0.1);color:#94a3b8;'}">${awayLabel}</button>`;
+    const tick = winnerVal ? '✓' : '';
+    return `<tr data-match-number="${mn}" data-knockout="1" style="${winnerVal ? 'background:rgba(74,222,128,0.04);' : ''}">
+      <td style="padding:6px 6px;color:#64748b;font-size:11px;white-space:nowrap;">${dateStr}</td>
+      <td colspan="3" style="padding:6px 8px;">
+        <div style="display:flex;align-items:center;gap:10px;">
+          ${homeBtn}
+          <span style="color:#475569;font-size:11px;">vs</span>
+          ${awayBtn}
+        </div>
+      </td>
+      <td style="padding:6px 6px;text-align:center;font-size:13px;color:#4ade80;">${tick}</td>
+    </tr>`;
+  }
+
   const hVal = saved != null ? saved.home_goals : '';
   const aVal = saved != null ? saved.away_goals : '';
-  const winnerVal = saved ? (saved.winner || '') : '';
   const bg = saved ? 'rgba(74,222,128,0.06)' : '';
   const tick = saved ? '✓' : '';
-  const inputStyle = 'width:36px;text-align:center;padding:2px 4px;border-radius:4px;border:1px solid rgba(255,255,255,0.15);background:rgba(15,23,42,0.8);color:#f8fafc;font-size:12px;';
-  const selectStyle = 'padding:2px 4px;border-radius:4px;border:1px solid rgba(255,255,255,0.15);background:rgba(15,23,42,0.8);color:#f8fafc;font-size:11px;margin-left:6px;';
-  const winnerSelect = isKnockout ? `
-    <select class="actual-winner" style="${selectStyle}">
-      <option value="" ${winnerVal === '' ? 'selected' : ''}>Winner…</option>
-      <option value="home" ${winnerVal === 'home' ? 'selected' : ''}>${homeLabel}</option>
-      <option value="away" ${winnerVal === 'away' ? 'selected' : ''}>${awayLabel}</option>
-    </select>` : '';
-  return `<tr data-match-number="${mn}" data-knockout="${isKnockout ? '1' : '0'}" style="background:${bg};">
+  return `<tr data-match-number="${mn}" data-knockout="0" style="background:${bg};">
     <td style="padding:4px 6px;color:#64748b;font-size:11px;white-space:nowrap;">${dateStr}</td>
     <td style="padding:4px 6px;text-align:right;font-weight:600;font-size:12px;max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${homeLabel}">${homeLabel}</td>
     <td style="padding:4px 8px;white-space:nowrap;text-align:center;">
       <input class="actual-home-goals" type="number" min="0" max="20" value="${hVal}" placeholder="–" style="${inputStyle}" />
       <span style="margin:0 4px;color:#64748b;">:</span>
       <input class="actual-away-goals" type="number" min="0" max="20" value="${aVal}" placeholder="–" style="${inputStyle}" />
-      ${winnerSelect}
     </td>
     <td style="padding:4px 6px;font-weight:600;font-size:12px;max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${awayLabel}">${awayLabel}</td>
     <td style="padding:4px 6px;text-align:center;font-size:13px;color:#4ade80;" class="actual-indicator">${tick}</td>
   </tr>`;
 }
 
-function buildActualsPanel(groupSchedule) {
+const KO_ROUND_ORDER = ['Round of 32', 'Round of 16', 'Quarter Finals', 'Semi Finals', 'Finals'];
+const KO_ROUND_LABEL = { 'Round of 32': 'R32', 'Round of 16': 'R16', 'Quarter Finals': 'QF', 'Semi Finals': 'SF', 'Finals': 'Final' };
+
+function _actualsTabCounts() {
+  const counts = {};
+  (groupScheduleCache || []).forEach((m) => {
+    const g = m.group || 'Unknown';
+    if (!counts[g]) counts[g] = { total: 0, entered: 0 };
+    counts[g].total++;
+    if (actualResultsCache[String(m.match_number)]) counts[g].entered++;
+  });
+  const ko = state.knockout_schedule || [];
+  ko.forEach((m) => {
+    const r = m.round;
+    if (!counts[r]) counts[r] = { total: 0, entered: 0 };
+    counts[r].total++;
+    if (actualResultsCache[String(m.match_number)]) counts[r].entered++;
+  });
+  return counts;
+}
+
+function renderActualsTabs() {
+  const bar = document.getElementById('actuals-tabs-bar');
+  if (!bar) return;
+  const counts = _actualsTabCounts();
+  const groups = Object.keys(counts).filter(k => !KO_ROUND_ORDER.includes(k)).sort();
+  const koRounds = KO_ROUND_ORDER.filter(r => counts[r]);
+  const tabs = [...groups, ...koRounds];
+  if (!tabs.includes(_actualsActiveTab)) _actualsActiveTab = tabs[0] || 'Group A';
+
+  bar.innerHTML = tabs.map((tab) => {
+    const c = counts[tab] || { total: 0, entered: 0 };
+    const isActive = tab === _actualsActiveTab;
+    const allDone = c.total > 0 && c.entered === c.total;
+    const label = KO_ROUND_LABEL[tab] ?? tab.replace('Group ', '');
+    const badge = c.total > 0
+      ? `<span style="display:inline-block;margin-left:4px;font-size:9px;padding:0 4px;border-radius:8px;background:${allDone ? 'rgba(74,222,128,0.25)' : 'rgba(255,255,255,0.08)'};color:${allDone ? '#4ade80' : '#94a3b8'};">${c.entered}/${c.total}</span>`
+      : '';
+    const activeStyle = isActive
+      ? 'background:rgba(124,58,237,0.35);border-color:rgba(167,139,250,0.6);color:#e0d9ff;'
+      : 'background:rgba(255,255,255,0.04);border-color:rgba(255,255,255,0.1);color:#94a3b8;';
+    return `<button type="button" data-tab="${tab}" style="padding:5px 10px;border-radius:7px;border:1px solid;font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap;${activeStyle}">${label}${badge}</button>`;
+  }).join('');
+
+  bar.querySelectorAll('button[data-tab]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      _actualsActiveTab = btn.dataset.tab;
+      rebuildActualsPanel();
+    });
+  });
+}
+
+function buildActualsPanel(groupSchedule, activeTab) {
   if (!groupSchedule || groupSchedule.length === 0) {
     return '<p style="color:#94a3b8;font-size:13px;">Group schedule not available. Run a simulation to load it.</p>';
   }
 
-  // Group stage
-  const byGroup = {};
-  groupSchedule.forEach((m) => {
-    const g = m.group || 'Unknown';
-    if (!byGroup[g]) byGroup[g] = [];
-    byGroup[g].push(m);
-  });
-  const groupHtml = Object.keys(byGroup).sort().map((g) => {
-    const rows = byGroup[g].map((m) => {
-      const dateStr = m.date ? m.date.split(' ')[0] : '';
-      return matchRow(m.match_number, m.home_team, m.away_team, dateStr, false);
-    }).join('');
-    return `<div style="margin-bottom:16px;">
-      <div style="font-weight:700;font-size:13px;color:#a78bfa;margin-bottom:6px;letter-spacing:0.05em;">${g}</div>
-      <table style="width:100%;border-collapse:collapse;"><tbody>${rows}</tbody></table>
-    </div>`;
-  }).join('');
-
-  // Knockout stage
-  const knockoutSchedule = state.knockout_schedule || [];
-  let knockoutHtml = '';
-  if (knockoutSchedule.length > 0) {
+  if (KO_ROUND_ORDER.includes(activeTab)) {
+    const knockoutSchedule = state.knockout_schedule || [];
+    if (!knockoutSchedule.length) return '<p style="color:#94a3b8;font-size:13px;">Knockout schedule not yet available.</p>';
     const resolved = buildKnockoutResolution();
-    const roundOrder = ['Round of 32', 'Round of 16', 'Quarter Finals', 'Semi Finals', 'Finals'];
-    const byRound = {};
-    knockoutSchedule.forEach((m) => {
-      if (!byRound[m.round]) byRound[m.round] = [];
-      byRound[m.round].push(m);
-    });
-    const koHtml = roundOrder.filter((r) => byRound[r]).map((r) => {
-      const rows = byRound[r].map((m) => {
-        const res = resolved[String(m.match_number)] || {};
-        const homeLabel = res.home_team || m.home;
-        const awayLabel = res.away_team || m.away;
-        const dateStr = m.date ? m.date.split(' ')[0] : '';
-        return matchRow(m.match_number, homeLabel, awayLabel, dateStr, true);
-      }).join('');
-      return `<div style="margin-bottom:16px;">
-        <div style="font-weight:700;font-size:13px;color:#7dd3fc;margin-bottom:6px;letter-spacing:0.05em;">${r}</div>
-        <table style="width:100%;border-collapse:collapse;"><tbody>${rows}</tbody></table>
-      </div>`;
+    const matches = knockoutSchedule.filter(m => m.round === activeTab);
+    if (!matches.length) return '<p style="color:#94a3b8;font-size:13px;">No matches found for this round.</p>';
+    const rows = matches.map((m) => {
+      const res = resolved[String(m.match_number)] || {};
+      const dateStr = m.date ? m.date.split(' ')[0] : '';
+      return matchRow(m.match_number, res.home_team || m.home, res.away_team || m.away, dateStr, true);
     }).join('');
-    knockoutHtml = `<div style="margin-top:20px;padding-top:16px;border-top:1px solid rgba(255,255,255,0.08);">
-      <div style="font-weight:700;font-size:14px;color:#c7d2fe;margin-bottom:12px;">Knockout rounds</div>
-      ${koHtml}
-    </div>`;
+    return `<table style="width:100%;border-collapse:collapse;"><tbody>${rows}</tbody></table>`;
   }
 
-  return groupHtml + knockoutHtml;
+  // Group tab
+  const matches = groupSchedule.filter((m) => (m.group || 'Unknown') === activeTab);
+  if (!matches.length) return '<p style="color:#94a3b8;font-size:13px;">No matches found for this group.</p>';
+  const rows = matches.map((m) => {
+    const dateStr = m.date ? m.date.split(' ')[0] : '';
+    return matchRow(m.match_number, m.home_team, m.away_team, dateStr, false);
+  }).join('');
+  return `<table style="width:100%;border-collapse:collapse;"><tbody>${rows}</tbody></table>`;
 }
 
 function injectSimulationModeControls() {
@@ -497,25 +537,65 @@ function injectSimulationModeControls() {
   resetBtn.type = 'button';
   resetBtn.textContent = 'Reset all results';
   resetBtn.style.cssText = 'padding:4px 10px;font-size:12px;border-radius:6px;border:1px solid rgba(252,165,165,0.4);background:rgba(252,165,165,0.08);color:#fca5a5;cursor:pointer;';
-  resetBtn.addEventListener('click', () => {
+  resetBtn.addEventListener('click', async () => {
     if (!confirm('Clear all entered match results?')) return;
     actualResultsCache = {};
     persistActualsToStorage();
     rebuildActualsPanel();
+    try {
+      await fetch('/api/clear_actuals', { method: 'POST' });
+    } catch (_) {}
   });
   headerRow.appendChild(panelTitle);
   headerRow.appendChild(resetBtn);
   actualsPanel.appendChild(headerRow);
 
   const panelHelp = document.createElement('p');
-  panelHelp.style.cssText = 'font-size:12px;color:#64748b;margin:0 0 12px;';
+  panelHelp.style.cssText = 'font-size:12px;color:#64748b;margin:0 0 10px;';
   panelHelp.textContent = 'Scores saved on blur or Enter. For knockout draws, use the Winner selector to pick who advanced.';
   actualsPanel.appendChild(panelHelp);
 
+  const tabsBar = document.createElement('div');
+  tabsBar.id = 'actuals-tabs-bar';
+  tabsBar.style.cssText = 'display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px;';
+  actualsPanel.appendChild(tabsBar);
+
   const panelBody = document.createElement('div');
   panelBody.id = 'actuals-panel-body';
-  panelBody.innerHTML = buildActualsPanel(groupScheduleCache);
   actualsPanel.appendChild(panelBody);
+
+  // Footer: run button + status + progress bar
+  const panelFooter = document.createElement('div');
+  panelFooter.style.cssText = 'margin-top:14px;display:flex;flex-direction:column;gap:6px;';
+
+  const footerTop = document.createElement('div');
+  footerTop.style.cssText = 'display:flex;align-items:center;gap:12px;';
+
+  const actualsRunBtn = document.createElement('button');
+  actualsRunBtn.id = 'actuals-run-button';
+  actualsRunBtn.type = 'button';
+  actualsRunBtn.textContent = 'Run simulation';
+  actualsRunBtn.style.cssText = 'padding:8px 18px;border-radius:8px;background:rgba(99,102,241,0.85);color:#fff;font-weight:700;font-size:13px;border:1px solid rgba(99,102,241,0.5);cursor:pointer;';
+
+  const actualsStatusEl = document.createElement('span');
+  actualsStatusEl.id = 'actuals-sim-status';
+  actualsStatusEl.style.cssText = 'font-size:12px;color:#94a3b8;';
+
+  footerTop.appendChild(actualsRunBtn);
+  footerTop.appendChild(actualsStatusEl);
+
+  const actualsProgressContainer = document.createElement('div');
+  actualsProgressContainer.id = 'actuals-progress-container';
+  actualsProgressContainer.className = 'simulation-progress-container';
+
+  const actualsProgressFill = document.createElement('div');
+  actualsProgressFill.id = 'actuals-progress-fill';
+  actualsProgressFill.className = 'simulation-progress-fill';
+  actualsProgressContainer.appendChild(actualsProgressFill);
+
+  panelFooter.appendChild(footerTop);
+  panelFooter.appendChild(actualsProgressContainer);
+  actualsPanel.appendChild(panelFooter);
 
   controls.parentNode.insertBefore(actualsPanel, controls.nextSibling);
 
@@ -529,13 +609,11 @@ function injectSimulationModeControls() {
 }
 
 function rebuildActualsPanel() {
-  const panel = document.getElementById('actuals-panel');
   const panelBody = document.getElementById('actuals-panel-body');
   if (!panelBody) return;
-  const scrollTop = panel ? panel.scrollTop : 0;
-  panelBody.innerHTML = buildActualsPanel(groupScheduleCache);
+  renderActualsTabs();
+  panelBody.innerHTML = buildActualsPanel(groupScheduleCache, _actualsActiveTab);
   attachActualInputListeners();
-  if (panel) panel.scrollTop = scrollTop;
 }
 
 function attachActualInputListeners() {
@@ -545,41 +623,54 @@ function attachActualInputListeners() {
   panel.querySelectorAll('tr[data-match-number]').forEach((row) => {
     const mn = Number(row.dataset.matchNumber);
     const isKnockout = row.dataset.knockout === '1';
+
+    if (isKnockout) {
+      row.querySelectorAll('.ko-winner-btn').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const side = btn.dataset.side;
+          const prev = actualResultsCache[String(mn)];
+          if (prev && prev.winner === side) {
+            // clicking the active winner clears it
+            deleteActualResult(mn);
+          } else {
+            actualResultsCache[String(mn)] = { match_number: mn, home_goals: 0, away_goals: 0, winner: side };
+            persistActualsToStorage();
+            fetch(API_SAVE_ACTUAL_URL, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ match_number: mn, home_goals: 0, away_goals: 0, winner: side }),
+            }).catch(() => {});
+          }
+          rebuildActualsPanel();
+        });
+      });
+      return;
+    }
+
     const homeInput = row.querySelector('.actual-home-goals');
     const awayInput = row.querySelector('.actual-away-goals');
-    const winnerSelect = row.querySelector('.actual-winner');
     if (!homeInput || !awayInput) return;
 
     const trySave = () => {
       const hv = homeInput.value.trim();
       const av = awayInput.value.trim();
-      if (hv === '' && av === '' && (!winnerSelect || winnerSelect.value === '')) {
-        deleteActualResult(mn);
-        if (isKnockout) rebuildActualsPanel();
-        return;
-      }
+      if (hv === '' && av === '') { deleteActualResult(mn); return; }
       const hg = parseInt(hv, 10);
       const ag = parseInt(av, 10);
       if (!Number.isNaN(hg) && !Number.isNaN(ag) && hg >= 0 && ag >= 0) {
-        const extra = isKnockout && winnerSelect ? { winner: winnerSelect.value || '' } : {};
-        actualResultsCache[String(mn)] = { match_number: mn, home_goals: hg, away_goals: ag, ...extra };
+        actualResultsCache[String(mn)] = { match_number: mn, home_goals: hg, away_goals: ag };
         persistActualsToStorage();
-        if (isKnockout) {
-          rebuildActualsPanel();
-        } else {
-          refreshActualMatchStatus(mn);
-        }
+        refreshActualMatchStatus(mn);
         fetch(API_SAVE_ACTUAL_URL, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ match_number: mn, home_goals: hg, away_goals: ag, ...extra }),
+          body: JSON.stringify({ match_number: mn, home_goals: hg, away_goals: ag }),
         }).catch(() => {});
       }
     };
 
     homeInput.addEventListener('blur', trySave);
     awayInput.addEventListener('blur', trySave);
-    if (winnerSelect) winnerSelect.addEventListener('change', trySave);
     homeInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') awayInput.focus(); });
     awayInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') { trySave(); awayInput.blur(); } });
   });
@@ -622,7 +713,7 @@ function renderSummary(data) {
   const simulationCount = data.simulations ?? (data.tournament_simulation?.length ? data.tournament_simulation.length : null);
   const cards = [
     createSummaryCard("Simulation runs", simulationCount ? `${simulationCount} runs` : "N/A"),
-    createSummaryCard("Best champion", winner ? winner.team : "N/A", formatPercent(winner?.prob_Winner ?? 0)),
+    createSummaryCard("Sim favourite", winner ? winner.team : "N/A", formatPercent(winner?.prob_Winner ?? 0)),
     createSummaryCard("Top advance chance", data.group_probabilities.length ? data.group_probabilities[0].team : "N/A", formatPercent(data.group_probabilities[0]?.advance_probability ?? 0)),
     createSummaryCard("Exported groups", `${new Set(data.group_tables.map((row) => row.group)).size} groups`),
   ];
@@ -829,19 +920,34 @@ function populateTeamSelect(selectId, teams, onChange, defaultTeam) {
   select.addEventListener("change", (event) => onChange(event.target.value));
 }
 
-function populateViewSelect(selectId, defaultValue = 'Top 12') {
-  let select = document.getElementById(selectId);
-  if (!select) return;
-  select = replaceElement(select);
-  select.innerHTML = `
-    <option value="Top 12">Top 12</option>
-    <option value="All">All teams</option>
-  `;
-  select.value = defaultValue;
-  select.addEventListener('change', () => {
-    const currentTeam = document.getElementById('knockout-team-select')?.value || null;
-    renderKnockoutProjection(state, currentTeam, select.value);
-  });
+
+function setProgress(fraction) {
+  for (const [fillId, containerId] of [
+    ['simulation-progress-fill', 'simulation-progress-container'],
+    ['actuals-progress-fill', 'actuals-progress-container'],
+  ]) {
+    const fill = document.getElementById(fillId);
+    const container = document.getElementById(containerId);
+    if (!fill || !container) continue;
+    container.classList.add('visible');
+    fill.style.width = `${Math.round(fraction * 100)}%`;
+  }
+}
+
+function clearProgress() {
+  for (const [fillId, containerId] of [
+    ['simulation-progress-fill', 'simulation-progress-container'],
+    ['actuals-progress-fill', 'actuals-progress-container'],
+  ]) {
+    const fill = document.getElementById(fillId);
+    const container = document.getElementById(containerId);
+    if (!fill || !container) continue;
+    fill.style.width = '100%';
+    setTimeout(() => {
+      container.classList.remove('visible');
+      fill.style.width = '0%';
+    }, 400);
+  }
 }
 
 async function runSimulation(simulations) {
@@ -850,12 +956,16 @@ async function runSimulation(simulations) {
   const conmebolOffset = -20;
 
   const modeLabel = simulationMode === 'actuals' ? ' (actuals + simulation)' : '';
-  setSimulationStatus(`Running ${simulationCount} simulations${modeLabel}...`);
+  setSimulationStatus(`Running ${simulationCount} simulations${modeLabel}…`);
+  setProgress(0);
   const button = document.getElementById("simulation-run-button");
+  const actualsButton = document.getElementById("actuals-run-button");
   if (button) button.disabled = true;
+  if (actualsButton) actualsButton.disabled = true;
 
   try {
-    const response = await fetch(API_RUN_URL, {
+    // Start simulation — server returns a job_id immediately
+    const startResp = await fetch(API_RUN_URL, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -865,21 +975,32 @@ async function runSimulation(simulations) {
         actual_results: simulationMode === 'actuals' ? Object.values(actualResultsCache) : [],
       }),
     });
-    if (!response.ok) {
-      const text = await response.text();
-      throw new Error(`Simulation request failed: ${response.status} ${response.statusText} ${text}`);
+    if (!startResp.ok) {
+      const text = await startResp.text();
+      throw new Error(`Simulation request failed: ${startResp.status} ${startResp.statusText} ${text}`);
     }
-    const data = await response.json();
-    try {
-      if (data && data.saved_filename) {
-        localStorage.setItem('last_saved_simulation', String(data.saved_filename));
+    const { job_id } = await startResp.json();
+
+    // Poll for progress
+    while (true) {
+      await new Promise((r) => setTimeout(r, 300));
+      const statusResp = await fetch(`/api/simulation_status?job_id=${job_id}`);
+      if (!statusResp.ok) throw new Error(`Status poll failed: ${statusResp.status}`);
+      const status = await statusResp.json();
+      setProgress(status.progress);
+      if (status.done) {
+        if (status.error) throw new Error(status.error);
+        const data = status.result;
+        try {
+          if (data.saved_filename) localStorage.setItem('last_saved_simulation', String(data.saved_filename));
+        } catch (_) {}
+        renderDashboard(data);
+        const saved = data.saved_filename ? ` Saved to ${data.saved_filename}` : "";
+        setSimulationStatus(`Loaded ${simulationCount} simulations.${saved}`);
+        loadSimulationHistory();
+        break;
       }
-    } catch (err) {
-      // ignore localStorage errors
     }
-    renderDashboard(data);
-    const saved = data.saved_filename ? ` Saved to ${data.saved_filename}` : "";
-    setSimulationStatus(`Loaded ${simulations} simulations.${saved}`);
   } catch (error) {
     console.error(error);
     const message = error.message || String(error);
@@ -889,7 +1010,9 @@ async function runSimulation(simulations) {
       setSimulationStatus(`Error: ${message}`);
     }
   } finally {
+    clearProgress();
     if (button) button.disabled = false;
+    if (actualsButton) actualsButton.disabled = false;
   }
 }
 
@@ -924,25 +1047,21 @@ function renderDashboard(data) {
     (team) => renderAdvanceChart(state, team),
     advanceDefault,
   );
-  populateViewSelect('knockout-view-select', 'Top 12');
   populateTeamSelect(
     "knockout-team-select",
     state.tournament_simulation.map((row) => row.team),
-    (team) => {
-      const view = document.getElementById('knockout-view-select')?.value || 'Top 12';
-      renderKnockoutProjection(state, team, view);
-    },
+    (team) => renderKnockoutProjection(state, team),
     knockoutDefault,
   );
 
   renderWinnerChart(state, winnerDefault);
   renderAdvanceChart(state, advanceDefault);
-  renderKnockoutProjection(state, knockoutDefault, document.getElementById('knockout-view-select')?.value || 'Top 12');
+  renderKnockoutProjection(state, knockoutDefault);
   populateGroupSelect(state);
   renderBracket(state, 32).catch(err => console.error('Failed to render bracket:', err));
 }
 
-function renderKnockoutProjection(data, selectedTeam, viewMode = 'Top 12') {
+function renderKnockoutProjection(data, selectedTeam) {
   const stages = [
     { key: "prob_Round_of_32", label: "Round of 32" },
     { key: "prob_Round_of_16", label: "Round of 16" },
@@ -952,15 +1071,12 @@ function renderKnockoutProjection(data, selectedTeam, viewMode = 'Top 12') {
     { key: "prob_Winner", label: "Winner" },
   ];
 
-  const sortedRows = [...data.tournament_simulation].sort((a, b) => b.prob_Winner - a.prob_Winner);
-  const rows = viewMode === 'All' ? sortedRows : sortedRows.slice(0, 12);
+  const rows = [...data.tournament_simulation].sort((a, b) => b.prob_Winner - a.prob_Winner);
 
   const filteredRows = selectedTeam
     ? (() => {
-        const inPage = rows.find((row) => row.team === selectedTeam);
-        if (inPage) return [inPage];
-        const fallback = sortedRows.find((row) => row.team === selectedTeam);
-        return fallback ? [fallback] : [];
+        const match = rows.find((row) => row.team === selectedTeam);
+        return match ? [match] : [];
       })()
     : rows;
 
@@ -1114,6 +1230,20 @@ async function renderBracket(data, count = 32) {
   const actualStandings     = useActuals ? computeActualGroupStandings() : {};
   const actualThirdPlaceMap = useActuals ? computeThirdPlaceQualifiers()  : {};
   const actualKo            = useActuals ? buildKnockoutResolution()       : {};
+
+  // Which groups have all matches entered (locks their R32 slots)
+  const groupComplete = {};
+  if (useActuals && groupScheduleCache) {
+    const byG = {};
+    groupScheduleCache.forEach((m) => {
+      const g = m.group || '';
+      if (!byG[g]) byG[g] = { total: 0, done: 0 };
+      byG[g].total++;
+      if (actualResultsCache[String(m.match_number)]) byG[g].done++;
+    });
+    Object.entries(byG).forEach(([g, c]) => { groupComplete[g] = c.total > 0 && c.done === c.total; });
+  }
+  const allGroupsComplete = useActuals && Object.keys(groupComplete).length >= 12 && Object.values(groupComplete).every(Boolean);
   // Map: match_number (string) → match_number of the match whose slot takes that winner (W<n>)
   const winnerGoesTo = {};
   (data.knockout_schedule || []).forEach((ks) => {
@@ -1264,15 +1394,8 @@ async function renderBracket(data, count = 32) {
 
   const assignmentMap = buildRoundOf32ThirdPlaceAssignmentMap();
 
-  function updateThirdPlaceKeyLabel() {
-    const el = document.getElementById('third-place-key');
-    if (!el) return;
-    const chosen = window._chosen_third_place_key || 'N/A';
-    const desired = window._desired_third_place_key ? ` (desired ${window._desired_third_place_key})` : '';
-    el.textContent = `3rd-place assignment key: ${chosen}${desired}`;
-  }
 
-  updateThirdPlaceKeyLabel();
+
 
   function resolveThirdPlace(slot, oppositeSlot, usedThird) {
     const slotText = String(slot).trim();
@@ -1325,9 +1448,16 @@ async function renderBracket(data, count = 32) {
   function resolveBracketSlot(slot, oppositeSlot, usedThird) {
     if (!slot) return null;
     const placement = resolveGroupPlacement(slot);
-    if (placement) return { team: placement.team, ...(probMap[placement.team] || {}) };
+    if (placement) {
+      const obj = { team: placement.team, ...(probMap[placement.team] || {}) };
+      const m = /^[12]([A-L])$/.exec(String(slot));
+      if (m && groupComplete[`Group ${m[1]}`]) obj.locked = true;
+      return obj;
+    }
     if (/^3[A-L]+$/.test(String(slot).trim())) {
-      return resolveThirdPlace(slot, oppositeSlot, usedThird);
+      const tp = resolveThirdPlace(slot, oppositeSlot, usedThird);
+      if (tp && allGroupsComplete) tp.locked = true;
+      return tp;
     }
     return { team: String(slot) };
   }
@@ -1422,22 +1552,60 @@ async function renderBracket(data, count = 32) {
     box.setAttribute('width', (stage === 'Winner' || stage === 'Finals') ? centerBoxW : boxW);
     box.setAttribute('height', boxH);
     box.setAttribute('class', 'match-box');
-    box.setAttribute('fill', 'rgba(31,47,91,0.75)');
-    box.setAttribute('stroke', 'rgba(255,255,255,0.14)');
-    box.setAttribute('stroke-width', '1');
+
+    // Color boxes by tournament win probability: grey (low) → gold (high)
+    const probT = teamObj ? Math.min(1, ((probMap[teamObj.team] || {}).prob_Winner || 0) / 0.12) : 0;
+    if (stage === 'Winner') {
+      box.setAttribute('fill', 'rgba(91,60,5,0.88)');
+      box.setAttribute('stroke', 'rgba(251,191,36,0.95)');
+      box.setAttribute('stroke-width', '2.5');
+    } else {
+      box.setAttribute('fill', 'rgba(31,47,91,0.75)');
+      const sG = Math.round(255 - 64 * probT);
+      const sB = Math.round(255 - 219 * probT);
+      const sA = (0.14 + 0.76 * probT).toFixed(2);
+      box.setAttribute('stroke', `rgba(255,${sG},${sB},${sA})`);
+      box.setAttribute('stroke-width', (1 + 0.8 * probT).toFixed(1));
+    }
     g.appendChild(box);
 
     if (teamObj) {
+      // Left accent bar (slate → gold) based on win probability
+      if (stage !== 'Winner') {
+        const ar = Math.round(71 + probT * 180);
+        const ag = Math.round(85 + probT * 106);
+        const ab = Math.round(105 - probT * 69);
+        const aa = (0.4 + probT * 0.55).toFixed(2);
+        const accent = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+        accent.setAttribute('x', x);
+        accent.setAttribute('y', y);
+        accent.setAttribute('width', 4);
+        accent.setAttribute('height', boxH);
+        accent.setAttribute('fill', `rgba(${ar},${ag},${ab},${aa})`);
+        g.appendChild(accent);
+      }
+
       const iso = teamIsoMap[teamObj.team] || '';
       const flag = iso ? isoToEmoji(iso) + ' ' : '';
       const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-      text.setAttribute('x', x + 8);
+      text.setAttribute('x', x + 12);
       text.setAttribute('y', y + 18);
       text.setAttribute('font-size', '11');
       text.setAttribute('fill', '#e2e8f0');
       text.setAttribute('class', 'team-cell');
       text.textContent = flag + (teamObj.team || '').substring(0, 18);
       g.appendChild(text);
+
+      if (teamObj.locked) {
+        const bw = (stage === 'Winner' || stage === 'Finals') ? centerBoxW : boxW;
+        const dot = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        dot.setAttribute('cx', x + bw - 8);
+        dot.setAttribute('cy', y + boxH / 2);
+        dot.setAttribute('r', 4);
+        dot.setAttribute('fill', 'rgba(34,197,94,0.9)');
+        dot.setAttribute('title', 'Confirmed result');
+        g.appendChild(dot);
+      }
 
       box.addEventListener('mouseenter', (ev) => {
         const prob = probMap[teamObj.team] || {};
@@ -1489,8 +1657,8 @@ async function renderBracket(data, count = 32) {
       // Use actual result if available, otherwise project from simulation
       const koData = matchId != null ? actualKo[String(matchId)] : null;
       const winner = koData?.winner
-        ? { team: koData.winner, ...(probMap[koData.winner] || {}) }
-        : chooseMatchWinner(home, away, advanceKey);
+        ? { team: koData.winner, ...(probMap[koData.winner] || {}), locked: true }
+        : { ...chooseMatchWinner(home, away, advanceKey), locked: false };
       groups.push({ winner, yMid, matchId });
     });
     return groups;
@@ -1522,8 +1690,8 @@ async function renderBracket(data, count = 32) {
       const nextMatchId = winnerGoesTo[String(left.matchId)] || winnerGoesTo[String(right.matchId)];
       const koData = nextMatchId ? actualKo[String(nextMatchId)] : null;
       const winner = koData?.winner
-        ? { team: koData.winner, ...(probMap[koData.winner] || {}) }
-        : chooseMatchWinner(left.winner, right.winner, advanceKey);
+        ? { team: koData.winner, ...(probMap[koData.winner] || {}), locked: true }
+        : { ...chooseMatchWinner(left.winner, right.winner, advanceKey), locked: false };
       nextGroups.push({ winner, yMid, matchId: nextMatchId });
     }
     return nextGroups;
@@ -1556,11 +1724,11 @@ async function renderBracket(data, count = 32) {
     svg.appendChild(drawBox(centerX, finalYBottom, finalist2, 'Finals'));
 
     // Projected winner below the Final matchup (use actual if Final has been played)
-    const winnerY = finalYBottom + boxH + 20;
+    const winnerY = finalYBottom + boxH + 60;
     const finalKo = actualKo['104'];
     const winner = finalKo?.winner
-      ? { team: finalKo.winner, ...(probMap[finalKo.winner] || {}) }
-      : chooseMatchWinner(finalist1, finalist2, getProbabilityKey('Winner'));
+      ? { team: finalKo.winner, ...(probMap[finalKo.winner] || {}), locked: true }
+      : { ...chooseMatchWinner(finalist1, finalist2, getProbabilityKey('Winner')), locked: false };
 
     // Vertical connector from Final midpoint down to winner box
     drawConnector(centerX + centerBoxW / 2, finalMidY, centerX + centerBoxW / 2, winnerY + boxH / 2);
@@ -1583,6 +1751,10 @@ async function renderBracket(data, count = 32) {
     { text: 'Quarter Finals', x: leftXs[2] + boxW / 2 },
     { text: 'Semi Finals', x: leftXs[3] + boxW / 2 },
     { text: 'Final', x: centerX + centerBoxW / 2 },
+    { text: 'Semi Finals', x: rightXs[3] + boxW / 2 },
+    { text: 'Quarter Finals', x: rightXs[2] + boxW / 2 },
+    { text: 'Round of 16', x: rightXs[1] + boxW / 2 },
+    { text: 'Round of 32', x: rightXs[0] + boxW / 2 },
   ];
 
   stageLabels.forEach((item) => {
@@ -1597,9 +1769,160 @@ async function renderBracket(data, count = 32) {
   });
 }
 
+// ── Simulation history ──────────────────────────────────────────────────────
+
+let _historyChart = null;
+
+const HISTORY_COLORS = [
+  '#818cf8', '#34d399', '#f59e0b', '#f472b6',
+  '#60a5fa', '#a78bfa', '#fb923c', '#4ade80',
+];
+
+function fmtTimestamp(ms) {
+  const d = new Date(ms);
+  return d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })
+    + ' ' + d.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+}
+
+function buildHistoryChart(history) {
+  const canvas = document.getElementById('historyChart');
+  const emptyEl = document.getElementById('history-empty');
+  if (!canvas) return;
+
+  const actualsRuns = history.filter(r => r.mode === 'actuals');
+  const fullRuns    = history.filter(r => r.mode === 'full');
+
+  if (history.length === 0) {
+    canvas.style.display = 'none';
+    if (emptyEl) { emptyEl.textContent = 'No simulation history yet. Run a simulation to start building history.'; emptyEl.style.display = 'block'; }
+    return;
+  }
+  canvas.style.display = '';
+  if (emptyEl) emptyEl.style.display = 'none';
+
+  // Pick teams to display
+  const topN = parseInt(document.getElementById('history-view-select')?.value || '5', 10);
+  const highlight = document.getElementById('history-team-select')?.value || '';
+
+  // Rank teams by max win_prob across all runs
+  const maxProb = {};
+  history.forEach(r => Object.entries(r.win_probs).forEach(([t, p]) => { if (p > (maxProb[t] || 0)) maxProb[t] = p; }));
+  const ranked = Object.keys(maxProb).sort((a, b) => maxProb[b] - maxProb[a]);
+
+  // Populate highlight selector once
+  const sel = document.getElementById('history-team-select');
+  if (sel && sel.options.length === 1) {
+    ranked.forEach(t => { const o = document.createElement('option'); o.value = t; o.textContent = t; sel.appendChild(o); });
+  }
+
+  const shown = ranked.slice(0, topN);
+  if (highlight && !shown.includes(highlight)) shown.push(highlight);
+
+  const datasets = [];
+  shown.forEach((team, i) => {
+    const color = HISTORY_COLORS[i % HISTORY_COLORS.length];
+    const isHL  = team === highlight;
+
+    // Merge full-sim and actuals into one timeline per team, sorted by time
+    const allPts = [
+      ...fullRuns.filter(r => r.win_probs[team] != null)
+        .map(r => ({ x: new Date(r.timestamp).getTime(), y: +(r.win_probs[team] * 100).toFixed(2), sims: r.simulations, mode: 'full' })),
+      ...actualsRuns.filter(r => r.win_probs[team] != null)
+        .map(r => ({ x: new Date(r.timestamp).getTime(), y: +(r.win_probs[team] * 100).toFixed(2), sims: r.simulations, mode: 'actuals' })),
+    ].sort((a, b) => a.x - b.x);
+
+    if (allPts.length) {
+      const lineColor  = isHL ? '#ffffff' : color;
+      const fadeColor  = isHL ? 'rgba(255,255,255,0.5)' : color + 'aa';
+      datasets.push({
+        label: team,
+        data: allPts,
+        showLine: true,
+        tension: 0.25,
+        borderColor: isHL ? 'rgba(255,255,255,0.9)' : color,
+        backgroundColor: isHL ? 'rgba(255,255,255,0.15)' : color + '33',
+        borderWidth: isHL ? 3 : 1.5,
+        pointRadius: allPts.map(p => p.mode === 'full' ? (isHL ? 5 : 3) : (isHL ? 7 : 4)),
+        pointBackgroundColor: allPts.map(p => p.mode === 'full' ? 'transparent' : lineColor),
+        pointBorderColor: allPts.map(p => p.mode === 'full' ? fadeColor : lineColor),
+        pointBorderWidth: allPts.map(p => p.mode === 'full' ? (isHL ? 2 : 1.5) : (isHL ? 2.5 : 1.5)),
+        pointHoverRadius: isHL ? 9 : 7,
+        order: isHL ? 0 : 1,
+      });
+    }
+  });
+
+  if (_historyChart) _historyChart.destroy();
+  _historyChart = new Chart(canvas, {
+    type: 'line',
+    data: { datasets },
+    options: {
+      responsive: true,
+      interaction: { mode: 'nearest', axis: 'x', intersect: false },
+      scales: {
+        x: {
+          type: 'linear',
+          ticks: { callback: v => fmtTimestamp(v), color: '#94a3b8', maxTicksLimit: 7 },
+          grid: { color: 'rgba(255,255,255,0.05)' },
+        },
+        y: {
+          min: 0,
+          ticks: { callback: v => v + '%', color: '#94a3b8' },
+          grid: { color: 'rgba(255,255,255,0.05)' },
+        },
+      },
+      plugins: {
+        legend: {
+          labels: { color: '#dbeafe' },
+        },
+        tooltip: {
+          backgroundColor: 'rgba(15,23,42,0.92)',
+          titleColor: '#e2e8f0',
+          bodyColor: '#94a3b8',
+          borderColor: 'rgba(255,255,255,0.1)',
+          borderWidth: 1,
+          callbacks: {
+            title: items => fmtTimestamp(items[0].parsed.x),
+            label: item => {
+              const d = item.raw;
+              const tag = d.mode === 'full' ? ' (full sim)' : '';
+              return ` ${item.dataset.label}${tag}: ${item.parsed.y.toFixed(1)}%  [${d.sims} runs]`;
+            },
+          },
+        },
+      },
+    },
+  });
+}
+
+let _historyListenersAttached = false;
+
+async function loadSimulationHistory() {
+  try {
+    const resp = await fetch(API_HISTORY_URL);
+    if (!resp.ok) throw new Error(resp.status);
+    const history = await resp.json();
+    buildHistoryChart(history);
+
+    if (!_historyListenersAttached) {
+      _historyListenersAttached = true;
+      ['history-view-select', 'history-team-select'].forEach(id => {
+        document.getElementById(id)?.addEventListener('change', () => loadSimulationHistory());
+      });
+    }
+  } catch (err) {
+    console.warn('Could not load simulation history:', err);
+  }
+}
+
 async function initializeDashboard() {
   try {
     const loadedState = await loadData();
+
+    // Restore simulation mode from the last saved run so the bracket is
+    // immediately consistent with the data (locks visible on page load).
+    if (loadedState.use_actuals) simulationMode = 'actuals';
+
     renderDashboard(loadedState);
 
     // Load group schedule for actuals panel
@@ -1610,8 +1933,11 @@ async function initializeDashboard() {
 
     // Inject simulation mode toggle and actuals panel
     injectSimulationModeControls();
-    // Load persisted actual results from server
+    // Load persisted actual results from server, then re-render bracket with locks
     await loadActualResults();
+    if (simulationMode === 'actuals') {
+      renderBracket(loadedState, 32).catch(() => {});
+    }
 
     const simulationButton = document.getElementById("simulation-run-button");
     if (simulationButton) {
@@ -1620,6 +1946,45 @@ async function initializeDashboard() {
         const simulations = Number(countInput?.value) || 200;
         runSimulation(simulations);
       });
+    }
+
+    const actualsRunButton = document.getElementById("actuals-run-button");
+    if (actualsRunButton) {
+      actualsRunButton.addEventListener("click", () => {
+        const countInput = document.getElementById("simulation-count");
+        const simulations = Number(countInput?.value) || 200;
+        runSimulation(simulations);
+      });
+    }
+
+    // History clear button
+    document.getElementById('history-clear-button')?.addEventListener('click', async () => {
+      if (!confirm('Move all saved simulation files to the archive folder?')) return;
+      try {
+        const resp = await fetch('/api/clear_history', { method: 'POST' });
+        const text = await resp.text();
+        let data;
+        try { data = JSON.parse(text); } catch (_) { throw new Error(`Server returned (${resp.status}): ${text.slice(0, 300)}`); }
+        if (data.error) throw new Error(data.error);
+        _historyListenersAttached = false;
+        document.getElementById('history-team-select').innerHTML = '<option value="">None</option>';
+        await loadSimulationHistory();
+        alert(`Archived ${data.archived} file${data.archived !== 1 ? 's' : ''}.`);
+      } catch (err) {
+        alert('Archive failed: ' + err.message);
+      }
+    });
+
+    // Lazy-load history chart when the section scrolls into view
+    const historySection = document.getElementById('history-section');
+    if (historySection) {
+      const obs = new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting) {
+          loadSimulationHistory();
+          obs.disconnect();
+        }
+      }, { threshold: 0.1 });
+      obs.observe(historySection);
     }
   } catch (error) {
     const errorDetails = error?.stack || error?.message || String(error);

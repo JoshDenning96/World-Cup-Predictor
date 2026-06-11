@@ -6,9 +6,11 @@ import datetime
 import json
 import socket
 import sys
+import threading
+import uuid
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
-from urllib.parse import urlparse
+from urllib.parse import urlparse, parse_qs
 
 ROOT = Path(__file__).resolve().parent
 SRC_DIR = ROOT / "src"
@@ -28,6 +30,10 @@ try:
     from world_cup_predictor.cli import run_pipeline
 except Exception as exc:
     raise SystemExit(f"Unable to import simulation code: {exc}") from exc
+
+# In-memory job store for async simulation progress tracking
+_jobs: dict = {}
+_jobs_lock = threading.Lock()
 
 
 def _parse_fixture_slot(s: str) -> str:
@@ -180,6 +186,12 @@ class SimulationHandler(SimpleHTTPRequestHandler):
         parsed = urlparse(self.path)
         if parsed.path == "/api/actual_results":
             self.handle_get_actual_results()
+        elif parsed.path == "/api/simulation_status":
+            qs = parse_qs(parsed.query)
+            job_id = qs.get("job_id", [None])[0]
+            self.handle_simulation_status(job_id)
+        elif parsed.path == "/api/simulation_history":
+            self.handle_simulation_history()
         else:
             super().do_GET()
 
@@ -189,6 +201,10 @@ class SimulationHandler(SimpleHTTPRequestHandler):
             self.handle_run_simulation()
         elif parsed.path == "/api/save_actual":
             self.handle_save_actual()
+        elif parsed.path == "/api/clear_history":
+            self.handle_clear_history()
+        elif parsed.path == "/api/clear_actuals":
+            self.handle_clear_actuals()
         else:
             self.send_error(404, "Endpoint not found")
 
@@ -240,41 +256,129 @@ class SimulationHandler(SimpleHTTPRequestHandler):
         else:
             actual_results = None
 
+        job_id = uuid.uuid4().hex[:12]
+        with _jobs_lock:
+            _jobs[job_id] = {"progress": 0.0, "done": False, "result": None, "error": None}
+
+        def _run():
+            def on_progress(completed, total):
+                with _jobs_lock:
+                    _jobs[job_id]["progress"] = completed / total
+
+            try:
+                result = run_pipeline(
+                    RAW_DIR,
+                    n_simulations=simulations,
+                    run_full_tournament=True,
+                    conmebol_offset=conmebol_offset,
+                    actual_results=actual_results,
+                    progress_callback=on_progress,
+                )
+                tournament_simulation = result["tournament_simulation"].to_dict(orient="records")
+                group_tables = result["group_tables"].to_dict(orient="records")
+                group_probabilities = result["group_probabilities"].to_dict(orient="records")
+                knockout_schedule = load_knockout_schedule(FIXTURES_FILE)
+                group_schedule = load_group_schedule(UTC_SCHEDULE_FILE)
+
+                SAVE_DIR.mkdir(parents=True, exist_ok=True)
+                timestamp = datetime.datetime.utcnow().strftime("%Y%m%dT%H%M%SZ")
+                mode_tag = "actuals" if use_actuals else "full"
+                filename = f"simulation_{mode_tag}_{simulations}_{timestamp}.json"
+                save_path = SAVE_DIR / filename
+                output = {
+                    "simulations": simulations,
+                    "conmebol_offset": conmebol_offset,
+                    "use_actuals": use_actuals,
+                    "tournament_simulation": tournament_simulation,
+                    "group_tables": group_tables,
+                    "group_probabilities": group_probabilities,
+                    "knockout_schedule": knockout_schedule,
+                    "group_schedule": group_schedule,
+                    "saved_filename": str(Path("website") / "data" / "saved_simulations" / filename),
+                }
+                payload = json.dumps(output, indent=2)
+                save_path.write_text(payload, encoding="utf-8")
+                (WEB_DIR / "data" / "master_simulation.json").write_text(payload, encoding="utf-8")
+                with _jobs_lock:
+                    _jobs[job_id]["result"] = output
+                    _jobs[job_id]["progress"] = 1.0
+                    _jobs[job_id]["done"] = True
+            except Exception as exc:
+                with _jobs_lock:
+                    _jobs[job_id]["error"] = str(exc)
+                    _jobs[job_id]["done"] = True
+
+        threading.Thread(target=_run, daemon=True).start()
+        self._send_json({"job_id": job_id})
+
+    def handle_simulation_status(self, job_id):
+        if not job_id:
+            self._send_json({"error": "Missing job_id"}, status=400)
+            return
+        with _jobs_lock:
+            job = _jobs.get(job_id)
+        if job is None:
+            self._send_json({"error": "Unknown job_id"}, status=404)
+            return
+        self._send_json({
+            "progress": job["progress"],
+            "done": job["done"],
+            "result": job["result"] if job["done"] and not job["error"] else None,
+            "error": job["error"],
+        })
+
+    def handle_clear_actuals(self):
         try:
-            result = run_pipeline(
-                RAW_DIR,
-                n_simulations=simulations,
-                run_full_tournament=True,
-                conmebol_offset=conmebol_offset,
-                actual_results=actual_results,
-            )
-            tournament_simulation = result["tournament_simulation"].to_dict(orient="records")
-            group_tables = result["group_tables"].to_dict(orient="records")
-            group_probabilities = result["group_probabilities"].to_dict(orient="records")
-            knockout_schedule = load_knockout_schedule(FIXTURES_FILE)
-            group_schedule = load_group_schedule(UTC_SCHEDULE_FILE)
-
-            SAVE_DIR.mkdir(parents=True, exist_ok=True)
-            timestamp = datetime.datetime.utcnow().strftime("%Y%m%dT%H%M%SZ")
-            mode_tag = "actuals" if use_actuals else "full"
-            filename = f"simulation_{mode_tag}_{simulations}_{timestamp}.json"
-            save_path = SAVE_DIR / filename
-            output = {
-                "simulations": simulations,
-                "conmebol_offset": conmebol_offset,
-                "use_actuals": use_actuals,
-                "tournament_simulation": tournament_simulation,
-                "group_tables": group_tables,
-                "group_probabilities": group_probabilities,
-                "knockout_schedule": knockout_schedule,
-                "group_schedule": group_schedule,
-            }
-            save_path.write_text(json.dumps(output, indent=2), encoding="utf-8")
-
-            response = {**output, "saved_filename": str(Path("website") / "data" / "saved_simulations" / filename)}
-            self._send_json(response)
+            ACTUAL_RESULTS_FILE.write_text("[]", encoding="utf-8")
+            self._send_json({"ok": True})
         except Exception as exc:
             self._send_json({"error": str(exc)}, status=500)
+
+    def handle_clear_history(self):
+        try:
+            if not SAVE_DIR.exists():
+                self._send_json({"archived": 0})
+                return
+            archive_dir = SAVE_DIR / "archive"
+            archive_dir.mkdir(parents=True, exist_ok=True)
+            count = 0
+            for f in SAVE_DIR.glob("*.json"):
+                dest = archive_dir / f.name
+                if dest.exists():
+                    dest = archive_dir / f"{f.stem}_{uuid.uuid4().hex[:6]}{f.suffix}"
+                f.rename(dest)
+                count += 1
+            self._send_json({"archived": count})
+        except Exception as exc:
+            self._send_json({"error": str(exc)}, status=500)
+
+    def handle_simulation_history(self):
+        history = []
+        if SAVE_DIR.exists():
+            for f in sorted(SAVE_DIR.glob("*.json")):
+                try:
+                    data = json.loads(f.read_text(encoding="utf-8"))
+                    ts_str = f.stem.rsplit("_", 1)[-1]
+                    try:
+                        ts = datetime.datetime.strptime(ts_str, "%Y%m%dT%H%M%SZ").strftime("%Y-%m-%dT%H:%M:%SZ")
+                    except ValueError:
+                        ts = ts_str
+                    win_probs = {
+                        row["team"]: round(row.get("prob_Winner", 0), 4)
+                        for row in data.get("tournament_simulation", [])
+                        if row.get("team")
+                    }
+                    if win_probs and max(win_probs.values(), default=0) > 0:
+                        history.append({
+                            "timestamp": ts,
+                            "simulations": int(data.get("simulations", 0)),
+                            "mode": "actuals" if data.get("use_actuals") else "full",
+                            "win_probs": win_probs,
+                        })
+                except Exception:
+                    pass
+        history.sort(key=lambda x: x["timestamp"])
+        self._send_json(history)
 
 
 def run_server(host: str = "127.0.0.1", port: int = 8000) -> None:

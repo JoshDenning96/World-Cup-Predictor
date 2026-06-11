@@ -31,6 +31,9 @@
           <button id="simulation-run-button" type="button">Run simulation</button>
           <span id="simulation-status" class="simulation-status">Loaded current dataset</span>
         </div>
+        <div id="simulation-progress-container" class="simulation-progress-container">
+          <div id="simulation-progress-fill" class="simulation-progress-fill"></div>
+        </div>
         <div class="summary-grid" id="summary-cards"></div>
       </section>
 
@@ -101,11 +104,6 @@
           <div class="chart-controls">
             <label for="knockout-team-select">Team:</label>
             <select id="knockout-team-select"></select>
-            <label for="knockout-view-select">View:</label>
-            <select id="knockout-view-select">
-              <option value="Top 12">Top 12</option>
-              <option value="All">All teams</option>
-            </select>
           </div>
         </div>
           <div class="table-card knockout-card">
@@ -126,16 +124,62 @@
       <section class="section">
         <div class="section-heading">
           <h2>Bracket projection</h2>
-          <p>Lane-style bracket visualization for top teams across knockout rounds.</p>
+          <p>Projected bracket. Left bar and border colour indicate tournament win probability — gold = strong favourite, grey = low probability. <span style="display:inline-flex;align-items:center;gap:4px;"><svg width="10" height="10" viewBox="0 0 10 10"><circle cx="5" cy="5" r="4" fill="rgba(34,197,94,0.9)"/></svg> green dot = confirmed actual result.</span></p>
         </div>
-+        <div id="third-place-key" class="detail-card" style="margin-top:0; font-size:12px; color:#cbd5e1;"></div>
-+        <div id="third-place-explain" class="detail-card" style="margin-top:6px; font-size:12px; color:#94a3b8; line-height:1.2;">
-+          Selection: prefers the top‑8 third‑placed teams by <strong>average points</strong> (tie‑breakers: goal difference, then probability of finishing 3rd). Falls back to a scored mapping, then the closest available table entry.
-+        </div>
         <div class="bracket-card table-card">
           <!-- Full 32-team bracket — no selector needed -->
           <div class="bracket-container">
             <svg id="bracket-svg" viewBox="0 0 1100 600" preserveAspectRatio="xMidYMid meet"></svg>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="history-section">
+        <div class="section-heading">
+          <div>
+            <h2>Simulation history</h2>
+            <p>How win probabilities have shifted over time. Hollow points = full-simulation baseline; filled points = actuals-mode runs. All points for the same team are connected.</p>
+          </div>
+          <div class="chart-controls">
+            <label for="history-view-select">Show:</label>
+            <select id="history-view-select">
+              <option value="5">Top 5</option>
+              <option value="8">Top 8</option>
+              <option value="10">Top 10</option>
+            </select>
+            <label for="history-team-select">Highlight:</label>
+            <select id="history-team-select">
+              <option value="">None</option>
+            </select>
+            <button id="history-clear-button" type="button" style="margin-left:8px;">Archive history</button>
+          </div>
+        </div>
+        <div class="chart-card" id="history-chart-card">
+          <p id="history-empty" class="history-empty" style="display:none;"></p>
+          <canvas id="historyChart"></canvas>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="section-heading">
+          <h2>About the model</h2>
+          <p>How the simulation works and what the numbers mean.</p>
+        </div>
+        <div class="feature-list">
+          <div>
+            <strong>Monte Carlo simulation.</strong> Each run simulates the full FIFA 2026 tournament a user-selected number of times from the current state. Probabilities (e.g. "32% chance of winning") are simply how often each outcome occurred across all simulations — not a single prediction. More simulations give smoother, more stable probabilities.
+          </div>
+          <div>
+            <strong>Elo-based match model.</strong> Each match is resolved using FIFA Elo ratings. The rating difference between two teams determines the win/draw/loss probabilities. No home-advantage adjustment is applied. Draws are possible in the group stage; in knockout rounds a drawn match is resolved as a 50/50 coin flip (simulating a penalty shootout).
+          </div>
+          <div>
+            <strong>CONMEBOL adjustment.</strong> A −20 Elo point offset is applied by default to all qualified CONMEBOL teams. This acts as a scepticism dial, reducing South American teams' projected strength relative to their raw Elo rating.
+          </div>
+          <div>
+            <strong>Actuals + simulation mode.</strong> Once real matches have been played, enter the results in the actuals panel. The simulation then fixes those outcomes and runs forward from the current bracket state, so probabilities update as the tournament progresses.
+          </div>
+          <div>
+            <strong>Interpreting the bracket.</strong> The bracket shows the most likely path for each team based on simulation probabilities. Box border and left-bar colour shift from grey (low win probability) to gold (high). A <span style="display:inline-flex;align-items:center;gap:3px;"><svg width="9" height="9" viewBox="0 0 9 9"><circle cx="4.5" cy="4.5" r="3.5" fill="rgba(34,197,94,0.9)"/></svg> green dot</span> indicates the position was confirmed by an actual result, not a projection.
           </div>
         </div>
       </section>
@@ -161,6 +205,6 @@
       </section>
     </div>
 
-    <script src="app.js?v=1"></script>
+    <script src="app.js?v=9"></script>
   </body>
 </html>

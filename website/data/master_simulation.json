@@ -1,2542 +1,1211 @@
 {
-  "elo_ratings": [
-    {
-      "team": "Scotland",
-      "elo_rating": 1689.05137202272
-    },
-    {
-      "team": "England",
-      "elo_rating": 1890.266741973289
-    },
-    {
-      "team": "Wales",
-      "elo_rating": 1672.4607060626238
-    },
-    {
-      "team": "Northern Ireland",
-      "elo_rating": 1561.923534760348
-    },
-    {
-      "team": "United States",
-      "elo_rating": 1725.063775096638
-    },
-    {
-      "team": "Canada",
-      "elo_rating": 1761.263553045111
-    },
-    {
-      "team": "Uruguay",
-      "elo_rating": 1827.4744361898963
-    },
+  "simulations": 200,
+  "conmebol_offset": -20.0,
+  "use_actuals": true,
+  "tournament_simulation": [
     {
       "team": "Argentina",
-      "elo_rating": 1967.728553297154
-    },
-    {
-      "team": "Austria",
-      "elo_rating": 1742.7572888168918
-    },
-    {
-      "team": "Hungary",
-      "elo_rating": 1671.6530697680028
-    },
-    {
-      "team": "Czechoslovakia",
-      "elo_rating": 1692.701008341056
-    },
-    {
-      "team": "Belgium",
-      "elo_rating": 1825.517739867533
+      "prob_Round_of_32": 1.0,
+      "prob_Round_of_16": 1.0,
+      "prob_Quarter_Finals": 0.72,
+      "prob_Semi_Finals": 0.47,
+      "prob_Finals": 0.31,
+      "prob_Winner": 0.18
     },
     {
       "team": "France",
-      "elo_rating": 1938.625091176372
+      "prob_Round_of_32": 1.0,
+      "prob_Round_of_16": 1.0,
+      "prob_Quarter_Finals": 1.0,
+      "prob_Semi_Finals": 0.54,
+      "prob_Finals": 0.28,
+      "prob_Winner": 0.15
     },
     {
-      "team": "Switzerland",
-      "elo_rating": 1806.7057968492988
-    },
-    {
-      "team": "Guernsey",
-      "elo_rating": 1673.879905623233
-    },
-    {
-      "team": "Alderney",
-      "elo_rating": 1186.24092681023
-    },
-    {
-      "team": "Jersey",
-      "elo_rating": 1724.4612902508343
-    },
-    {
-      "team": "Netherlands",
-      "elo_rating": 1853.8591342503746
-    },
-    {
-      "team": "Guyana",
-      "elo_rating": 1459.5648587991368
-    },
-    {
-      "team": "Trinidad and Tobago",
-      "elo_rating": 1524.92273864257
-    },
-    {
-      "team": "Germany",
-      "elo_rating": 1838.8076888603662
-    },
-    {
-      "team": "Sweden",
-      "elo_rating": 1686.6681627607054
-    },
-    {
-      "team": "Norway",
-      "elo_rating": 1740.9165804826273
-    },
-    {
-      "team": "Denmark",
-      "elo_rating": 1791.0892636583058
-    },
-    {
-      "team": "Italy",
-      "elo_rating": 1847.317812668908
-    },
-    {
-      "team": "Chile",
-      "elo_rating": 1725.7569694646247
-    },
-    {
-      "team": "Russia",
-      "elo_rating": 1738.7723822503308
-    },
-    {
-      "team": "Finland",
-      "elo_rating": 1545.3543053605017
-    },
-    {
-      "team": "Luxembourg",
-      "elo_rating": 1396.6140058827013
-    },
-    {
-      "team": "Catalonia",
-      "elo_rating": 1585.4182900812345
-    },
-    {
-      "team": "Philippines",
-      "elo_rating": 1371.9912890751855
-    },
-    {
-      "team": "China PR",
-      "elo_rating": 1514.0551259040428
+      "team": "England",
+      "prob_Round_of_32": 1.0,
+      "prob_Round_of_16": 1.0,
+      "prob_Quarter_Finals": 1.0,
+      "prob_Semi_Finals": 0.46,
+      "prob_Finals": 0.24,
+      "prob_Winner": 0.145
     },
     {
       "team": "Brazil",
-      "elo_rating": 1907.80677960783
-    },
-    {
-      "team": "Basque Country",
-      "elo_rating": 1695.2480563417027
-    },
-    {
-      "team": "Japan",
-      "elo_rating": 1809.9378727435972
-    },
-    {
-      "team": "Paraguay",
-      "elo_rating": 1740.5876843550438
-    },
-    {
-      "team": "Romania",
-      "elo_rating": 1622.7349248709422
-    },
-    {
-      "team": "Greece",
-      "elo_rating": 1697.8173696492129
-    },
-    {
-      "team": "Egypt",
-      "elo_rating": 1710.073085180316
+      "prob_Round_of_32": 1.0,
+      "prob_Round_of_16": 1.0,
+      "prob_Quarter_Finals": 1.0,
+      "prob_Semi_Finals": 0.57,
+      "prob_Finals": 0.28,
+      "prob_Winner": 0.14
     },
     {
       "team": "Spain",
-      "elo_rating": 1984.6844164650054
-    },
-    {
-      "team": "Yugoslavia",
-      "elo_rating": 1732.5754933073963
-    },
-    {
-      "team": "Estonia",
-      "elo_rating": 1429.393823169403
-    },
-    {
-      "team": "Suriname",
-      "elo_rating": 1530.5176687576698
-    },
-    {
-      "team": "Provence",
-      "elo_rating": 1457.5607701844676
-    },
-    {
-      "team": "Costa Rica",
-      "elo_rating": 1669.164007913869
-    },
-    {
-      "team": "El Salvador",
-      "elo_rating": 1481.130621422474
-    },
-    {
-      "team": "Guatemala",
-      "elo_rating": 1579.3811046649223
-    },
-    {
-      "team": "Poland",
-      "elo_rating": 1706.8810055398778
+      "prob_Round_of_32": 1.0,
+      "prob_Round_of_16": 1.0,
+      "prob_Quarter_Finals": 0.595,
+      "prob_Semi_Finals": 0.425,
+      "prob_Finals": 0.195,
+      "prob_Winner": 0.105
     },
     {
       "team": "Portugal",
-      "elo_rating": 1875.7975978722006
+      "prob_Round_of_32": 1.0,
+      "prob_Round_of_16": 1.0,
+      "prob_Quarter_Finals": 0.68,
+      "prob_Semi_Finals": 0.3,
+      "prob_Finals": 0.19,
+      "prob_Winner": 0.1
     },
     {
-      "team": "Brittany",
-      "elo_rating": 1509.0703627330174
-    },
-    {
-      "team": "New Zealand",
-      "elo_rating": 1637.9326380592468
-    },
-    {
-      "team": "Australia",
-      "elo_rating": 1761.589784394547
-    },
-    {
-      "team": "Latvia",
-      "elo_rating": 1349.4653004539468
-    },
-    {
-      "team": "Galicia",
-      "elo_rating": 1516.7693689333892
-    },
-    {
-      "team": "Central Spain",
-      "elo_rating": 1500.3669376095977
-    },
-    {
-      "team": "Mexico",
-      "elo_rating": 1773.3629601884356
-    },
-    {
-      "team": "Andalusia",
-      "elo_rating": 1559.8908564834765
-    },
-    {
-      "team": "Asturias",
-      "elo_rating": 1513.3178709372953
-    },
-    {
-      "team": "Lithuania",
-      "elo_rating": 1342.5718691202094
-    },
-    {
-      "team": "Turkey",
-      "elo_rating": 1769.3668007678828
-    },
-    {
-      "team": "Aruba",
-      "elo_rating": 1283.6210483467942
-    },
-    {
-      "team": "Cura\u00e7ao",
-      "elo_rating": 1511.1323518412273
-    },
-    {
-      "team": "Bulgaria",
-      "elo_rating": 1501.665024896502
-    },
-    {
-      "team": "Ireland",
-      "elo_rating": 1634.3561263126603
-    },
-    {
-      "team": "South Africa",
-      "elo_rating": 1617.1103721350557
-    },
-    {
-      "team": "Haiti",
-      "elo_rating": 1601.7989824165377
-    },
-    {
-      "team": "Jamaica",
-      "elo_rating": 1613.1199737223794
-    },
-    {
-      "team": "Kenya",
-      "elo_rating": 1484.0546365586417
-    },
-    {
-      "team": "Uganda",
-      "elo_rating": 1518.180603563566
-    },
-    {
-      "team": "Bolivia",
-      "elo_rating": 1594.946552270289
-    },
-    {
-      "team": "Peru",
-      "elo_rating": 1702.571721098765
-    },
-    {
-      "team": "Honduras",
-      "elo_rating": 1599.8839428732165
-    },
-    {
-      "team": "Belarus",
-      "elo_rating": 1488.5305563393185
-    },
-    {
-      "team": "Ukraine",
-      "elo_rating": 1748.6230368607055
-    },
-    {
-      "team": "Barbados",
-      "elo_rating": 1281.3223794504868
-    },
-    {
-      "team": "Nicaragua",
-      "elo_rating": 1455.6732868382098
-    },
-    {
-      "team": "Cuba",
-      "elo_rating": 1435.2201363406664
-    },
-    {
-      "team": "Martinique",
-      "elo_rating": 1496.7510402821563
-    },
-    {
-      "team": "Dominica",
-      "elo_rating": 1283.28335491558
-    },
-    {
-      "team": "Silesia",
-      "elo_rating": 1489.2996839018697
-    },
-    {
-      "team": "Guadeloupe",
-      "elo_rating": 1501.7523441828823
-    },
-    {
-      "team": "Israel",
-      "elo_rating": 1575.0356461529057
-    },
-    {
-      "team": "Indonesia",
-      "elo_rating": 1445.4937165728013
-    },
-    {
-      "team": "French Guiana",
-      "elo_rating": 1444.5010909616683
-    },
-    {
-      "team": "Saint Lucia",
-      "elo_rating": 1341.4657746211622
+      "team": "Germany",
+      "prob_Round_of_32": 1.0,
+      "prob_Round_of_16": 1.0,
+      "prob_Quarter_Finals": 1.0,
+      "prob_Semi_Finals": 0.43,
+      "prob_Finals": 0.2,
+      "prob_Winner": 0.06
     },
     {
       "team": "Colombia",
-      "elo_rating": 1903.337662168603
+      "prob_Round_of_32": 1.0,
+      "prob_Round_of_16": 1.0,
+      "prob_Quarter_Finals": 0.405,
+      "prob_Semi_Finals": 0.26,
+      "prob_Finals": 0.12,
+      "prob_Winner": 0.05
+    },
+    {
+      "team": "Switzerland",
+      "prob_Round_of_32": 1.0,
+      "prob_Round_of_16": 1.0,
+      "prob_Quarter_Finals": 0.28,
+      "prob_Semi_Finals": 0.155,
+      "prob_Finals": 0.055,
+      "prob_Winner": 0.025
+    },
+    {
+      "team": "Belgium",
+      "prob_Round_of_32": 1.0,
+      "prob_Round_of_16": 1.0,
+      "prob_Quarter_Finals": 0.525,
+      "prob_Semi_Finals": 0.165,
+      "prob_Finals": 0.065,
+      "prob_Winner": 0.025
+    },
+    {
+      "team": "Turkey",
+      "prob_Round_of_32": 1.0,
+      "prob_Round_of_16": 1.0,
+      "prob_Quarter_Finals": 0.475,
+      "prob_Semi_Finals": 0.15,
+      "prob_Finals": 0.05,
+      "prob_Winner": 0.015
+    },
+    {
+      "team": "United States",
+      "prob_Round_of_32": 1.0,
+      "prob_Round_of_16": 1.0,
+      "prob_Quarter_Finals": 0.32,
+      "prob_Semi_Finals": 0.075,
+      "prob_Finals": 0.015,
+      "prob_Winner": 0.005
     },
     {
       "team": "Panama",
-      "elo_rating": 1705.1615857532745
-    },
-    {
-      "team": "Venezuela",
-      "elo_rating": 1716.1497339064356
-    },
-    {
-      "team": "Ecuador",
-      "elo_rating": 1813.355714509737
-    },
-    {
-      "team": "Saint Kitts and Nevis",
-      "elo_rating": 1365.463529254669
-    },
-    {
-      "team": "Grenada",
-      "elo_rating": 1344.465614224564
-    },
-    {
-      "team": "India",
-      "elo_rating": 1342.6571827265348
-    },
-    {
-      "team": "Slovakia",
-      "elo_rating": 1646.496478166629
-    },
-    {
-      "team": "Manchukuo",
-      "elo_rating": 1465.189276587497
-    },
-    {
-      "team": "Croatia",
-      "elo_rating": 1838.180412784458
-    },
-    {
-      "team": "Lebanon",
-      "elo_rating": 1459.4108891225867
-    },
-    {
-      "team": "Puerto Rico",
-      "elo_rating": 1372.1985426993535
-    },
-    {
-      "team": "Afghanistan",
-      "elo_rating": 1307.1332323412055
-    },
-    {
-      "team": "Iran",
-      "elo_rating": 1790.3747999038633
-    },
-    {
-      "team": "Mongolia",
-      "elo_rating": 1202.7098804801233
-    },
-    {
-      "team": "Tanzania",
-      "elo_rating": 1443.5769014093169
-    },
-    {
-      "team": "Zimbabwe",
-      "elo_rating": 1476.2013128411484
-    },
-    {
-      "team": "Zambia",
-      "elo_rating": 1536.3628811864119
-    },
-    {
-      "team": "Iceland",
-      "elo_rating": 1577.0713491077681
-    },
-    {
-      "team": "Albania",
-      "elo_rating": 1589.422814441971
-    },
-    {
-      "team": "Montenegro",
-      "elo_rating": 1493.1997114317062
-    },
-    {
-      "team": "Madagascar",
-      "elo_rating": 1457.5195154874168
-    },
-    {
-      "team": "Mauritius",
-      "elo_rating": 1280.0548986156946
-    },
-    {
-      "team": "R\u00e9union",
-      "elo_rating": 1550.579662810823
-    },
-    {
-      "team": "Zanzibar",
-      "elo_rating": 1500.5054977433642
-    },
-    {
-      "team": "Djibouti",
-      "elo_rating": 1170.7271995804729
-    },
-    {
-      "team": "Ethiopia",
-      "elo_rating": 1404.9309547991936
-    },
-    {
-      "team": "DR Congo",
-      "elo_rating": 1643.2489376131239
-    },
-    {
-      "team": "South Korea",
-      "elo_rating": 1796.4728929559467
-    },
-    {
-      "team": "Vietnam",
-      "elo_rating": 1494.9697433626286
-    },
-    {
-      "team": "Macau",
-      "elo_rating": 1087.241729677475
-    },
-    {
-      "team": "Dominican Republic",
-      "elo_rating": 1452.776938733772
-    },
-    {
-      "team": "Cyprus",
-      "elo_rating": 1367.324467054077
-    },
-    {
-      "team": "Sierra Leone",
-      "elo_rating": 1461.4911410532134
-    },
-    {
-      "team": "Nigeria",
-      "elo_rating": 1711.3154243580577
-    },
-    {
-      "team": "Syria",
-      "elo_rating": 1540.6768880830102
-    },
-    {
-      "team": "Serbia",
-      "elo_rating": 1736.0063164223327
-    },
-    {
-      "team": "Taiwan",
-      "elo_rating": 1236.0788141169867
-    },
-    {
-      "team": "Ghana",
-      "elo_rating": 1610.0304510505234
-    },
-    {
-      "team": "Myanmar",
-      "elo_rating": 1248.478193231063
-    },
-    {
-      "team": "New Caledonia",
-      "elo_rating": 1579.8438026911995
-    },
-    {
-      "team": "Vanuatu",
-      "elo_rating": 1466.9043887735754
-    },
-    {
-      "team": "Fiji",
-      "elo_rating": 1490.2494513063195
-    },
-    {
-      "team": "Pakistan",
-      "elo_rating": 1159.7260941598927
-    },
-    {
-      "team": "Sri Lanka",
-      "elo_rating": 1146.2567022452183
-    },
-    {
-      "team": "German DR",
-      "elo_rating": 1673.4948954820136
-    },
-    {
-      "team": "Tahiti",
-      "elo_rating": 1533.9840317481585
-    },
-    {
-      "team": "Gambia",
-      "elo_rating": 1504.8574795897405
-    },
-    {
-      "team": "Hong Kong",
-      "elo_rating": 1362.4225455763028
-    },
-    {
-      "team": "Singapore",
-      "elo_rating": 1352.7851101204524
-    },
-    {
-      "team": "Malaysia",
-      "elo_rating": 1481.5845199519201
-    },
-    {
-      "team": "Guinea-Bissau",
-      "elo_rating": 1408.0369734173744
-    },
-    {
-      "team": "Saarland",
-      "elo_rating": 1456.1044416526058
-    },
-    {
-      "team": "Burundi",
-      "elo_rating": 1418.4211333846133
-    },
-    {
-      "team": "Cameroon",
-      "elo_rating": 1671.9181262867035
-    },
-    {
-      "team": "Kernow",
-      "elo_rating": 1553.2587114869675
-    },
-    {
-      "team": "Cambodia",
-      "elo_rating": 1156.214369530729
-    },
-    {
-      "team": "Thailand",
-      "elo_rating": 1527.4933653379135
-    },
-    {
-      "team": "Vietnam Republic",
-      "elo_rating": 1468.4572288696972
-    },
-    {
-      "team": "Kyrgyzstan",
-      "elo_rating": 1444.470967363953
-    },
-    {
-      "team": "Moldova",
-      "elo_rating": 1340.8982501864925
-    },
-    {
-      "team": "North Vietnam",
-      "elo_rating": 1492.2330382197188
-    },
-    {
-      "team": "Togo",
-      "elo_rating": 1467.7741420619507
-    },
-    {
-      "team": "North Korea",
-      "elo_rating": 1520.426736713737
-    },
-    {
-      "team": "Sudan",
-      "elo_rating": 1457.5966649404077
-    },
-    {
-      "team": "Malta",
-      "elo_rating": 1324.85063183931
-    },
-    {
-      "team": "Tunisia",
-      "elo_rating": 1697.3029498369613
-    },
-    {
-      "team": "Libya",
-      "elo_rating": 1535.7954561809556
-    },
-    {
-      "team": "Malawi",
-      "elo_rating": 1465.6240012475089
-    },
-    {
-      "team": "Morocco",
-      "elo_rating": 1794.1272158773766
-    },
-    {
-      "team": "Benin",
-      "elo_rating": 1507.489155871325
-    },
-    {
-      "team": "Cape Verde",
-      "elo_rating": 1613.8673073387565
-    },
-    {
-      "team": "Cote d'Ivoire",
-      "elo_rating": 1692.6541597995385
-    },
-    {
-      "team": "Burkina Faso",
-      "elo_rating": 1647.426466340063
-    },
-    {
-      "team": "Gabon",
-      "elo_rating": 1531.8857946162036
-    },
-    {
-      "team": "Congo",
-      "elo_rating": 1402.7047546061376
-    },
-    {
-      "team": "Mali",
-      "elo_rating": 1654.5255716874178
-    },
-    {
-      "team": "Central African Republic",
-      "elo_rating": 1383.9589673465268
-    },
-    {
-      "team": "Iraq",
-      "elo_rating": 1657.3624948927584
-    },
-    {
-      "team": "Saint Vincent and the Grenadines",
-      "elo_rating": 1397.612426965677
-    },
-    {
-      "team": "Senegal",
-      "elo_rating": 1834.532696531531
-    },
-    {
-      "team": "Laos",
-      "elo_rating": 1115.8790593764957
-    },
-    {
-      "team": "Chad",
-      "elo_rating": 1320.557646503455
-    },
-    {
-      "team": "Niger",
-      "elo_rating": 1434.7784984825535
-    },
-    {
-      "team": "Mauritania",
-      "elo_rating": 1453.3476041623842
-    },
-    {
-      "team": "Liberia",
-      "elo_rating": 1410.2771835787717
-    },
-    {
-      "team": "Guinea",
-      "elo_rating": 1562.5327007332367
-    },
-    {
-      "team": "Algeria",
-      "elo_rating": 1766.0156108707645
-    },
-    {
-      "team": "Kuwait",
-      "elo_rating": 1465.2176831952597
-    },
-    {
-      "team": "Jordan",
-      "elo_rating": 1657.105450244582
-    },
-    {
-      "team": "Papua New Guinea",
-      "elo_rating": 1470.1968400148687
-    },
-    {
-      "team": "Solomon Islands",
-      "elo_rating": 1478.1609622575006
-    },
-    {
-      "team": "Somalia",
-      "elo_rating": 1178.9210882934067
-    },
-    {
-      "team": "Saudi Arabia",
-      "elo_rating": 1632.1368535338868
-    },
-    {
-      "team": "Bermuda",
-      "elo_rating": 1378.03024099827
-    },
-    {
-      "team": "Palestine",
-      "elo_rating": 1521.749329343302
-    },
-    {
-      "team": "Bahrain",
-      "elo_rating": 1511.5737771638683
-    },
-    {
-      "team": "Yemen",
-      "elo_rating": 1326.152547905402
-    },
-    {
-      "team": "Oman",
-      "elo_rating": 1584.2389023650062
-    },
-    {
-      "team": "Wallis Islands and Futuna",
-      "elo_rating": 1425.952900406808
-    },
-    {
-      "team": "Corsica",
-      "elo_rating": 1529.7915256792503
-    },
-    {
-      "team": "Western Australia",
-      "elo_rating": 1490.7948287804713
-    },
-    {
-      "team": "Eswatini",
-      "elo_rating": 1351.4773113430601
-    },
-    {
-      "team": "Botswana",
-      "elo_rating": 1440.0775793736157
+      "prob_Round_of_32": 0.0,
+      "prob_Round_of_16": 0.0,
+      "prob_Quarter_Finals": 0.0,
+      "prob_Semi_Finals": 0.0,
+      "prob_Finals": 0.0,
+      "prob_Winner": 0.0
+    },
+    {
+      "team": "Paraguay",
+      "prob_Round_of_32": 0.0,
+      "prob_Round_of_16": 0.0,
+      "prob_Quarter_Finals": 0.0,
+      "prob_Semi_Finals": 0.0,
+      "prob_Finals": 0.0,
+      "prob_Winner": 0.0
     },
     {
       "team": "Qatar",
-      "elo_rating": 1563.512188818953
+      "prob_Round_of_32": 0.0,
+      "prob_Round_of_16": 0.0,
+      "prob_Quarter_Finals": 0.0,
+      "prob_Semi_Finals": 0.0,
+      "prob_Finals": 0.0,
+      "prob_Winner": 0.0
     },
     {
-      "team": "Lesotho",
-      "elo_rating": 1393.057968829371
+      "team": "Norway",
+      "prob_Round_of_32": 1.0,
+      "prob_Round_of_16": 0.0,
+      "prob_Quarter_Finals": 0.0,
+      "prob_Semi_Finals": 0.0,
+      "prob_Finals": 0.0,
+      "prob_Winner": 0.0
     },
     {
-      "team": "Bahamas",
-      "elo_rating": 1239.4976298166005
+      "team": "Algeria",
+      "prob_Round_of_32": 1.0,
+      "prob_Round_of_16": 0.0,
+      "prob_Quarter_Finals": 0.0,
+      "prob_Semi_Finals": 0.0,
+      "prob_Finals": 0.0,
+      "prob_Winner": 0.0
     },
     {
-      "team": "Brunei",
-      "elo_rating": 1111.9062006895306
+      "team": "South Africa",
+      "prob_Round_of_32": 0.0,
+      "prob_Round_of_16": 0.0,
+      "prob_Quarter_Finals": 0.0,
+      "prob_Semi_Finals": 0.0,
+      "prob_Finals": 0.0,
+      "prob_Winner": 0.0
     },
     {
-      "team": "Cook Islands",
-      "elo_rating": 1342.4486399532746
+      "team": "Saudi Arabia",
+      "prob_Round_of_32": 0.0,
+      "prob_Round_of_16": 0.0,
+      "prob_Quarter_Finals": 0.0,
+      "prob_Semi_Finals": 0.0,
+      "prob_Finals": 0.0,
+      "prob_Winner": 0.0
     },
     {
-      "team": "Yemen DPR",
-      "elo_rating": 1456.0849327971614
+      "team": "Scotland",
+      "prob_Round_of_32": 1.0,
+      "prob_Round_of_16": 0.0,
+      "prob_Quarter_Finals": 0.0,
+      "prob_Semi_Finals": 0.0,
+      "prob_Finals": 0.0,
+      "prob_Winner": 0.0
     },
     {
-      "team": "United Arab Emirates",
-      "elo_rating": 1598.8237439083712
+      "team": "Senegal",
+      "prob_Round_of_32": 1.0,
+      "prob_Round_of_16": 0.0,
+      "prob_Quarter_Finals": 0.0,
+      "prob_Semi_Finals": 0.0,
+      "prob_Finals": 0.0,
+      "prob_Winner": 0.0
     },
     {
-      "team": "Faroe Islands",
-      "elo_rating": 1362.250342233841
+      "team": "Netherlands",
+      "prob_Round_of_32": 1.0,
+      "prob_Round_of_16": 1.0,
+      "prob_Quarter_Finals": 0.0,
+      "prob_Semi_Finals": 0.0,
+      "prob_Finals": 0.0,
+      "prob_Winner": 0.0
     },
     {
-      "team": "Nepal",
-      "elo_rating": 1235.189352291312
+      "team": "South Korea",
+      "prob_Round_of_32": 1.0,
+      "prob_Round_of_16": 0.0,
+      "prob_Quarter_Finals": 0.0,
+      "prob_Semi_Finals": 0.0,
+      "prob_Finals": 0.0,
+      "prob_Winner": 0.0
     },
     {
-      "team": "Antigua and Barbuda",
-      "elo_rating": 1279.6212921521033
+      "team": "Sweden",
+      "prob_Round_of_32": 1.0,
+      "prob_Round_of_16": 0.0,
+      "prob_Quarter_Finals": 0.0,
+      "prob_Semi_Finals": 0.0,
+      "prob_Finals": 0.0,
+      "prob_Winner": 0.0
     },
     {
-      "team": "Bangladesh",
-      "elo_rating": 1227.4645501900302
+      "team": "Tunisia",
+      "prob_Round_of_32": 0.0,
+      "prob_Round_of_16": 0.0,
+      "prob_Quarter_Finals": 0.0,
+      "prob_Semi_Finals": 0.0,
+      "prob_Finals": 0.0,
+      "prob_Winner": 0.0
     },
     {
-      "team": "Seychelles",
-      "elo_rating": 1156.3969820333227
+      "team": "Uruguay",
+      "prob_Round_of_32": 1.0,
+      "prob_Round_of_16": 0.0,
+      "prob_Quarter_Finals": 0.0,
+      "prob_Semi_Finals": 0.0,
+      "prob_Finals": 0.0,
+      "prob_Winner": 0.0
     },
     {
-      "team": "Equatorial Guinea",
-      "elo_rating": 1460.693043496117
+      "team": "New Zealand",
+      "prob_Round_of_32": 0.0,
+      "prob_Round_of_16": 0.0,
+      "prob_Quarter_Finals": 0.0,
+      "prob_Semi_Finals": 0.0,
+      "prob_Finals": 0.0,
+      "prob_Winner": 0.0
     },
     {
-      "team": "Mozambique",
-      "elo_rating": 1484.5260121980907
+      "team": "Japan",
+      "prob_Round_of_32": 1.0,
+      "prob_Round_of_16": 0.0,
+      "prob_Quarter_Finals": 0.0,
+      "prob_Semi_Finals": 0.0,
+      "prob_Finals": 0.0,
+      "prob_Winner": 0.0
     },
     {
-      "team": "Guam",
-      "elo_rating": 1199.6697517359744
+      "team": "Morocco",
+      "prob_Round_of_32": 1.0,
+      "prob_Round_of_16": 0.0,
+      "prob_Quarter_Finals": 0.0,
+      "prob_Semi_Finals": 0.0,
+      "prob_Finals": 0.0,
+      "prob_Winner": 0.0
     },
     {
-      "team": "Angola",
-      "elo_rating": 1544.3405163583022
+      "team": "Mexico",
+      "prob_Round_of_32": 1.0,
+      "prob_Round_of_16": 1.0,
+      "prob_Quarter_Finals": 0.0,
+      "prob_Semi_Finals": 0.0,
+      "prob_Finals": 0.0,
+      "prob_Winner": 0.0
     },
     {
-      "team": "S\u00e3o Tom\u00e9 and Pr\u00edncipe",
-      "elo_rating": 1281.04610084893
+      "team": "Australia",
+      "prob_Round_of_32": 1.0,
+      "prob_Round_of_16": 0.0,
+      "prob_Quarter_Finals": 0.0,
+      "prob_Semi_Finals": 0.0,
+      "prob_Finals": 0.0,
+      "prob_Winner": 0.0
     },
     {
-      "team": "Rwanda",
-      "elo_rating": 1441.0938102334164
-    },
-    {
-      "team": "Northern Cyprus",
-      "elo_rating": 1575.4608784424397
-    },
-    {
-      "team": "Armenia",
-      "elo_rating": 1434.9819375170694
-    },
-    {
-      "team": "Georgia",
-      "elo_rating": 1595.0707261712253
-    },
-    {
-      "team": "Azerbaijan",
-      "elo_rating": 1394.152753457958
-    },
-    {
-      "team": "Kazakhstan",
-      "elo_rating": 1433.1949826434147
-    },
-    {
-      "team": "Comoros",
-      "elo_rating": 1460.7774858712698
-    },
-    {
-      "team": "Maldives",
-      "elo_rating": 1209.605759395994
-    },
-    {
-      "team": "Tonga",
-      "elo_rating": 1283.7888255540643
-    },
-    {
-      "team": "Kiribati",
-      "elo_rating": 1408.6058516795808
-    },
-    {
-      "team": "Tuvalu",
-      "elo_rating": 1384.0443855841406
-    },
-    {
-      "team": "Samoa",
-      "elo_rating": 1352.824919322465
-    },
-    {
-      "team": "Greenland",
-      "elo_rating": 1457.7562854377584
-    },
-    {
-      "team": "Liechtenstein",
-      "elo_rating": 1115.0157535454466
-    },
-    {
-      "team": "Bhutan",
-      "elo_rating": 1073.6740462454761
-    },
-    {
-      "team": "South Yemen",
-      "elo_rating": 1487.5908567076237
-    },
-    {
-      "team": "American Samoa",
-      "elo_rating": 1236.2799332583515
-    },
-    {
-      "team": "Niue",
-      "elo_rating": 1478.444673589051
-    },
-    {
-      "team": "Belize",
-      "elo_rating": 1370.7811567359906
-    },
-    {
-      "team": "Cayman Islands",
-      "elo_rating": 1230.4538166208717
-    },
-    {
-      "team": "Anguilla",
-      "elo_rating": 1153.1613418295744
-    },
-    {
-      "team": "British Virgin Islands",
-      "elo_rating": 1201.3156342802956
-    },
-    {
-      "team": "Palau",
-      "elo_rating": 1469.2012231809529
-    },
-    {
-      "team": "Sint Maarten",
-      "elo_rating": 1385.2367110550226
-    },
-    {
-      "team": "Namibia",
-      "elo_rating": 1453.4044049390957
-    },
-    {
-      "team": "Ynys M\u00f4n",
-      "elo_rating": 1620.503797806887
-    },
-    {
-      "team": "Shetland",
-      "elo_rating": 1496.2105218075155
-    },
-    {
-      "team": "\u00c5land Islands",
-      "elo_rating": 1478.5260247272586
-    },
-    {
-      "team": "Saint Martin",
-      "elo_rating": 1350.402808048726
-    },
-    {
-      "team": "San Marino",
-      "elo_rating": 1022.4291190185019
-    },
-    {
-      "team": "Montserrat",
-      "elo_rating": 1335.5738562685503
-    },
-    {
-      "team": "Slovenia",
-      "elo_rating": 1670.0335889278142
-    },
-    {
-      "team": "Isle of Wight",
-      "elo_rating": 1586.9237816277182
-    },
-    {
-      "team": "Turkmenistan",
-      "elo_rating": 1424.2531265322614
-    },
-    {
-      "team": "Tajikistan",
-      "elo_rating": 1455.3257710643643
-    },
-    {
-      "team": "Uzbekistan",
-      "elo_rating": 1709.6992361571688
-    },
-    {
-      "team": "Eritrea",
-      "elo_rating": 1324.2023716745227
-    },
-    {
-      "team": "Isle of Man",
-      "elo_rating": 1625.053128095386
-    },
-    {
-      "team": "Gibraltar",
-      "elo_rating": 1213.2048187457608
-    },
-    {
-      "team": "North Macedonia",
-      "elo_rating": 1563.922976150573
-    },
-    {
-      "team": "Czech Republic",
-      "elo_rating": 1701.0055620555897
+      "team": "Austria",
+      "prob_Round_of_32": 1.0,
+      "prob_Round_of_16": 0.0,
+      "prob_Quarter_Finals": 0.0,
+      "prob_Semi_Finals": 0.0,
+      "prob_Finals": 0.0,
+      "prob_Winner": 0.0
     },
     {
       "team": "Bosnia and Herzegovina",
-      "elo_rating": 1576.010614678542
-    },
-    {
-      "team": "Canary Islands",
-      "elo_rating": 1503.638773846228
-    },
-    {
-      "team": "Andorra",
-      "elo_rating": 1176.801038794926
-    },
-    {
-      "team": "Hitra",
-      "elo_rating": 1424.0913203636273
-    },
-    {
-      "team": "Fr\u00f8ya",
-      "elo_rating": 1351.1815514011391
-    },
-    {
-      "team": "United States Virgin Islands",
-      "elo_rating": 1193.5286801178345
-    },
-    {
-      "team": "Northern Mariana Islands",
-      "elo_rating": 1258.5228086660936
-    },
-    {
-      "team": "Turks and Caicos Islands",
-      "elo_rating": 1289.0140120283593
-    },
-    {
-      "team": "Micronesia",
-      "elo_rating": 1453.836783685438
-    },
-    {
-      "team": "Gotland",
-      "elo_rating": 1443.5031548371337
-    },
-    {
-      "team": "Saare County",
-      "elo_rating": 1389.0687475278498
-    },
-    {
-      "team": "Rhodes",
-      "elo_rating": 1543.4586126044862
-    },
-    {
-      "team": "Monaco",
-      "elo_rating": 1490.9758389022766
-    },
-    {
-      "team": "Tibet",
-      "elo_rating": 1390.7889202553001
-    },
-    {
-      "team": "Orkney",
-      "elo_rating": 1428.0427560075204
-    },
-    {
-      "team": "Falkland Islands",
-      "elo_rating": 1354.623412646792
-    },
-    {
-      "team": "Mayotte",
-      "elo_rating": 1473.448352624361
-    },
-    {
-      "team": "Vatican City",
-      "elo_rating": 1458.8738844102238
-    },
-    {
-      "team": "Timor-Leste",
-      "elo_rating": 1102.9087314832109
-    },
-    {
-      "team": "Sark",
-      "elo_rating": 1465.2394846599802
-    },
-    {
-      "team": "Sealand",
-      "elo_rating": 1492.0598989416387
-    },
-    {
-      "team": "Occitania",
-      "elo_rating": 1587.3245319563891
-    },
-    {
-      "team": "Chechnya",
-      "elo_rating": 1483.3185477037819
-    },
-    {
-      "team": "Ambazonia",
-      "elo_rating": 1467.1733707319704
-    },
-    {
-      "team": "Western Isles",
-      "elo_rating": 1479.0243801791144
-    },
-    {
-      "team": "Kosovo",
-      "elo_rating": 1605.6378091992374
-    },
-    {
-      "team": "Republic of St. Pauli",
-      "elo_rating": 1476.3704699604705
-    },
-    {
-      "team": "G\u0103g\u0103uzia",
-      "elo_rating": 1465.5726421544316
-    },
-    {
-      "team": "Crimea",
-      "elo_rating": 1519.0894708014757
-    },
-    {
-      "team": "S\u00e1pmi",
-      "elo_rating": 1456.1681306475691
-    },
-    {
-      "team": "Romani people",
-      "elo_rating": 1478.4295612347737
-    },
-    {
-      "team": "Menorca",
-      "elo_rating": 1523.0596536106498
-    },
-    {
-      "team": "Iraqi Kurdistan",
-      "elo_rating": 1563.7562338669443
-    },
-    {
-      "team": "Padania",
-      "elo_rating": 1603.7448252376075
-    },
-    {
-      "team": "Arameans Suryoye",
-      "elo_rating": 1531.4908391705444
-    },
-    {
-      "team": "Gozo",
-      "elo_rating": 1477.6534469991707
-    },
-    {
-      "team": "Two Sicilies",
-      "elo_rating": 1478.0073011808572
-    },
-    {
-      "team": "Saint Barth\u00e9lemy",
-      "elo_rating": 1454.425318657287
-    },
-    {
-      "team": "Saint Pierre and Miquelon",
-      "elo_rating": 1444.6650743266466
-    },
-    {
-      "team": "Bonaire",
-      "elo_rating": 1351.7597181158958
-    },
-    {
-      "team": "Chagos Islands",
-      "elo_rating": 1433.3936994292362
-    },
-    {
-      "team": "Raetia",
-      "elo_rating": 1443.0172093119547
-    },
-    {
-      "team": "Cilento",
-      "elo_rating": 1492.5946515364017
-    },
-    {
-      "team": "Darfur",
-      "elo_rating": 1432.8366766065678
-    },
-    {
-      "team": "Western Sahara",
-      "elo_rating": 1488.5214373262443
-    },
-    {
-      "team": "Tamil Eelam",
-      "elo_rating": 1504.2297677601166
-    },
-    {
-      "team": "South Sudan",
-      "elo_rating": 1324.0498506343033
-    },
-    {
-      "team": "Abkhazia",
-      "elo_rating": 1548.6611120122818
-    },
-    {
-      "team": "Artsakh",
-      "elo_rating": 1521.5036584086886
-    },
-    {
-      "team": "Madrid",
-      "elo_rating": 1488.526135111166
-    },
-    {
-      "team": "Saugeais",
-      "elo_rating": 1496.7583763142927
-    },
-    {
-      "team": "Ellan Vannin",
-      "elo_rating": 1537.524878299867
-    },
-    {
-      "team": "Somaliland",
-      "elo_rating": 1488.93691565232
-    },
-    {
-      "team": "Franconia",
-      "elo_rating": 1508.8390745635024
-    },
-    {
-      "team": "County of Nice",
-      "elo_rating": 1546.068444485683
-    },
-    {
-      "team": "South Ossetia",
-      "elo_rating": 1485.6810493240444
-    },
-    {
-      "team": "Seborga",
-      "elo_rating": 1486.644068502343
-    },
-    {
-      "team": "Sz\u00e9kely Land",
-      "elo_rating": 1479.428995548827
-    },
-    {
-      "team": "Luhansk PR",
-      "elo_rating": 1495.0589592892024
-    },
-    {
-      "team": "Donetsk PR",
-      "elo_rating": 1507.3962289499113
-    },
-    {
-      "team": "Panjab",
-      "elo_rating": 1532.8382040890933
-    },
-    {
-      "team": "Felvid\u00e9k",
-      "elo_rating": 1514.6685707644328
-    },
-    {
-      "team": "United Koreans in Japan",
-      "elo_rating": 1489.9333310142094
-    },
-    {
-      "team": "Western Armenia",
-      "elo_rating": 1498.7233534435827
-    },
-    {
-      "team": "D\u00e9lvid\u00e9k",
-      "elo_rating": 1493.0269498824484
-    },
-    {
-      "team": "K\u00e1rp\u00e1talja",
-      "elo_rating": 1543.8614040082673
-    },
-    {
-      "team": "Barawa",
-      "elo_rating": 1425.9056832189874
-    },
-    {
-      "team": "Ry\u016bky\u016b",
-      "elo_rating": 1486.6535221777033
-    },
-    {
-      "team": "Yorkshire",
-      "elo_rating": 1530.0402113831105
-    },
-    {
-      "team": "Surrey",
-      "elo_rating": 1511.9350807363373
-    },
-    {
-      "team": "Matabeleland",
-      "elo_rating": 1510.55418233541
-    },
-    {
-      "team": "Cascadia",
-      "elo_rating": 1527.0296770681045
-    },
-    {
-      "team": "Kabylia",
-      "elo_rating": 1491.0306573574305
-    },
-    {
-      "team": "Parishes of Jersey",
-      "elo_rating": 1506.761231619123
-    },
-    {
-      "team": "Chameria",
-      "elo_rating": 1516.8098513336824
-    },
-    {
-      "team": "Saint Helena",
-      "elo_rating": 1442.47933095521
-    },
-    {
-      "team": "Yoruba Nation",
-      "elo_rating": 1484.2121253921268
-    },
-    {
-      "team": "Biafra",
-      "elo_rating": 1508.0876653487283
-    },
-    {
-      "team": "Mapuche",
-      "elo_rating": 1494.7403219249172
-    },
-    {
-      "team": "Maule Sur",
-      "elo_rating": 1525.0546695700991
-    },
-    {
-      "team": "Aymara",
-      "elo_rating": 1480.2050085049837
-    },
-    {
-      "team": "Elba Island",
-      "elo_rating": 1505.3110836637777
-    },
-    {
-      "team": "West Papua",
-      "elo_rating": 1495.122400080551
-    },
-    {
-      "team": "Ticino",
-      "elo_rating": 1476.6366385809695
-    },
-    {
-      "team": "Hmong",
-      "elo_rating": 1490.1310488437882
-    },
-    {
-      "team": "Marshall Islands",
-      "elo_rating": 1468.6476813049342
+      "prob_Round_of_32": 0.0,
+      "prob_Round_of_16": 0.0,
+      "prob_Quarter_Finals": 0.0,
+      "prob_Semi_Finals": 0.0,
+      "prob_Finals": 0.0,
+      "prob_Winner": 0.0
+    },
+    {
+      "team": "Canada",
+      "prob_Round_of_32": 1.0,
+      "prob_Round_of_16": 1.0,
+      "prob_Quarter_Finals": 0.0,
+      "prob_Semi_Finals": 0.0,
+      "prob_Finals": 0.0,
+      "prob_Winner": 0.0
+    },
+    {
+      "team": "Cape Verde",
+      "prob_Round_of_32": 0.0,
+      "prob_Round_of_16": 0.0,
+      "prob_Quarter_Finals": 0.0,
+      "prob_Semi_Finals": 0.0,
+      "prob_Finals": 0.0,
+      "prob_Winner": 0.0
+    },
+    {
+      "team": "Cote d'Ivoire",
+      "prob_Round_of_32": 0.0,
+      "prob_Round_of_16": 0.0,
+      "prob_Quarter_Finals": 0.0,
+      "prob_Semi_Finals": 0.0,
+      "prob_Finals": 0.0,
+      "prob_Winner": 0.0
+    },
+    {
+      "team": "Croatia",
+      "prob_Round_of_32": 1.0,
+      "prob_Round_of_16": 0.0,
+      "prob_Quarter_Finals": 0.0,
+      "prob_Semi_Finals": 0.0,
+      "prob_Finals": 0.0,
+      "prob_Winner": 0.0
+    },
+    {
+      "team": "Cura\u00e7ao",
+      "prob_Round_of_32": 0.0,
+      "prob_Round_of_16": 0.0,
+      "prob_Quarter_Finals": 0.0,
+      "prob_Semi_Finals": 0.0,
+      "prob_Finals": 0.0,
+      "prob_Winner": 0.0
+    },
+    {
+      "team": "Czech Republic",
+      "prob_Round_of_32": 1.0,
+      "prob_Round_of_16": 0.0,
+      "prob_Quarter_Finals": 0.0,
+      "prob_Semi_Finals": 0.0,
+      "prob_Finals": 0.0,
+      "prob_Winner": 0.0
+    },
+    {
+      "team": "DR Congo",
+      "prob_Round_of_32": 0.0,
+      "prob_Round_of_16": 0.0,
+      "prob_Quarter_Finals": 0.0,
+      "prob_Semi_Finals": 0.0,
+      "prob_Finals": 0.0,
+      "prob_Winner": 0.0
+    },
+    {
+      "team": "Ecuador",
+      "prob_Round_of_32": 1.0,
+      "prob_Round_of_16": 1.0,
+      "prob_Quarter_Finals": 0.0,
+      "prob_Semi_Finals": 0.0,
+      "prob_Finals": 0.0,
+      "prob_Winner": 0.0
+    },
+    {
+      "team": "Egypt",
+      "prob_Round_of_32": 1.0,
+      "prob_Round_of_16": 0.0,
+      "prob_Quarter_Finals": 0.0,
+      "prob_Semi_Finals": 0.0,
+      "prob_Finals": 0.0,
+      "prob_Winner": 0.0
+    },
+    {
+      "team": "Ghana",
+      "prob_Round_of_32": 1.0,
+      "prob_Round_of_16": 0.0,
+      "prob_Quarter_Finals": 0.0,
+      "prob_Semi_Finals": 0.0,
+      "prob_Finals": 0.0,
+      "prob_Winner": 0.0
+    },
+    {
+      "team": "Haiti",
+      "prob_Round_of_32": 0.0,
+      "prob_Round_of_16": 0.0,
+      "prob_Quarter_Finals": 0.0,
+      "prob_Semi_Finals": 0.0,
+      "prob_Finals": 0.0,
+      "prob_Winner": 0.0
+    },
+    {
+      "team": "Iran",
+      "prob_Round_of_32": 1.0,
+      "prob_Round_of_16": 0.0,
+      "prob_Quarter_Finals": 0.0,
+      "prob_Semi_Finals": 0.0,
+      "prob_Finals": 0.0,
+      "prob_Winner": 0.0
+    },
+    {
+      "team": "Iraq",
+      "prob_Round_of_32": 0.0,
+      "prob_Round_of_16": 0.0,
+      "prob_Quarter_Finals": 0.0,
+      "prob_Semi_Finals": 0.0,
+      "prob_Finals": 0.0,
+      "prob_Winner": 0.0
+    },
+    {
+      "team": "Jordan",
+      "prob_Round_of_32": 0.0,
+      "prob_Round_of_16": 0.0,
+      "prob_Quarter_Finals": 0.0,
+      "prob_Semi_Finals": 0.0,
+      "prob_Finals": 0.0,
+      "prob_Winner": 0.0
+    },
+    {
+      "team": "Uzbekistan",
+      "prob_Round_of_32": 0.0,
+      "prob_Round_of_16": 0.0,
+      "prob_Quarter_Finals": 0.0,
+      "prob_Semi_Finals": 0.0,
+      "prob_Finals": 0.0,
+      "prob_Winner": 0.0
     }
   ],
   "group_tables": [
     {
       "group": "Group A",
       "team": "Mexico",
-      "expected_rank": 2.2656,
-      "avg_points": 4.5596,
-      "avg_goal_difference": 0.6322,
-      "prob_1": 0.3236,
-      "prob_2": 0.2682,
-      "prob_3": 0.2272,
-      "prob_4": 0.181
+      "expected_rank": 1.0,
+      "avg_points": 7.0,
+      "avg_goal_difference": 3.0,
+      "prob_1": 1.0,
+      "prob_2": 0.0,
+      "prob_3": 0.0,
+      "prob_4": 0.0
     },
     {
       "group": "Group A",
       "team": "Czech Republic",
-      "expected_rank": 2.4022,
-      "avg_points": 4.2614,
-      "avg_goal_difference": 0.2622,
-      "prob_1": 0.2674,
-      "prob_2": 0.2784,
-      "prob_3": 0.2388,
-      "prob_4": 0.2154
-    },
-    {
-      "group": "Group A",
-      "team": "South Korea",
-      "expected_rank": 2.477,
-      "avg_points": 4.1836,
-      "avg_goal_difference": 0.1156,
-      "prob_1": 0.254,
-      "prob_2": 0.2468,
-      "prob_3": 0.2674,
-      "prob_4": 0.2318
-    },
-    {
-      "group": "Group A",
-      "team": "South Africa",
-      "expected_rank": 2.8552,
-      "avg_points": 3.3662,
-      "avg_goal_difference": -1.01,
-      "prob_1": 0.155,
-      "prob_2": 0.2066,
-      "prob_3": 0.2666,
-      "prob_4": 0.3718
-    },
-    {
-      "group": "Group B",
-      "team": "Switzerland",
-      "expected_rank": 2.144,
-      "avg_points": 4.86,
-      "avg_goal_difference": 1.0602,
-      "prob_1": 0.3724,
-      "prob_2": 0.2676,
-      "prob_3": 0.2036,
-      "prob_4": 0.1564
-    },
-    {
-      "group": "Group B",
-      "team": "Canada",
-      "expected_rank": 2.272,
-      "avg_points": 4.5538,
-      "avg_goal_difference": 0.672,
-      "prob_1": 0.303,
-      "prob_2": 0.2908,
-      "prob_3": 0.2374,
-      "prob_4": 0.1688
-    },
-    {
-      "group": "Group B",
-      "team": "Bosnia and Herzegovina",
-      "expected_rank": 2.722,
-      "avg_points": 3.606,
-      "avg_goal_difference": -0.7134,
-      "prob_1": 0.1768,
-      "prob_2": 0.2324,
-      "prob_3": 0.2828,
-      "prob_4": 0.308
-    },
-    {
-      "group": "Group B",
-      "team": "Qatar",
-      "expected_rank": 2.862,
-      "avg_points": 3.3648,
-      "avg_goal_difference": -1.0188,
-      "prob_1": 0.1478,
-      "prob_2": 0.2092,
-      "prob_3": 0.2762,
-      "prob_4": 0.3668
-    },
-    {
-      "group": "Group C",
-      "team": "Brazil",
-      "expected_rank": 2.1,
-      "avg_points": 4.9168,
-      "avg_goal_difference": 1.1274,
-      "prob_1": 0.3822,
-      "prob_2": 0.2756,
-      "prob_3": 0.2022,
-      "prob_4": 0.14
-    },
-    {
-      "group": "Group C",
-      "team": "Morocco",
-      "expected_rank": 2.5418000000000003,
-      "avg_points": 3.995,
-      "avg_goal_difference": -0.1458,
-      "prob_1": 0.222,
-      "prob_2": 0.2616,
-      "prob_3": 0.269,
-      "prob_4": 0.2474
-    },
-    {
-      "group": "Group C",
-      "team": "Scotland",
-      "expected_rank": 2.562,
-      "avg_points": 3.9874,
-      "avg_goal_difference": -0.083,
-      "prob_1": 0.2276,
-      "prob_2": 0.2496,
-      "prob_3": 0.256,
-      "prob_4": 0.2668
-    },
-    {
-      "group": "Group C",
-      "team": "Haiti",
-      "expected_rank": 2.7962,
-      "avg_points": 3.4762,
-      "avg_goal_difference": -0.8986,
-      "prob_1": 0.1682,
-      "prob_2": 0.2132,
-      "prob_3": 0.2728,
-      "prob_4": 0.3458
-    },
-    {
-      "group": "Group D",
-      "team": "Turkey",
-      "expected_rank": 2.342,
-      "avg_points": 4.4182,
-      "avg_goal_difference": 0.4612,
-      "prob_1": 0.2906,
-      "prob_2": 0.276,
-      "prob_3": 0.2342,
-      "prob_4": 0.1992
-    },
-    {
-      "group": "Group D",
-      "team": "United States",
-      "expected_rank": 2.4232,
-      "avg_points": 4.272,
-      "avg_goal_difference": 0.2634,
-      "prob_1": 0.2752,
-      "prob_2": 0.2536,
-      "prob_3": 0.244,
-      "prob_4": 0.2272
-    },
-    {
-      "group": "Group D",
-      "team": "Australia",
-      "expected_rank": 2.5876,
-      "avg_points": 3.9078,
-      "avg_goal_difference": -0.287,
-      "prob_1": 0.2252,
-      "prob_2": 0.2368,
-      "prob_3": 0.2632,
-      "prob_4": 0.2748
-    },
-    {
-      "group": "Group D",
-      "team": "Paraguay",
-      "expected_rank": 2.6472,
-      "avg_points": 3.79,
-      "avg_goal_difference": -0.4376,
-      "prob_1": 0.209,
-      "prob_2": 0.2336,
-      "prob_3": 0.2586,
-      "prob_4": 0.2988
-    },
-    {
-      "group": "Group E",
-      "team": "Germany",
-      "expected_rank": 2.2334,
-      "avg_points": 4.6818,
-      "avg_goal_difference": 0.8056,
-      "prob_1": 0.3244,
-      "prob_2": 0.2798,
-      "prob_3": 0.2338,
-      "prob_4": 0.162
-    },
-    {
-      "group": "Group E",
-      "team": "Ecuador",
-      "expected_rank": 2.2492,
-      "avg_points": 4.6428,
-      "avg_goal_difference": 0.7834,
-      "prob_1": 0.3244,
-      "prob_2": 0.2752,
-      "prob_3": 0.2272,
-      "prob_4": 0.1732
-    },
-    {
-      "group": "Group E",
-      "team": "Cote d'Ivoire",
-      "expected_rank": 2.6306000000000003,
-      "avg_points": 3.782,
-      "avg_goal_difference": -0.4244,
-      "prob_1": 0.2092,
-      "prob_2": 0.2376,
-      "prob_3": 0.2666,
-      "prob_4": 0.2866
-    },
-    {
-      "group": "Group E",
-      "team": "Cura\u00e7ao",
-      "expected_rank": 2.8868,
-      "avg_points": 3.2512,
-      "avg_goal_difference": -1.1646,
-      "prob_1": 0.142,
-      "prob_2": 0.2074,
-      "prob_3": 0.2724,
-      "prob_4": 0.3782
-    },
-    {
-      "group": "Group F",
-      "team": "Netherlands",
-      "expected_rank": 2.1462,
-      "avg_points": 4.8292,
-      "avg_goal_difference": 0.9936,
-      "prob_1": 0.3736,
-      "prob_2": 0.2628,
-      "prob_3": 0.2074,
-      "prob_4": 0.1562
-    },
-    {
-      "group": "Group F",
-      "team": "Japan",
-      "expected_rank": 2.5260000000000002,
-      "avg_points": 3.99,
-      "avg_goal_difference": -0.1594,
-      "prob_1": 0.2262,
-      "prob_2": 0.2734,
-      "prob_3": 0.2486,
-      "prob_4": 0.2518
-    },
-    {
-      "group": "Group F",
-      "team": "Tunisia",
-      "expected_rank": 2.5538,
-      "avg_points": 4.0088,
-      "avg_goal_difference": -0.115,
-      "prob_1": 0.2358,
-      "prob_2": 0.2388,
-      "prob_3": 0.2612,
-      "prob_4": 0.2642
-    },
-    {
-      "group": "Group F",
-      "team": "Sweden",
-      "expected_rank": 2.774,
-      "avg_points": 3.5634,
-      "avg_goal_difference": -0.7192,
-      "prob_1": 0.1644,
-      "prob_2": 0.225,
-      "prob_3": 0.2828,
-      "prob_4": 0.3278
-    },
-    {
-      "group": "Group G",
-      "team": "Belgium",
-      "expected_rank": 2.1292,
-      "avg_points": 4.8376,
-      "avg_goal_difference": 0.9954,
-      "prob_1": 0.3792,
-      "prob_2": 0.2672,
-      "prob_3": 0.1988,
-      "prob_4": 0.1548
-    },
-    {
-      "group": "Group G",
-      "team": "Iran",
-      "expected_rank": 2.559,
-      "avg_points": 4.0018,
-      "avg_goal_difference": -0.1314,
-      "prob_1": 0.2232,
-      "prob_2": 0.2546,
-      "prob_3": 0.2622,
-      "prob_4": 0.26
-    },
-    {
-      "group": "Group G",
-      "team": "New Zealand",
-      "expected_rank": 2.6458,
-      "avg_points": 3.8352,
-      "avg_goal_difference": -0.3428,
-      "prob_1": 0.2056,
-      "prob_2": 0.2292,
-      "prob_3": 0.279,
-      "prob_4": 0.2862
-    },
-    {
-      "group": "Group G",
-      "team": "Egypt",
-      "expected_rank": 2.666,
-      "avg_points": 3.7292,
-      "avg_goal_difference": -0.5212,
-      "prob_1": 0.192,
-      "prob_2": 0.249,
-      "prob_3": 0.26,
-      "prob_4": 0.299
-    },
-    {
-      "group": "Group H",
-      "team": "Spain",
-      "expected_rank": 2.145,
-      "avg_points": 4.865,
-      "avg_goal_difference": 1.0364,
-      "prob_1": 0.3702,
-      "prob_2": 0.2676,
-      "prob_3": 0.2092,
-      "prob_4": 0.153
-    },
-    {
-      "group": "Group H",
-      "team": "Uruguay",
-      "expected_rank": 2.312,
-      "avg_points": 4.5294,
-      "avg_goal_difference": 0.5904,
-      "prob_1": 0.2966,
-      "prob_2": 0.2828,
-      "prob_3": 0.2326,
-      "prob_4": 0.188
-    },
-    {
-      "group": "Group H",
-      "team": "Cape Verde",
-      "expected_rank": 2.7574,
-      "avg_points": 3.5354,
-      "avg_goal_difference": -0.7808,
-      "prob_1": 0.16,
-      "prob_2": 0.24,
-      "prob_3": 0.2826,
-      "prob_4": 0.3174
-    },
-    {
-      "group": "Group H",
-      "team": "Saudi Arabia",
-      "expected_rank": 2.7856,
-      "avg_points": 3.4628,
-      "avg_goal_difference": -0.846,
-      "prob_1": 0.1732,
-      "prob_2": 0.2096,
-      "prob_3": 0.2756,
-      "prob_4": 0.3416
-    },
-    {
-      "group": "Group I",
-      "team": "France",
-      "expected_rank": 2.1118,
-      "avg_points": 4.864,
-      "avg_goal_difference": 1.0522,
-      "prob_1": 0.3858,
-      "prob_2": 0.2644,
-      "prob_3": 0.202,
-      "prob_4": 0.1478
-    },
-    {
-      "group": "Group I",
-      "team": "Norway",
-      "expected_rank": 2.5065999999999997,
-      "avg_points": 4.1058,
-      "avg_goal_difference": 0.0372,
-      "prob_1": 0.2306,
-      "prob_2": 0.2712,
-      "prob_3": 0.2592,
-      "prob_4": 0.239
-    },
-    {
-      "group": "Group I",
-      "team": "Senegal",
-      "expected_rank": 2.5656,
-      "avg_points": 3.9822,
-      "avg_goal_difference": -0.1392,
-      "prob_1": 0.218,
-      "prob_2": 0.2526,
-      "prob_3": 0.2752,
-      "prob_4": 0.2542
-    },
-    {
-      "group": "Group I",
-      "team": "Iraq",
-      "expected_rank": 2.816,
-      "avg_points": 3.4444,
-      "avg_goal_difference": -0.9502,
-      "prob_1": 0.1656,
-      "prob_2": 0.2118,
-      "prob_3": 0.2636,
-      "prob_4": 0.359
-    },
-    {
-      "group": "Group J",
-      "team": "Argentina",
-      "expected_rank": 2.0606,
+      "expected_rank": 2.0,
       "avg_points": 5.0,
-      "avg_goal_difference": 1.2512,
-      "prob_1": 0.4046,
-      "prob_2": 0.2644,
-      "prob_3": 0.1968,
-      "prob_4": 0.1342
+      "avg_goal_difference": 1.0,
+      "prob_1": 0.0,
+      "prob_2": 1.0,
+      "prob_3": 0.0,
+      "prob_4": 0.0
     },
     {
-      "group": "Group J",
-      "team": "Algeria",
-      "expected_rank": 2.5816,
-      "avg_points": 3.9026,
-      "avg_goal_difference": -0.287,
-      "prob_1": 0.2172,
-      "prob_2": 0.244,
-      "prob_3": 0.2788,
-      "prob_4": 0.26
-    },
-    {
-      "group": "Group J",
-      "team": "Jordan",
-      "expected_rank": 2.6774,
-      "avg_points": 3.7552,
-      "avg_goal_difference": -0.4492,
-      "prob_1": 0.1948,
-      "prob_2": 0.2394,
-      "prob_3": 0.2594,
-      "prob_4": 0.3064
-    },
-    {
-      "group": "Group J",
-      "team": "Austria",
-      "expected_rank": 2.6804,
-      "avg_points": 3.7448,
-      "avg_goal_difference": -0.515,
-      "prob_1": 0.1834,
-      "prob_2": 0.2522,
-      "prob_3": 0.265,
-      "prob_4": 0.2994
-    },
-    {
-      "group": "Group K",
-      "team": "Colombia",
-      "expected_rank": 2.157,
-      "avg_points": 4.7984,
-      "avg_goal_difference": 0.9664,
-      "prob_1": 0.3612,
-      "prob_2": 0.2782,
-      "prob_3": 0.203,
-      "prob_4": 0.1576
-    },
-    {
-      "group": "Group K",
-      "team": "Portugal",
-      "expected_rank": 2.2544,
-      "avg_points": 4.5968,
-      "avg_goal_difference": 0.6922,
-      "prob_1": 0.3162,
-      "prob_2": 0.2808,
-      "prob_3": 0.2354,
-      "prob_4": 0.1676
-    },
-    {
-      "group": "Group K",
-      "team": "DR Congo",
-      "expected_rank": 2.7922000000000002,
-      "avg_points": 3.494,
-      "avg_goal_difference": -0.864,
-      "prob_1": 0.1616,
-      "prob_2": 0.2192,
-      "prob_3": 0.2846,
-      "prob_4": 0.3346
-    },
-    {
-      "group": "Group K",
-      "team": "Uzbekistan",
-      "expected_rank": 2.7964,
-      "avg_points": 3.5362,
-      "avg_goal_difference": -0.7946,
-      "prob_1": 0.161,
-      "prob_2": 0.2218,
-      "prob_3": 0.277,
-      "prob_4": 0.3402
-    },
-    {
-      "group": "Group L",
-      "team": "England",
-      "expected_rank": 2.1326,
-      "avg_points": 4.8622,
-      "avg_goal_difference": 1.0476,
-      "prob_1": 0.3738,
-      "prob_2": 0.2684,
-      "prob_3": 0.2092,
-      "prob_4": 0.1486
-    },
-    {
-      "group": "Group L",
-      "team": "Panama",
-      "expected_rank": 2.497,
-      "avg_points": 4.1216,
-      "avg_goal_difference": 0.063,
-      "prob_1": 0.2442,
-      "prob_2": 0.2576,
-      "prob_3": 0.2552,
-      "prob_4": 0.243
-    },
-    {
-      "group": "Group L",
-      "team": "Croatia",
-      "expected_rank": 2.5016,
-      "avg_points": 4.0586,
-      "avg_goal_difference": -0.0406,
-      "prob_1": 0.2348,
-      "prob_2": 0.2658,
-      "prob_3": 0.2624,
-      "prob_4": 0.237
-    },
-    {
-      "group": "Group L",
-      "team": "Ghana",
-      "expected_rank": 2.8688000000000002,
-      "avg_points": 3.3438,
-      "avg_goal_difference": -1.07,
-      "prob_1": 0.1472,
-      "prob_2": 0.2082,
-      "prob_3": 0.2732,
-      "prob_4": 0.3714
-    }
-  ],
-  "tournament_simulation": [
-    {
-      "team": "Spain",
-      "prob_Round_of_32": 0.785,
-      "prob_Round_of_16": 0.5698,
-      "prob_Quarter_Finals": 0.3932,
-      "prob_Semi_Finals": 0.31,
-      "prob_Finals": 0.1846,
-      "prob_Winner": 0.1296
-    },
-    {
-      "team": "France",
-      "prob_Round_of_32": 0.7904,
-      "prob_Round_of_16": 0.5714,
-      "prob_Quarter_Finals": 0.3346,
-      "prob_Semi_Finals": 0.2524,
-      "prob_Finals": 0.1826,
-      "prob_Winner": 0.1126
-    },
-    {
-      "team": "Argentina",
-      "prob_Round_of_32": 0.804,
-      "prob_Round_of_16": 0.5626,
-      "prob_Quarter_Finals": 0.4354,
-      "prob_Semi_Finals": 0.3352,
-      "prob_Finals": 0.1852,
-      "prob_Winner": 0.1088
-    },
-    {
-      "team": "Brazil",
-      "prob_Round_of_32": 0.8044,
-      "prob_Round_of_16": 0.5332,
-      "prob_Quarter_Finals": 0.3772,
-      "prob_Semi_Finals": 0.2642,
-      "prob_Finals": 0.1822,
-      "prob_Winner": 0.0936
-    },
-    {
-      "team": "Colombia",
-      "prob_Round_of_32": 0.7838,
-      "prob_Round_of_16": 0.5738,
-      "prob_Quarter_Finals": 0.3508,
-      "prob_Semi_Finals": 0.2116,
-      "prob_Finals": 0.1062,
-      "prob_Winner": 0.0598
-    },
-    {
-      "team": "Germany",
-      "prob_Round_of_32": 0.7768,
-      "prob_Round_of_16": 0.521,
-      "prob_Quarter_Finals": 0.287,
-      "prob_Semi_Finals": 0.1838,
-      "prob_Finals": 0.1098,
-      "prob_Winner": 0.0526
-    },
-    {
-      "team": "Netherlands",
-      "prob_Round_of_32": 0.787,
-      "prob_Round_of_16": 0.4636,
-      "prob_Quarter_Finals": 0.2588,
-      "prob_Semi_Finals": 0.1404,
-      "prob_Finals": 0.0876,
-      "prob_Winner": 0.0446
-    },
-    {
-      "team": "Portugal",
-      "prob_Round_of_32": 0.7608,
-      "prob_Round_of_16": 0.5254,
-      "prob_Quarter_Finals": 0.3124,
-      "prob_Semi_Finals": 0.1764,
-      "prob_Finals": 0.0786,
-      "prob_Winner": 0.0418
-    },
-    {
-      "team": "England",
-      "prob_Round_of_32": 0.7904,
-      "prob_Round_of_16": 0.4832,
-      "prob_Quarter_Finals": 0.278,
-      "prob_Semi_Finals": 0.1548,
-      "prob_Finals": 0.081,
-      "prob_Winner": 0.0396
-    },
-    {
-      "team": "Ecuador",
-      "prob_Round_of_32": 0.7564,
-      "prob_Round_of_16": 0.4708,
-      "prob_Quarter_Finals": 0.2442,
-      "prob_Semi_Finals": 0.1458,
-      "prob_Finals": 0.0814,
-      "prob_Winner": 0.0388
-    },
-    {
-      "team": "Senegal",
-      "prob_Round_of_32": 0.6512,
-      "prob_Round_of_16": 0.3634,
-      "prob_Quarter_Finals": 0.1546,
-      "prob_Semi_Finals": 0.0944,
-      "prob_Finals": 0.0544,
-      "prob_Winner": 0.0244
-    },
-    {
-      "team": "Uruguay",
-      "prob_Round_of_32": 0.7434,
-      "prob_Round_of_16": 0.3874,
-      "prob_Quarter_Finals": 0.2054,
-      "prob_Semi_Finals": 0.1232,
-      "prob_Finals": 0.0474,
-      "prob_Winner": 0.0236
-    },
-    {
-      "team": "Japan",
-      "prob_Round_of_32": 0.6514,
-      "prob_Round_of_16": 0.3198,
-      "prob_Quarter_Finals": 0.1726,
-      "prob_Semi_Finals": 0.0846,
-      "prob_Finals": 0.0486,
-      "prob_Winner": 0.0212
-    },
-    {
-      "team": "Morocco",
-      "prob_Round_of_32": 0.6664,
-      "prob_Round_of_16": 0.3302,
-      "prob_Quarter_Finals": 0.1796,
-      "prob_Semi_Finals": 0.0966,
-      "prob_Finals": 0.0516,
-      "prob_Winner": 0.0212
-    },
-    {
-      "team": "Croatia",
-      "prob_Round_of_32": 0.669,
-      "prob_Round_of_16": 0.3446,
-      "prob_Quarter_Finals": 0.1836,
-      "prob_Semi_Finals": 0.0968,
-      "prob_Finals": 0.0428,
-      "prob_Winner": 0.02
-    },
-    {
+      "group": "Group A",
       "team": "South Korea",
-      "prob_Round_of_32": 0.6874,
-      "prob_Round_of_16": 0.4316,
-      "prob_Quarter_Finals": 0.2512,
-      "prob_Semi_Finals": 0.0852,
-      "prob_Finals": 0.0452,
-      "prob_Winner": 0.0174
+      "expected_rank": 3.0,
+      "avg_points": 4.0,
+      "avg_goal_difference": 0.0,
+      "prob_1": 0.0,
+      "prob_2": 0.0,
+      "prob_3": 1.0,
+      "prob_4": 0.0
     },
     {
-      "team": "Switzerland",
-      "prob_Round_of_32": 0.784,
-      "prob_Round_of_16": 0.46,
-      "prob_Quarter_Finals": 0.2926,
-      "prob_Semi_Finals": 0.0984,
-      "prob_Finals": 0.0404,
-      "prob_Winner": 0.0166
-    },
-    {
-      "team": "Mexico",
-      "prob_Round_of_32": 0.7522,
-      "prob_Round_of_16": 0.4678,
-      "prob_Quarter_Finals": 0.2654,
-      "prob_Semi_Finals": 0.0844,
-      "prob_Finals": 0.0434,
-      "prob_Winner": 0.0154
-    },
-    {
-      "team": "Belgium",
-      "prob_Round_of_32": 0.791,
-      "prob_Round_of_16": 0.4694,
-      "prob_Quarter_Finals": 0.2116,
-      "prob_Semi_Finals": 0.085,
-      "prob_Finals": 0.0282,
-      "prob_Winner": 0.0122
-    },
-    {
-      "team": "Australia",
-      "prob_Round_of_32": 0.6342,
-      "prob_Round_of_16": 0.3742,
-      "prob_Quarter_Finals": 0.1782,
-      "prob_Semi_Finals": 0.0694,
-      "prob_Finals": 0.0236,
-      "prob_Winner": 0.0106
-    },
-    {
-      "team": "Turkey",
-      "prob_Round_of_32": 0.7262,
-      "prob_Round_of_16": 0.4468,
-      "prob_Quarter_Finals": 0.211,
-      "prob_Semi_Finals": 0.0744,
-      "prob_Finals": 0.0256,
-      "prob_Winner": 0.0096
-    },
-    {
-      "team": "Norway",
-      "prob_Round_of_32": 0.675,
-      "prob_Round_of_16": 0.3028,
-      "prob_Quarter_Finals": 0.1008,
-      "prob_Semi_Finals": 0.0464,
-      "prob_Finals": 0.0204,
-      "prob_Winner": 0.0088
-    },
-    {
-      "team": "Canada",
-      "prob_Round_of_32": 0.761,
-      "prob_Round_of_16": 0.3782,
-      "prob_Quarter_Finals": 0.2188,
-      "prob_Semi_Finals": 0.0622,
-      "prob_Finals": 0.0224,
-      "prob_Winner": 0.0084
-    },
-    {
-      "team": "Paraguay",
-      "prob_Round_of_32": 0.6126,
-      "prob_Round_of_16": 0.3396,
-      "prob_Quarter_Finals": 0.1466,
-      "prob_Semi_Finals": 0.0516,
-      "prob_Finals": 0.016,
-      "prob_Winner": 0.0078
-    },
-    {
-      "team": "Czech Republic",
-      "prob_Round_of_32": 0.7094,
-      "prob_Round_of_16": 0.387,
-      "prob_Quarter_Finals": 0.189,
-      "prob_Semi_Finals": 0.0436,
-      "prob_Finals": 0.019,
-      "prob_Winner": 0.0078
-    },
-    {
-      "team": "Iran",
-      "prob_Round_of_32": 0.6528,
-      "prob_Round_of_16": 0.3478,
-      "prob_Quarter_Finals": 0.1288,
-      "prob_Semi_Finals": 0.049,
-      "prob_Finals": 0.0168,
-      "prob_Winner": 0.007
-    },
-    {
-      "team": "Algeria",
-      "prob_Round_of_32": 0.643,
-      "prob_Round_of_16": 0.2762,
-      "prob_Quarter_Finals": 0.145,
-      "prob_Semi_Finals": 0.0726,
-      "prob_Finals": 0.0224,
-      "prob_Winner": 0.0064
-    },
-    {
-      "team": "United States",
-      "prob_Round_of_32": 0.6968,
-      "prob_Round_of_16": 0.3858,
-      "prob_Quarter_Finals": 0.164,
-      "prob_Semi_Finals": 0.0572,
-      "prob_Finals": 0.0172,
-      "prob_Winner": 0.0058
-    },
-    {
-      "team": "Scotland",
-      "prob_Round_of_32": 0.6564,
-      "prob_Round_of_16": 0.232,
-      "prob_Quarter_Finals": 0.106,
-      "prob_Semi_Finals": 0.0414,
-      "prob_Finals": 0.0196,
-      "prob_Winner": 0.0048
-    },
-    {
-      "team": "Austria",
-      "prob_Round_of_32": 0.612,
-      "prob_Round_of_16": 0.2436,
-      "prob_Quarter_Finals": 0.1154,
-      "prob_Semi_Finals": 0.0568,
-      "prob_Finals": 0.015,
-      "prob_Winner": 0.0046
-    },
-    {
-      "team": "Cote d'Ivoire",
-      "prob_Round_of_32": 0.6194,
-      "prob_Round_of_16": 0.2882,
-      "prob_Quarter_Finals": 0.099,
-      "prob_Semi_Finals": 0.0444,
-      "prob_Finals": 0.0162,
-      "prob_Winner": 0.004
-    },
-    {
-      "team": "Tunisia",
-      "prob_Round_of_32": 0.65,
-      "prob_Round_of_16": 0.2386,
-      "prob_Quarter_Finals": 0.0868,
-      "prob_Semi_Finals": 0.0318,
-      "prob_Finals": 0.0152,
-      "prob_Winner": 0.0038
-    },
-    {
-      "team": "Uzbekistan",
-      "prob_Round_of_32": 0.5588,
-      "prob_Round_of_16": 0.268,
-      "prob_Quarter_Finals": 0.0984,
-      "prob_Semi_Finals": 0.0438,
-      "prob_Finals": 0.0108,
-      "prob_Winner": 0.0036
-    },
-    {
-      "team": "Sweden",
-      "prob_Round_of_32": 0.5718,
-      "prob_Round_of_16": 0.1914,
-      "prob_Quarter_Finals": 0.0702,
-      "prob_Semi_Finals": 0.0258,
-      "prob_Finals": 0.0116,
-      "prob_Winner": 0.0024
-    },
-    {
-      "team": "Jordan",
-      "prob_Round_of_32": 0.6056,
-      "prob_Round_of_16": 0.189,
-      "prob_Quarter_Finals": 0.07,
-      "prob_Semi_Finals": 0.0282,
-      "prob_Finals": 0.006,
-      "prob_Winner": 0.0018
-    },
-    {
-      "team": "DR Congo",
-      "prob_Round_of_32": 0.5572,
-      "prob_Round_of_16": 0.2118,
-      "prob_Quarter_Finals": 0.0634,
-      "prob_Semi_Finals": 0.0204,
-      "prob_Finals": 0.004,
-      "prob_Winner": 0.0016
-    },
-    {
-      "team": "Panama",
-      "prob_Round_of_32": 0.6794,
-      "prob_Round_of_16": 0.2414,
-      "prob_Quarter_Finals": 0.0814,
-      "prob_Semi_Finals": 0.0272,
-      "prob_Finals": 0.0072,
-      "prob_Winner": 0.0014
-    },
-    {
-      "team": "Iraq",
-      "prob_Round_of_32": 0.539,
-      "prob_Round_of_16": 0.1812,
-      "prob_Quarter_Finals": 0.0484,
-      "prob_Semi_Finals": 0.0168,
-      "prob_Finals": 0.0072,
-      "prob_Winner": 0.0012
-    },
-    {
-      "team": "Egypt",
-      "prob_Round_of_32": 0.6084,
-      "prob_Round_of_16": 0.2422,
-      "prob_Quarter_Finals": 0.0766,
-      "prob_Semi_Finals": 0.0236,
-      "prob_Finals": 0.0052,
-      "prob_Winner": 0.001
-    },
-    {
-      "team": "Saudi Arabia",
-      "prob_Round_of_32": 0.553,
-      "prob_Round_of_16": 0.1544,
-      "prob_Quarter_Finals": 0.0458,
-      "prob_Semi_Finals": 0.0132,
-      "prob_Finals": 0.0026,
-      "prob_Winner": 0.0008
-    },
-    {
+      "group": "Group A",
       "team": "South Africa",
-      "prob_Round_of_32": 0.5308,
-      "prob_Round_of_16": 0.2208,
-      "prob_Quarter_Finals": 0.0822,
-      "prob_Semi_Finals": 0.0114,
-      "prob_Finals": 0.0044,
-      "prob_Winner": 0.0008
+      "expected_rank": 4.0,
+      "avg_points": 0.0,
+      "avg_goal_difference": -4.0,
+      "prob_1": 0.0,
+      "prob_2": 0.0,
+      "prob_3": 0.0,
+      "prob_4": 1.0
     },
     {
-      "team": "Cape Verde",
-      "prob_Round_of_32": 0.5736,
-      "prob_Round_of_16": 0.1418,
-      "prob_Quarter_Finals": 0.0424,
-      "prob_Semi_Finals": 0.0128,
-      "prob_Finals": 0.0028,
-      "prob_Winner": 0.0008
+      "group": "Group B",
+      "team": "Switzerland",
+      "expected_rank": 1.0,
+      "avg_points": 9.0,
+      "avg_goal_difference": 6.0,
+      "prob_1": 1.0,
+      "prob_2": 0.0,
+      "prob_3": 0.0,
+      "prob_4": 0.0
     },
     {
+      "group": "Group B",
+      "team": "Canada",
+      "expected_rank": 2.0,
+      "avg_points": 6.0,
+      "avg_goal_difference": 3.0,
+      "prob_1": 0.0,
+      "prob_2": 1.0,
+      "prob_3": 0.0,
+      "prob_4": 0.0
+    },
+    {
+      "group": "Group B",
       "team": "Bosnia and Herzegovina",
-      "prob_Round_of_32": 0.5904,
-      "prob_Round_of_16": 0.1454,
-      "prob_Quarter_Finals": 0.0484,
-      "prob_Semi_Finals": 0.0068,
-      "prob_Finals": 0.0012,
-      "prob_Winner": 0.0004
+      "expected_rank": 3.0,
+      "avg_points": 3.0,
+      "avg_goal_difference": -3.0,
+      "prob_1": 0.0,
+      "prob_2": 0.0,
+      "prob_3": 1.0,
+      "prob_4": 0.0
     },
     {
-      "team": "Haiti",
-      "prob_Round_of_32": 0.5546,
-      "prob_Round_of_16": 0.1454,
-      "prob_Quarter_Finals": 0.0526,
-      "prob_Semi_Finals": 0.0146,
-      "prob_Finals": 0.0026,
-      "prob_Winner": 0.0004
-    },
-    {
-      "team": "Cura\u00e7ao",
-      "prob_Round_of_32": 0.5164,
-      "prob_Round_of_16": 0.1248,
-      "prob_Quarter_Finals": 0.0244,
-      "prob_Semi_Finals": 0.0066,
-      "prob_Finals": 0.0008,
-      "prob_Winner": 0.0002
-    },
-    {
-      "team": "Ghana",
-      "prob_Round_of_32": 0.5236,
-      "prob_Round_of_16": 0.1212,
-      "prob_Quarter_Finals": 0.0302,
-      "prob_Semi_Finals": 0.0082,
-      "prob_Finals": 0.0014,
-      "prob_Winner": 0.0002
-    },
-    {
-      "team": "New Zealand",
-      "prob_Round_of_32": 0.6214,
-      "prob_Round_of_16": 0.2064,
-      "prob_Quarter_Finals": 0.049,
-      "prob_Semi_Finals": 0.0118,
-      "prob_Finals": 0.001,
-      "prob_Winner": 0.0002
-    },
-    {
+      "group": "Group B",
       "team": "Qatar",
-      "prob_Round_of_32": 0.5322,
-      "prob_Round_of_16": 0.125,
-      "prob_Quarter_Finals": 0.039,
-      "prob_Semi_Finals": 0.0048,
-      "prob_Finals": 0.0006,
-      "prob_Winner": 0.0
+      "expected_rank": 4.0,
+      "avg_points": 0.0,
+      "avg_goal_difference": -6.0,
+      "prob_1": 0.0,
+      "prob_2": 0.0,
+      "prob_3": 0.0,
+      "prob_4": 1.0
+    },
+    {
+      "group": "Group C",
+      "team": "Brazil",
+      "expected_rank": 1.0,
+      "avg_points": 9.0,
+      "avg_goal_difference": 6.0,
+      "prob_1": 1.0,
+      "prob_2": 0.0,
+      "prob_3": 0.0,
+      "prob_4": 0.0
+    },
+    {
+      "group": "Group C",
+      "team": "Morocco",
+      "expected_rank": 2.0,
+      "avg_points": 6.0,
+      "avg_goal_difference": 2.0,
+      "prob_1": 0.0,
+      "prob_2": 1.0,
+      "prob_3": 0.0,
+      "prob_4": 0.0
+    },
+    {
+      "group": "Group C",
+      "team": "Scotland",
+      "expected_rank": 3.0,
+      "avg_points": 3.0,
+      "avg_goal_difference": -1.0,
+      "prob_1": 0.0,
+      "prob_2": 0.0,
+      "prob_3": 1.0,
+      "prob_4": 0.0
+    },
+    {
+      "group": "Group C",
+      "team": "Haiti",
+      "expected_rank": 4.0,
+      "avg_points": 0.0,
+      "avg_goal_difference": -7.0,
+      "prob_1": 0.0,
+      "prob_2": 0.0,
+      "prob_3": 0.0,
+      "prob_4": 1.0
+    },
+    {
+      "group": "Group D",
+      "team": "Turkey",
+      "expected_rank": 1.0,
+      "avg_points": 9.0,
+      "avg_goal_difference": 4.0,
+      "prob_1": 1.0,
+      "prob_2": 0.0,
+      "prob_3": 0.0,
+      "prob_4": 0.0
+    },
+    {
+      "group": "Group D",
+      "team": "United States",
+      "expected_rank": 2.0,
+      "avg_points": 6.0,
+      "avg_goal_difference": 1.0,
+      "prob_1": 0.0,
+      "prob_2": 1.0,
+      "prob_3": 0.0,
+      "prob_4": 0.0
+    },
+    {
+      "group": "Group D",
+      "team": "Australia",
+      "expected_rank": 3.0,
+      "avg_points": 3.0,
+      "avg_goal_difference": -1.0,
+      "prob_1": 0.0,
+      "prob_2": 0.0,
+      "prob_3": 1.0,
+      "prob_4": 0.0
+    },
+    {
+      "group": "Group D",
+      "team": "Paraguay",
+      "expected_rank": 4.0,
+      "avg_points": 0.0,
+      "avg_goal_difference": -4.0,
+      "prob_1": 0.0,
+      "prob_2": 0.0,
+      "prob_3": 0.0,
+      "prob_4": 1.0
+    },
+    {
+      "group": "Group E",
+      "team": "Germany",
+      "expected_rank": 1.0,
+      "avg_points": 9.0,
+      "avg_goal_difference": 6.0,
+      "prob_1": 1.0,
+      "prob_2": 0.0,
+      "prob_3": 0.0,
+      "prob_4": 0.0
+    },
+    {
+      "group": "Group E",
+      "team": "Ecuador",
+      "expected_rank": 2.0,
+      "avg_points": 6.0,
+      "avg_goal_difference": 4.0,
+      "prob_1": 0.0,
+      "prob_2": 1.0,
+      "prob_3": 0.0,
+      "prob_4": 0.0
+    },
+    {
+      "group": "Group E",
+      "team": "Cote d'Ivoire",
+      "expected_rank": 3.0,
+      "avg_points": 3.0,
+      "avg_goal_difference": -2.0,
+      "prob_1": 0.0,
+      "prob_2": 0.0,
+      "prob_3": 1.0,
+      "prob_4": 0.0
+    },
+    {
+      "group": "Group E",
+      "team": "Cura\u00e7ao",
+      "expected_rank": 4.0,
+      "avg_points": 0.0,
+      "avg_goal_difference": -8.0,
+      "prob_1": 0.0,
+      "prob_2": 0.0,
+      "prob_3": 0.0,
+      "prob_4": 1.0
+    },
+    {
+      "group": "Group F",
+      "team": "Netherlands",
+      "expected_rank": 1.0,
+      "avg_points": 9.0,
+      "avg_goal_difference": 4.0,
+      "prob_1": 1.0,
+      "prob_2": 0.0,
+      "prob_3": 0.0,
+      "prob_4": 0.0
+    },
+    {
+      "group": "Group F",
+      "team": "Japan",
+      "expected_rank": 2.0,
+      "avg_points": 6.0,
+      "avg_goal_difference": 2.0,
+      "prob_1": 0.0,
+      "prob_2": 1.0,
+      "prob_3": 0.0,
+      "prob_4": 0.0
+    },
+    {
+      "group": "Group F",
+      "team": "Sweden",
+      "expected_rank": 3.0,
+      "avg_points": 3.0,
+      "avg_goal_difference": -1.0,
+      "prob_1": 0.0,
+      "prob_2": 0.0,
+      "prob_3": 1.0,
+      "prob_4": 0.0
+    },
+    {
+      "group": "Group F",
+      "team": "Tunisia",
+      "expected_rank": 4.0,
+      "avg_points": 0.0,
+      "avg_goal_difference": -5.0,
+      "prob_1": 0.0,
+      "prob_2": 0.0,
+      "prob_3": 0.0,
+      "prob_4": 1.0
+    },
+    {
+      "group": "Group G",
+      "team": "Belgium",
+      "expected_rank": 1.0,
+      "avg_points": 9.0,
+      "avg_goal_difference": 6.0,
+      "prob_1": 1.0,
+      "prob_2": 0.0,
+      "prob_3": 0.0,
+      "prob_4": 0.0
+    },
+    {
+      "group": "Group G",
+      "team": "Iran",
+      "expected_rank": 2.0,
+      "avg_points": 4.0,
+      "avg_goal_difference": 0.0,
+      "prob_1": 0.0,
+      "prob_2": 1.0,
+      "prob_3": 0.0,
+      "prob_4": 0.0
+    },
+    {
+      "group": "Group G",
+      "team": "Egypt",
+      "expected_rank": 3.0,
+      "avg_points": 4.0,
+      "avg_goal_difference": -1.0,
+      "prob_1": 0.0,
+      "prob_2": 0.0,
+      "prob_3": 1.0,
+      "prob_4": 0.0
+    },
+    {
+      "group": "Group G",
+      "team": "New Zealand",
+      "expected_rank": 4.0,
+      "avg_points": 0.0,
+      "avg_goal_difference": -5.0,
+      "prob_1": 0.0,
+      "prob_2": 0.0,
+      "prob_3": 0.0,
+      "prob_4": 1.0
+    },
+    {
+      "group": "Group H",
+      "team": "Spain",
+      "expected_rank": 1.0,
+      "avg_points": 9.0,
+      "avg_goal_difference": 8.0,
+      "prob_1": 1.0,
+      "prob_2": 0.0,
+      "prob_3": 0.0,
+      "prob_4": 0.0
+    },
+    {
+      "group": "Group H",
+      "team": "Uruguay",
+      "expected_rank": 2.0,
+      "avg_points": 6.0,
+      "avg_goal_difference": 4.0,
+      "prob_1": 0.0,
+      "prob_2": 1.0,
+      "prob_3": 0.0,
+      "prob_4": 0.0
+    },
+    {
+      "group": "Group H",
+      "team": "Cape Verde",
+      "expected_rank": 3.0,
+      "avg_points": 1.0,
+      "avg_goal_difference": -6.0,
+      "prob_1": 0.0,
+      "prob_2": 0.0,
+      "prob_3": 1.0,
+      "prob_4": 0.0
+    },
+    {
+      "group": "Group H",
+      "team": "Saudi Arabia",
+      "expected_rank": 4.0,
+      "avg_points": 1.0,
+      "avg_goal_difference": -6.0,
+      "prob_1": 0.0,
+      "prob_2": 0.0,
+      "prob_3": 0.0,
+      "prob_4": 1.0
+    },
+    {
+      "group": "Group I",
+      "team": "France",
+      "expected_rank": 1.0,
+      "avg_points": 9.0,
+      "avg_goal_difference": 4.0,
+      "prob_1": 1.0,
+      "prob_2": 0.0,
+      "prob_3": 0.0,
+      "prob_4": 0.0
+    },
+    {
+      "group": "Group I",
+      "team": "Norway",
+      "expected_rank": 2.0,
+      "avg_points": 6.0,
+      "avg_goal_difference": 2.0,
+      "prob_1": 0.0,
+      "prob_2": 1.0,
+      "prob_3": 0.0,
+      "prob_4": 0.0
+    },
+    {
+      "group": "Group I",
+      "team": "Senegal",
+      "expected_rank": 3.0,
+      "avg_points": 3.0,
+      "avg_goal_difference": 0.0,
+      "prob_1": 0.0,
+      "prob_2": 0.0,
+      "prob_3": 1.0,
+      "prob_4": 0.0
+    },
+    {
+      "group": "Group I",
+      "team": "Iraq",
+      "expected_rank": 4.0,
+      "avg_points": 0.0,
+      "avg_goal_difference": -6.0,
+      "prob_1": 0.0,
+      "prob_2": 0.0,
+      "prob_3": 0.0,
+      "prob_4": 1.0
+    },
+    {
+      "group": "Group J",
+      "team": "Argentina",
+      "expected_rank": 1.0,
+      "avg_points": 9.0,
+      "avg_goal_difference": 6.0,
+      "prob_1": 1.0,
+      "prob_2": 0.0,
+      "prob_3": 0.0,
+      "prob_4": 0.0
+    },
+    {
+      "group": "Group J",
+      "team": "Austria",
+      "expected_rank": 2.0,
+      "avg_points": 6.0,
+      "avg_goal_difference": 2.0,
+      "prob_1": 0.0,
+      "prob_2": 1.0,
+      "prob_3": 0.0,
+      "prob_4": 0.0
+    },
+    {
+      "group": "Group J",
+      "team": "Algeria",
+      "expected_rank": 3.0,
+      "avg_points": 3.0,
+      "avg_goal_difference": -1.0,
+      "prob_1": 0.0,
+      "prob_2": 0.0,
+      "prob_3": 1.0,
+      "prob_4": 0.0
+    },
+    {
+      "group": "Group J",
+      "team": "Jordan",
+      "expected_rank": 4.0,
+      "avg_points": 0.0,
+      "avg_goal_difference": -7.0,
+      "prob_1": 0.0,
+      "prob_2": 0.0,
+      "prob_3": 0.0,
+      "prob_4": 1.0
+    },
+    {
+      "group": "Group K",
+      "team": "Portugal",
+      "expected_rank": 1.0,
+      "avg_points": 7.0,
+      "avg_goal_difference": 8.0,
+      "prob_1": 1.0,
+      "prob_2": 0.0,
+      "prob_3": 0.0,
+      "prob_4": 0.0
+    },
+    {
+      "group": "Group K",
+      "team": "Colombia",
+      "expected_rank": 2.0,
+      "avg_points": 7.0,
+      "avg_goal_difference": 6.0,
+      "prob_1": 0.0,
+      "prob_2": 1.0,
+      "prob_3": 0.0,
+      "prob_4": 0.0
+    },
+    {
+      "group": "Group K",
+      "team": "DR Congo",
+      "expected_rank": 3.0,
+      "avg_points": 3.0,
+      "avg_goal_difference": -6.0,
+      "prob_1": 0.0,
+      "prob_2": 0.0,
+      "prob_3": 1.0,
+      "prob_4": 0.0
+    },
+    {
+      "group": "Group K",
+      "team": "Uzbekistan",
+      "expected_rank": 4.0,
+      "avg_points": 0.0,
+      "avg_goal_difference": -8.0,
+      "prob_1": 0.0,
+      "prob_2": 0.0,
+      "prob_3": 0.0,
+      "prob_4": 1.0
+    },
+    {
+      "group": "Group L",
+      "team": "England",
+      "expected_rank": 1.0,
+      "avg_points": 9.0,
+      "avg_goal_difference": 5.0,
+      "prob_1": 1.0,
+      "prob_2": 0.0,
+      "prob_3": 0.0,
+      "prob_4": 0.0
+    },
+    {
+      "group": "Group L",
+      "team": "Croatia",
+      "expected_rank": 2.0,
+      "avg_points": 6.0,
+      "avg_goal_difference": 2.0,
+      "prob_1": 0.0,
+      "prob_2": 1.0,
+      "prob_3": 0.0,
+      "prob_4": 0.0
+    },
+    {
+      "group": "Group L",
+      "team": "Ghana",
+      "expected_rank": 3.0,
+      "avg_points": 3.0,
+      "avg_goal_difference": -1.0,
+      "prob_1": 0.0,
+      "prob_2": 0.0,
+      "prob_3": 1.0,
+      "prob_4": 0.0
+    },
+    {
+      "group": "Group L",
+      "team": "Panama",
+      "expected_rank": 4.0,
+      "avg_points": 0.0,
+      "avg_goal_difference": -6.0,
+      "prob_1": 0.0,
+      "prob_2": 0.0,
+      "prob_3": 0.0,
+      "prob_4": 1.0
     }
   ],
   "group_probabilities": [
     {
-      "group": "Group J",
-      "team": "Argentina",
-      "advance_probability": 0.669
-    },
-    {
-      "group": "Group C",
-      "team": "Brazil",
-      "advance_probability": 0.6577999999999999
-    },
-    {
-      "group": "Group I",
-      "team": "France",
-      "advance_probability": 0.6502
-    },
-    {
-      "group": "Group G",
-      "team": "Belgium",
-      "advance_probability": 0.6464
-    },
-    {
-      "group": "Group L",
-      "team": "England",
-      "advance_probability": 0.6422000000000001
-    },
-    {
-      "group": "Group B",
-      "team": "Switzerland",
-      "advance_probability": 0.64
-    },
-    {
-      "group": "Group K",
-      "team": "Colombia",
-      "advance_probability": 0.6394
-    },
-    {
-      "group": "Group H",
-      "team": "Spain",
-      "advance_probability": 0.6377999999999999
-    },
-    {
-      "group": "Group F",
-      "team": "Netherlands",
-      "advance_probability": 0.6364
-    },
-    {
-      "group": "Group E",
-      "team": "Germany",
-      "advance_probability": 0.6042000000000001
+      "group": "Group A",
+      "team": "Mexico",
+      "advance_probability": 1.0
     },
     {
       "group": "Group E",
       "team": "Ecuador",
-      "advance_probability": 0.5996
-    },
-    {
-      "group": "Group K",
-      "team": "Portugal",
-      "advance_probability": 0.597
-    },
-    {
-      "group": "Group B",
-      "team": "Canada",
-      "advance_probability": 0.5938
-    },
-    {
-      "group": "Group A",
-      "team": "Mexico",
-      "advance_probability": 0.5918
-    },
-    {
-      "group": "Group H",
-      "team": "Uruguay",
-      "advance_probability": 0.5793999999999999
-    },
-    {
-      "group": "Group D",
-      "team": "Turkey",
-      "advance_probability": 0.5666
-    },
-    {
-      "group": "Group A",
-      "team": "Czech Republic",
-      "advance_probability": 0.5458000000000001
-    },
-    {
-      "group": "Group D",
-      "team": "United States",
-      "advance_probability": 0.5287999999999999
-    },
-    {
-      "group": "Group I",
-      "team": "Norway",
-      "advance_probability": 0.5018
-    },
-    {
-      "group": "Group L",
-      "team": "Panama",
-      "advance_probability": 0.5018
-    },
-    {
-      "group": "Group A",
-      "team": "South Korea",
-      "advance_probability": 0.5008
+      "advance_probability": 1.0
     },
     {
       "group": "Group L",
       "team": "Croatia",
-      "advance_probability": 0.5005999999999999
+      "advance_probability": 1.0
     },
     {
-      "group": "Group F",
-      "team": "Japan",
-      "advance_probability": 0.4996
+      "group": "Group L",
+      "team": "England",
+      "advance_probability": 1.0
     },
     {
-      "group": "Group C",
-      "team": "Morocco",
-      "advance_probability": 0.48360000000000003
+      "group": "Group K",
+      "team": "Colombia",
+      "advance_probability": 1.0
     },
     {
-      "group": "Group G",
-      "team": "Iran",
-      "advance_probability": 0.4778
-    },
-    {
-      "group": "Group C",
-      "team": "Scotland",
-      "advance_probability": 0.47719999999999996
-    },
-    {
-      "group": "Group F",
-      "team": "Tunisia",
-      "advance_probability": 0.4746
-    },
-    {
-      "group": "Group I",
-      "team": "Senegal",
-      "advance_probability": 0.4706
-    },
-    {
-      "group": "Group D",
-      "team": "Australia",
-      "advance_probability": 0.462
-    },
-    {
-      "group": "Group J",
-      "team": "Algeria",
-      "advance_probability": 0.4612
-    },
-    {
-      "group": "Group E",
-      "team": "Cote d'Ivoire",
-      "advance_probability": 0.4468
-    },
-    {
-      "group": "Group D",
-      "team": "Paraguay",
-      "advance_probability": 0.4426
-    },
-    {
-      "group": "Group G",
-      "team": "Egypt",
-      "advance_probability": 0.441
+      "group": "Group K",
+      "team": "Portugal",
+      "advance_probability": 1.0
     },
     {
       "group": "Group J",
       "team": "Austria",
-      "advance_probability": 0.4356
-    },
-    {
-      "group": "Group G",
-      "team": "New Zealand",
-      "advance_probability": 0.43479999999999996
+      "advance_probability": 1.0
     },
     {
       "group": "Group J",
-      "team": "Jordan",
-      "advance_probability": 0.43420000000000003
+      "team": "Argentina",
+      "advance_probability": 1.0
     },
     {
-      "group": "Group B",
-      "team": "Bosnia and Herzegovina",
-      "advance_probability": 0.4092
+      "group": "Group I",
+      "team": "Norway",
+      "advance_probability": 1.0
+    },
+    {
+      "group": "Group I",
+      "team": "France",
+      "advance_probability": 1.0
     },
     {
       "group": "Group H",
-      "team": "Cape Verde",
-      "advance_probability": 0.4
+      "team": "Uruguay",
+      "advance_probability": 1.0
+    },
+    {
+      "group": "Group H",
+      "team": "Spain",
+      "advance_probability": 1.0
+    },
+    {
+      "group": "Group G",
+      "team": "Iran",
+      "advance_probability": 1.0
+    },
+    {
+      "group": "Group A",
+      "team": "Czech Republic",
+      "advance_probability": 1.0
+    },
+    {
+      "group": "Group F",
+      "team": "Japan",
+      "advance_probability": 1.0
+    },
+    {
+      "group": "Group F",
+      "team": "Netherlands",
+      "advance_probability": 1.0
+    },
+    {
+      "group": "Group G",
+      "team": "Belgium",
+      "advance_probability": 1.0
+    },
+    {
+      "group": "Group E",
+      "team": "Germany",
+      "advance_probability": 1.0
+    },
+    {
+      "group": "Group D",
+      "team": "United States",
+      "advance_probability": 1.0
+    },
+    {
+      "group": "Group B",
+      "team": "Switzerland",
+      "advance_probability": 1.0
+    },
+    {
+      "group": "Group B",
+      "team": "Canada",
+      "advance_probability": 1.0
+    },
+    {
+      "group": "Group C",
+      "team": "Brazil",
+      "advance_probability": 1.0
+    },
+    {
+      "group": "Group D",
+      "team": "Turkey",
+      "advance_probability": 1.0
+    },
+    {
+      "group": "Group C",
+      "team": "Morocco",
+      "advance_probability": 1.0
+    },
+    {
+      "group": "Group F",
+      "team": "Tunisia",
+      "advance_probability": 0.0
     },
     {
       "group": "Group F",
       "team": "Sweden",
-      "advance_probability": 0.38939999999999997
-    },
-    {
-      "group": "Group K",
-      "team": "Uzbekistan",
-      "advance_probability": 0.38280000000000003
-    },
-    {
-      "group": "Group H",
-      "team": "Saudi Arabia",
-      "advance_probability": 0.38280000000000003
-    },
-    {
-      "group": "Group C",
-      "team": "Haiti",
-      "advance_probability": 0.38139999999999996
-    },
-    {
-      "group": "Group K",
-      "team": "DR Congo",
-      "advance_probability": 0.3808
-    },
-    {
-      "group": "Group I",
-      "team": "Iraq",
-      "advance_probability": 0.37739999999999996
-    },
-    {
-      "group": "Group A",
-      "team": "South Africa",
-      "advance_probability": 0.36160000000000003
-    },
-    {
-      "group": "Group B",
-      "team": "Qatar",
-      "advance_probability": 0.357
+      "advance_probability": 0.0
     },
     {
       "group": "Group L",
       "team": "Ghana",
-      "advance_probability": 0.3554
+      "advance_probability": 0.0
+    },
+    {
+      "group": "Group A",
+      "team": "South Korea",
+      "advance_probability": 0.0
+    },
+    {
+      "group": "Group A",
+      "team": "South Africa",
+      "advance_probability": 0.0
+    },
+    {
+      "group": "Group K",
+      "team": "Uzbekistan",
+      "advance_probability": 0.0
+    },
+    {
+      "group": "Group K",
+      "team": "DR Congo",
+      "advance_probability": 0.0
     },
     {
       "group": "Group E",
       "team": "Cura\u00e7ao",
-      "advance_probability": 0.3494
+      "advance_probability": 0.0
+    },
+    {
+      "group": "Group D",
+      "team": "Paraguay",
+      "advance_probability": 0.0
+    },
+    {
+      "group": "Group J",
+      "team": "Jordan",
+      "advance_probability": 0.0
+    },
+    {
+      "group": "Group J",
+      "team": "Algeria",
+      "advance_probability": 0.0
+    },
+    {
+      "group": "Group B",
+      "team": "Bosnia and Herzegovina",
+      "advance_probability": 0.0
+    },
+    {
+      "group": "Group B",
+      "team": "Qatar",
+      "advance_probability": 0.0
+    },
+    {
+      "group": "Group I",
+      "team": "Iraq",
+      "advance_probability": 0.0
+    },
+    {
+      "group": "Group I",
+      "team": "Senegal",
+      "advance_probability": 0.0
+    },
+    {
+      "group": "Group D",
+      "team": "Australia",
+      "advance_probability": 0.0
+    },
+    {
+      "group": "Group E",
+      "team": "Cote d'Ivoire",
+      "advance_probability": 0.0
+    },
+    {
+      "group": "Group H",
+      "team": "Saudi Arabia",
+      "advance_probability": 0.0
+    },
+    {
+      "group": "Group H",
+      "team": "Cape Verde",
+      "advance_probability": 0.0
+    },
+    {
+      "group": "Group C",
+      "team": "Scotland",
+      "advance_probability": 0.0
+    },
+    {
+      "group": "Group C",
+      "team": "Haiti",
+      "advance_probability": 0.0
+    },
+    {
+      "group": "Group G",
+      "team": "New Zealand",
+      "advance_probability": 0.0
+    },
+    {
+      "group": "Group G",
+      "team": "Egypt",
+      "advance_probability": 0.0
+    },
+    {
+      "group": "Group L",
+      "team": "Panama",
+      "advance_probability": 0.0
     }
   ],
   "knockout_schedule": [
@@ -2788,5 +1457,584 @@
       "location": "New York New Jersey Stadium",
       "date": "Sunday, 19 July 2026"
     }
-  ]
+  ],
+  "group_schedule": [
+    {
+      "match_number": 1,
+      "date": "11/06/2026 19:00",
+      "home_team": "Mexico",
+      "away_team": "South Africa",
+      "group": "Group A",
+      "stadium": "Mexico City Stadium"
+    },
+    {
+      "match_number": 2,
+      "date": "12/06/2026 02:00",
+      "home_team": "Korea Republic",
+      "away_team": "Czechia",
+      "group": "Group A",
+      "stadium": "Guadalajara Stadium"
+    },
+    {
+      "match_number": 3,
+      "date": "12/06/2026 19:00",
+      "home_team": "Canada",
+      "away_team": "Bosnia and Herzegovina",
+      "group": "Group B",
+      "stadium": "Toronto Stadium"
+    },
+    {
+      "match_number": 4,
+      "date": "13/06/2026 01:00",
+      "home_team": "USA",
+      "away_team": "Paraguay",
+      "group": "Group D",
+      "stadium": "Los Angeles Stadium"
+    },
+    {
+      "match_number": 5,
+      "date": "14/06/2026 01:00",
+      "home_team": "Haiti",
+      "away_team": "Scotland",
+      "group": "Group C",
+      "stadium": "Boston Stadium"
+    },
+    {
+      "match_number": 6,
+      "date": "14/06/2026 04:00",
+      "home_team": "Australia",
+      "away_team": "T\u00fcrkiye",
+      "group": "Group D",
+      "stadium": "BC Place Vancouver"
+    },
+    {
+      "match_number": 7,
+      "date": "13/06/2026 22:00",
+      "home_team": "Brazil",
+      "away_team": "Morocco",
+      "group": "Group C",
+      "stadium": "New York/New Jersey Stadium"
+    },
+    {
+      "match_number": 8,
+      "date": "13/06/2026 19:00",
+      "home_team": "Qatar",
+      "away_team": "Switzerland",
+      "group": "Group B",
+      "stadium": "San Francisco Bay Area Stadium"
+    },
+    {
+      "match_number": 9,
+      "date": "14/06/2026 23:00",
+      "home_team": "C\u00f4te d'Ivoire",
+      "away_team": "Ecuador",
+      "group": "Group E",
+      "stadium": "Philadelphia Stadium"
+    },
+    {
+      "match_number": 10,
+      "date": "14/06/2026 17:00",
+      "home_team": "Germany",
+      "away_team": "Cura\u00e7ao",
+      "group": "Group E",
+      "stadium": "Houston Stadium"
+    },
+    {
+      "match_number": 11,
+      "date": "14/06/2026 20:00",
+      "home_team": "Netherlands",
+      "away_team": "Japan",
+      "group": "Group F",
+      "stadium": "Dallas Stadium"
+    },
+    {
+      "match_number": 12,
+      "date": "15/06/2026 02:00",
+      "home_team": "Sweden",
+      "away_team": "Tunisia",
+      "group": "Group F",
+      "stadium": "Monterrey Stadium"
+    },
+    {
+      "match_number": 13,
+      "date": "15/06/2026 22:00",
+      "home_team": "Saudi Arabia",
+      "away_team": "Uruguay",
+      "group": "Group H",
+      "stadium": "Miami Stadium"
+    },
+    {
+      "match_number": 14,
+      "date": "15/06/2026 16:00",
+      "home_team": "Spain",
+      "away_team": "Cabo Verde",
+      "group": "Group H",
+      "stadium": "Atlanta Stadium"
+    },
+    {
+      "match_number": 15,
+      "date": "16/06/2026 01:00",
+      "home_team": "IR Iran",
+      "away_team": "New Zealand",
+      "group": "Group G",
+      "stadium": "Los Angeles Stadium"
+    },
+    {
+      "match_number": 16,
+      "date": "15/06/2026 19:00",
+      "home_team": "Belgium",
+      "away_team": "Egypt",
+      "group": "Group G",
+      "stadium": "Seattle Stadium"
+    },
+    {
+      "match_number": 17,
+      "date": "16/06/2026 19:00",
+      "home_team": "France",
+      "away_team": "Senegal",
+      "group": "Group I",
+      "stadium": "New York/New Jersey Stadium"
+    },
+    {
+      "match_number": 18,
+      "date": "16/06/2026 22:00",
+      "home_team": "Iraq",
+      "away_team": "Norway",
+      "group": "Group I",
+      "stadium": "Boston Stadium"
+    },
+    {
+      "match_number": 19,
+      "date": "17/06/2026 01:00",
+      "home_team": "Argentina",
+      "away_team": "Algeria",
+      "group": "Group J",
+      "stadium": "Kansas City Stadium"
+    },
+    {
+      "match_number": 20,
+      "date": "17/06/2026 04:00",
+      "home_team": "Austria",
+      "away_team": "Jordan",
+      "group": "Group J",
+      "stadium": "San Francisco Bay Area Stadium"
+    },
+    {
+      "match_number": 21,
+      "date": "17/06/2026 23:00",
+      "home_team": "Ghana",
+      "away_team": "Panama",
+      "group": "Group L",
+      "stadium": "Toronto Stadium"
+    },
+    {
+      "match_number": 22,
+      "date": "17/06/2026 20:00",
+      "home_team": "England",
+      "away_team": "Croatia",
+      "group": "Group L",
+      "stadium": "Dallas Stadium"
+    },
+    {
+      "match_number": 23,
+      "date": "17/06/2026 17:00",
+      "home_team": "Portugal",
+      "away_team": "Congo DR",
+      "group": "Group K",
+      "stadium": "Houston Stadium"
+    },
+    {
+      "match_number": 24,
+      "date": "18/06/2026 02:00",
+      "home_team": "Uzbekistan",
+      "away_team": "Colombia",
+      "group": "Group K",
+      "stadium": "Mexico City Stadium"
+    },
+    {
+      "match_number": 25,
+      "date": "18/06/2026 16:00",
+      "home_team": "Czechia",
+      "away_team": "South Africa",
+      "group": "Group A",
+      "stadium": "Atlanta Stadium"
+    },
+    {
+      "match_number": 26,
+      "date": "18/06/2026 19:00",
+      "home_team": "Switzerland",
+      "away_team": "Bosnia and Herzegovina",
+      "group": "Group B",
+      "stadium": "Los Angeles Stadium"
+    },
+    {
+      "match_number": 27,
+      "date": "18/06/2026 22:00",
+      "home_team": "Canada",
+      "away_team": "Qatar",
+      "group": "Group B",
+      "stadium": "BC Place Vancouver"
+    },
+    {
+      "match_number": 28,
+      "date": "19/06/2026 01:00",
+      "home_team": "Mexico",
+      "away_team": "Korea Republic",
+      "group": "Group A",
+      "stadium": "Guadalajara Stadium"
+    },
+    {
+      "match_number": 29,
+      "date": "20/06/2026 01:00",
+      "home_team": "Brazil",
+      "away_team": "Haiti",
+      "group": "Group C",
+      "stadium": "Philadelphia Stadium"
+    },
+    {
+      "match_number": 30,
+      "date": "19/06/2026 22:00",
+      "home_team": "Scotland",
+      "away_team": "Morocco",
+      "group": "Group C",
+      "stadium": "Boston Stadium"
+    },
+    {
+      "match_number": 31,
+      "date": "20/06/2026 04:00",
+      "home_team": "T\u00fcrkiye",
+      "away_team": "Paraguay",
+      "group": "Group D",
+      "stadium": "San Francisco Bay Area Stadium"
+    },
+    {
+      "match_number": 32,
+      "date": "19/06/2026 19:00",
+      "home_team": "USA",
+      "away_team": "Australia",
+      "group": "Group D",
+      "stadium": "Seattle Stadium"
+    },
+    {
+      "match_number": 33,
+      "date": "20/06/2026 20:00",
+      "home_team": "Germany",
+      "away_team": "C\u00f4te d'Ivoire",
+      "group": "Group E",
+      "stadium": "Toronto Stadium"
+    },
+    {
+      "match_number": 34,
+      "date": "21/06/2026 00:00",
+      "home_team": "Ecuador",
+      "away_team": "Cura\u00e7ao",
+      "group": "Group E",
+      "stadium": "Kansas City Stadium"
+    },
+    {
+      "match_number": 35,
+      "date": "20/06/2026 17:00",
+      "home_team": "Netherlands",
+      "away_team": "Sweden",
+      "group": "Group F",
+      "stadium": "Houston Stadium"
+    },
+    {
+      "match_number": 36,
+      "date": "21/06/2026 04:00",
+      "home_team": "Tunisia",
+      "away_team": "Japan",
+      "group": "Group F",
+      "stadium": "Monterrey Stadium"
+    },
+    {
+      "match_number": 37,
+      "date": "21/06/2026 22:00",
+      "home_team": "Uruguay",
+      "away_team": "Cabo Verde",
+      "group": "Group H",
+      "stadium": "Miami Stadium"
+    },
+    {
+      "match_number": 38,
+      "date": "21/06/2026 16:00",
+      "home_team": "Spain",
+      "away_team": "Saudi Arabia",
+      "group": "Group H",
+      "stadium": "Atlanta Stadium"
+    },
+    {
+      "match_number": 39,
+      "date": "21/06/2026 19:00",
+      "home_team": "Belgium",
+      "away_team": "IR Iran",
+      "group": "Group G",
+      "stadium": "Los Angeles Stadium"
+    },
+    {
+      "match_number": 40,
+      "date": "22/06/2026 01:00",
+      "home_team": "New Zealand",
+      "away_team": "Egypt",
+      "group": "Group G",
+      "stadium": "BC Place Vancouver"
+    },
+    {
+      "match_number": 41,
+      "date": "23/06/2026 00:00",
+      "home_team": "Norway",
+      "away_team": "Senegal",
+      "group": "Group I",
+      "stadium": "New York/New Jersey Stadium"
+    },
+    {
+      "match_number": 42,
+      "date": "22/06/2026 21:00",
+      "home_team": "France",
+      "away_team": "Iraq",
+      "group": "Group I",
+      "stadium": "Philadelphia Stadium"
+    },
+    {
+      "match_number": 43,
+      "date": "22/06/2026 17:00",
+      "home_team": "Argentina",
+      "away_team": "Austria",
+      "group": "Group J",
+      "stadium": "Dallas Stadium"
+    },
+    {
+      "match_number": 44,
+      "date": "23/06/2026 03:00",
+      "home_team": "Jordan",
+      "away_team": "Algeria",
+      "group": "Group J",
+      "stadium": "San Francisco Bay Area Stadium"
+    },
+    {
+      "match_number": 45,
+      "date": "23/06/2026 20:00",
+      "home_team": "England",
+      "away_team": "Ghana",
+      "group": "Group L",
+      "stadium": "Boston Stadium"
+    },
+    {
+      "match_number": 46,
+      "date": "23/06/2026 23:00",
+      "home_team": "Panama",
+      "away_team": "Croatia",
+      "group": "Group L",
+      "stadium": "Toronto Stadium"
+    },
+    {
+      "match_number": 47,
+      "date": "23/06/2026 17:00",
+      "home_team": "Portugal",
+      "away_team": "Uzbekistan",
+      "group": "Group K",
+      "stadium": "Houston Stadium"
+    },
+    {
+      "match_number": 48,
+      "date": "24/06/2026 02:00",
+      "home_team": "Colombia",
+      "away_team": "Congo DR",
+      "group": "Group K",
+      "stadium": "Guadalajara Stadium"
+    },
+    {
+      "match_number": 49,
+      "date": "24/06/2026 22:00",
+      "home_team": "Scotland",
+      "away_team": "Brazil",
+      "group": "Group C",
+      "stadium": "Miami Stadium"
+    },
+    {
+      "match_number": 50,
+      "date": "24/06/2026 22:00",
+      "home_team": "Morocco",
+      "away_team": "Haiti",
+      "group": "Group C",
+      "stadium": "Atlanta Stadium"
+    },
+    {
+      "match_number": 51,
+      "date": "24/06/2026 19:00",
+      "home_team": "Switzerland",
+      "away_team": "Canada",
+      "group": "Group B",
+      "stadium": "BC Place Vancouver"
+    },
+    {
+      "match_number": 52,
+      "date": "24/06/2026 19:00",
+      "home_team": "Bosnia and Herzegovina",
+      "away_team": "Qatar",
+      "group": "Group B",
+      "stadium": "Seattle Stadium"
+    },
+    {
+      "match_number": 53,
+      "date": "25/06/2026 01:00",
+      "home_team": "Czechia",
+      "away_team": "Mexico",
+      "group": "Group A",
+      "stadium": "Mexico City Stadium"
+    },
+    {
+      "match_number": 54,
+      "date": "25/06/2026 01:00",
+      "home_team": "South Africa",
+      "away_team": "Korea Republic",
+      "group": "Group A",
+      "stadium": "Monterrey Stadium"
+    },
+    {
+      "match_number": 55,
+      "date": "25/06/2026 20:00",
+      "home_team": "Cura\u00e7ao",
+      "away_team": "C\u00f4te d'Ivoire",
+      "group": "Group E",
+      "stadium": "Philadelphia Stadium"
+    },
+    {
+      "match_number": 56,
+      "date": "25/06/2026 20:00",
+      "home_team": "Ecuador",
+      "away_team": "Germany",
+      "group": "Group E",
+      "stadium": "New York/New Jersey Stadium"
+    },
+    {
+      "match_number": 57,
+      "date": "25/06/2026 23:00",
+      "home_team": "Japan",
+      "away_team": "Sweden",
+      "group": "Group F",
+      "stadium": "Dallas Stadium"
+    },
+    {
+      "match_number": 58,
+      "date": "25/06/2026 23:00",
+      "home_team": "Tunisia",
+      "away_team": "Netherlands",
+      "group": "Group F",
+      "stadium": "Kansas City Stadium"
+    },
+    {
+      "match_number": 59,
+      "date": "26/06/2026 02:00",
+      "home_team": "T\u00fcrkiye",
+      "away_team": "USA",
+      "group": "Group D",
+      "stadium": "Los Angeles Stadium"
+    },
+    {
+      "match_number": 60,
+      "date": "26/06/2026 02:00",
+      "home_team": "Paraguay",
+      "away_team": "Australia",
+      "group": "Group D",
+      "stadium": "San Francisco Bay Area Stadium"
+    },
+    {
+      "match_number": 61,
+      "date": "26/06/2026 19:00",
+      "home_team": "Norway",
+      "away_team": "France",
+      "group": "Group I",
+      "stadium": "Boston Stadium"
+    },
+    {
+      "match_number": 62,
+      "date": "26/06/2026 19:00",
+      "home_team": "Senegal",
+      "away_team": "Iraq",
+      "group": "Group I",
+      "stadium": "Toronto Stadium"
+    },
+    {
+      "match_number": 63,
+      "date": "27/06/2026 03:00",
+      "home_team": "Egypt",
+      "away_team": "IR Iran",
+      "group": "Group G",
+      "stadium": "Seattle Stadium"
+    },
+    {
+      "match_number": 64,
+      "date": "27/06/2026 03:00",
+      "home_team": "New Zealand",
+      "away_team": "Belgium",
+      "group": "Group G",
+      "stadium": "BC Place Vancouver"
+    },
+    {
+      "match_number": 65,
+      "date": "27/06/2026 00:00",
+      "home_team": "Cabo Verde",
+      "away_team": "Saudi Arabia",
+      "group": "Group H",
+      "stadium": "Houston Stadium"
+    },
+    {
+      "match_number": 66,
+      "date": "27/06/2026 00:00",
+      "home_team": "Uruguay",
+      "away_team": "Spain",
+      "group": "Group H",
+      "stadium": "Guadalajara Stadium"
+    },
+    {
+      "match_number": 67,
+      "date": "27/06/2026 21:00",
+      "home_team": "Panama",
+      "away_team": "England",
+      "group": "Group L",
+      "stadium": "New York/New Jersey Stadium"
+    },
+    {
+      "match_number": 68,
+      "date": "27/06/2026 21:00",
+      "home_team": "Croatia",
+      "away_team": "Ghana",
+      "group": "Group L",
+      "stadium": "Philadelphia Stadium"
+    },
+    {
+      "match_number": 69,
+      "date": "28/06/2026 02:00",
+      "home_team": "Algeria",
+      "away_team": "Austria",
+      "group": "Group J",
+      "stadium": "Kansas City Stadium"
+    },
+    {
+      "match_number": 70,
+      "date": "28/06/2026 02:00",
+      "home_team": "Jordan",
+      "away_team": "Argentina",
+      "group": "Group J",
+      "stadium": "Dallas Stadium"
+    },
+    {
+      "match_number": 71,
+      "date": "27/06/2026 23:30",
+      "home_team": "Colombia",
+      "away_team": "Portugal",
+      "group": "Group K",
+      "stadium": "Miami Stadium"
+    },
+    {
+      "match_number": 72,
+      "date": "27/06/2026 23:30",
+      "home_team": "Congo DR",
+      "away_team": "Uzbekistan",
+      "group": "Group K",
+      "stadium": "Atlanta Stadium"
+    }
+  ],
+  "saved_filename": "website/data/saved_simulations/simulation_actuals_200_20260611T113426Z.json"
 }

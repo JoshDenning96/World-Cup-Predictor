@@ -234,7 +234,9 @@ def _build_round_of_32_third_place_assignment_map(
     group_key = "".join(sorted(best_third_groups))
     assignment = ROUND_OF_32_THIRD_PLACE_ASSIGNMENT_MAP.get(group_key)
     if assignment is None:
-        return None
+        # Table doesn't cover this combination (e.g. group A qualifies).
+        # Fall back: assign best 8 third-place teams alphabetically to bracket slots.
+        assignment = sorted(best_third_groups)
 
     return dict(zip(_R32_WINNER_GROUP_ORDER, assignment))
 
@@ -278,12 +280,13 @@ def calculate_match_probabilities(
     strengths: pd.DataFrame,
     elo_ratings=None,
     max_goals: int = 6,
+    home_advantage: float = 0.0,
 ) -> Dict[str, float]:
     """Compute win/draw probabilities for a single match."""
     if elo_ratings is not None:
-        return predict_elo_match_probabilities(home_team, away_team, elo_ratings)
+        return predict_elo_match_probabilities(home_team, away_team, elo_ratings, home_advantage=home_advantage)
 
-    expected_home, expected_away = predict_poisson_scores(home_team, away_team, strengths)
+    expected_home, expected_away = predict_poisson_scores(home_team, away_team, strengths, home_advantage=home_advantage)
     home_probs = np.array([np.exp(-expected_home) * expected_home ** k / math.factorial(k) for k in range(max_goals + 1)])
     away_probs = np.array([np.exp(-expected_away) * expected_away ** k / math.factorial(k) for k in range(max_goals + 1)])
 
@@ -335,6 +338,7 @@ def simulate_group_stage(
     strengths: pd.DataFrame,
     n_simulations: int = 500,
     elo_ratings=None,
+    home_advantage: float = 0.0,
 ) -> pd.DataFrame:
     """Simulate a group stage and estimate advancement probabilities.
 
@@ -362,7 +366,7 @@ def simulate_group_stage(
                 )
                 continue
 
-            sim = simulate_match(home_team, away_team, strengths, n_simulations=1, elo_ratings=elo_ratings)
+            sim = simulate_match(home_team, away_team, strengths, n_simulations=1, elo_ratings=elo_ratings, home_advantage=home_advantage)
             home_goals = int(sim["home_goals"].iloc[0])
             away_goals = int(sim["away_goals"].iloc[0])
             all_results.append(
@@ -396,9 +400,10 @@ def simulate_knockout_match(
     away_team: str,
     strengths: pd.DataFrame,
     n_simulations: int = 500,
+    home_advantage: float = 0.0,
 ) -> pd.DataFrame:
     """Simulate a knockout match and return counts for each possible winner."""
-    sim = simulate_match(home_team, away_team, strengths, n_simulations=n_simulations)
+    sim = simulate_match(home_team, away_team, strengths, n_simulations=n_simulations, home_advantage=home_advantage)
     outcomes = sim.apply(
         lambda row: "home" if row["home_goals"] > row["away_goals"] else "away" if row["away_goals"] > row["home_goals"] else "draw",
         axis=1,
@@ -412,6 +417,7 @@ def simulate_group_tables(
     n_simulations: int = 500,
     elo_ratings=None,
     actual_results: dict | None = None,
+    home_advantage: float = 0.0,
 ) -> pd.DataFrame:
     """Simulate group stage many times and return predicted group tables.
 
@@ -463,7 +469,7 @@ def simulate_group_tables(
                 home_goals = int(_actuals[mn_key]["home_goals"])
                 away_goals = int(_actuals[mn_key]["away_goals"])
             else:
-                sim = simulate_match(home_team, away_team, strengths, n_simulations=1, elo_ratings=elo_ratings)
+                sim = simulate_match(home_team, away_team, strengths, n_simulations=1, elo_ratings=elo_ratings, home_advantage=home_advantage)
                 home_goals = int(sim["home_goals"].iloc[0])
                 away_goals = int(sim["away_goals"].iloc[0])
             all_results.append(
@@ -560,6 +566,8 @@ def simulate_full_tournament(
     elo_ratings=None,
     return_group_tables: bool = False,
     actual_results: dict | None = None,
+    home_advantage: float = 0.0,
+    progress_callback=None,
 ) -> pd.DataFrame | dict:
     """Simulate full tournament including knockout rounds.
 
@@ -669,7 +677,7 @@ def simulate_full_tournament(
 
     def resolve_knockout_winner(home: str, away: str) -> str:
         if elo_ratings is not None:
-            probs = predict_elo_match_probabilities(home, away, elo_ratings)
+            probs = predict_elo_match_probabilities(home, away, elo_ratings, home_advantage=home_advantage)
             outcome = np.random.choice(
                 ["home", "draw", "away"],
                 p=[probs["home_win"], probs["draw"], probs["away_win"]],
@@ -678,21 +686,20 @@ def simulate_full_tournament(
                 return home
             if outcome == "away":
                 return away
-            return home if np.random.rand() < probs["home_win"] / (probs["home_win"] + probs["away_win"] + 1e-12) else away
+            # Drawn after 90 mins → penalty shootout is ~50/50
+            return home if np.random.rand() < 0.5 else away
 
-        sim = simulate_match(home, away, strengths, n_simulations=1, elo_ratings=elo_ratings)
+        sim = simulate_match(home, away, strengths, n_simulations=1, elo_ratings=elo_ratings, home_advantage=home_advantage)
         hg = int(sim["home_goals"].iloc[0])
         ag = int(sim["away_goals"].iloc[0])
         if hg == ag:
-            probs = calculate_match_probabilities(home, away, strengths, elo_ratings=elo_ratings)
-            hw = probs["home_win"]
-            aw = probs["away_win"]
-            return home if np.random.rand() < hw / (hw + aw + 1e-12) else away
+            # Drawn after 90 mins → penalty shootout is ~50/50
+            return home if np.random.rand() < 0.5 else away
         return home if hg > ag else away
 
     _actuals = actual_results or {}
 
-    for _ in range(n_simulations):
+    for _iter in range(n_simulations):
         # simulate matches
         all_results = []
         for _, match in group_sched.iterrows():
@@ -706,7 +713,7 @@ def simulate_full_tournament(
                 home_score = int(_actuals[mn_key]["home_goals"])
                 away_score = int(_actuals[mn_key]["away_goals"])
             else:
-                sim = simulate_match(h, a, strengths, n_simulations=1, elo_ratings=elo_ratings)
+                sim = simulate_match(h, a, strengths, n_simulations=1, elo_ratings=elo_ratings, home_advantage=home_advantage)
                 home_score = int(sim["home_goals"].iloc[0])
                 away_score = int(sim["away_goals"].iloc[0])
             all_results.append({
@@ -849,6 +856,9 @@ def simulate_full_tournament(
             champ = prev_winners[0]
             if champ:
                 stage_counts[champ]["Winner"] += 1
+
+        if progress_callback is not None:
+            progress_callback(_iter + 1, n_simulations)
 
     # assemble full tournament probabilities
     rows = []
