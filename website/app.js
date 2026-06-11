@@ -849,22 +849,30 @@ async function renderBracket(data, count = 32) {
     return groups;
   }
 
-  function projectRound(prevGroups, prevX, nextX, advanceKey, isRight) {
+  // Draw both competitors for each match in a round, mirroring createProgression.
+  // prevGroups entries each carry .winner (the projected team) and .yMid (vertical anchor).
+  // Returns groups with the same structure so subsequent rounds can chain.
+  function projectRound(prevGroups, prevX, nextX, advanceKey, isRight, stage) {
     const nextGroups = [];
     for (let i = 0; i < prevGroups.length; i += 2) {
       const left = prevGroups[i];
       const right = prevGroups[i + 1];
       if (!right) {
+        svg.appendChild(drawBox(nextX, left.yMid - boxH / 2, left.winner, stage));
         nextGroups.push(left);
         continue;
       }
-      const yMid = (left.yMid + right.yMid) / 2;
+      const midY = (left.yMid + right.yMid) / 2;
+      const yTop = midY - boxH - 5;
+      const yBottom = midY + 5;
+      const yMid = yTop + boxH + 5;  // midpoint between the two competitor boxes
       const winner = chooseMatchWinner(left.winner, right.winner, advanceKey);
       const xStart = isRight ? prevX : prevX + boxW;
       const xEnd = isRight ? nextX + boxW : nextX;
-      drawConnector(xStart, left.yMid, xEnd, yMid);
-      drawConnector(xStart, right.yMid, xEnd, yMid);
-      svg.appendChild(drawBox(nextX, yMid - boxH / 2, winner, 'R16'));
+      drawConnector(xStart, left.yMid, xEnd, yTop + boxH / 2);
+      drawConnector(xStart, right.yMid, xEnd, yBottom + boxH / 2);
+      svg.appendChild(drawBox(nextX, yTop, left.winner, stage));
+      svg.appendChild(drawBox(nextX, yBottom, right.winner, stage));
       nextGroups.push({ winner, yMid });
     }
     return nextGroups;
@@ -873,13 +881,13 @@ async function renderBracket(data, count = 32) {
   const leftGroupsR32 = createProgression(leftR32, leftXs[0], getProbabilityKey('Round of 16'));
   const rightGroupsR32 = createProgression(rightR32, rightXs[0], getProbabilityKey('Round of 16'));
 
-  const leftGroupsR16 = projectRound(leftGroupsR32, leftXs[0], leftXs[1], getProbabilityKey('Quarter Finals'), false);
-  const leftGroupsQF = projectRound(leftGroupsR16, leftXs[1], leftXs[2], getProbabilityKey('Semi Finals'), false);
-  const leftGroupsSF = projectRound(leftGroupsQF, leftXs[2], leftXs[3], getProbabilityKey('Finals'), false);
+  const leftGroupsR16 = projectRound(leftGroupsR32, leftXs[0], leftXs[1], getProbabilityKey('Quarter Finals'), false, 'Round of 16');
+  const leftGroupsQF = projectRound(leftGroupsR16, leftXs[1], leftXs[2], getProbabilityKey('Semi Finals'), false, 'Quarter Finals');
+  const leftGroupsSF = projectRound(leftGroupsQF, leftXs[2], leftXs[3], getProbabilityKey('Finals'), false, 'Semi Finals');
 
-  const rightGroupsR16 = projectRound(rightGroupsR32, rightXs[0], rightXs[1], getProbabilityKey('Quarter Finals'), true);
-  const rightGroupsQF = projectRound(rightGroupsR16, rightXs[1], rightXs[2], getProbabilityKey('Semi Finals'), true);
-  const rightGroupsSF = projectRound(rightGroupsQF, rightXs[2], rightXs[3], getProbabilityKey('Finals'), true);
+  const rightGroupsR16 = projectRound(rightGroupsR32, rightXs[0], rightXs[1], getProbabilityKey('Quarter Finals'), true, 'Round of 16');
+  const rightGroupsQF = projectRound(rightGroupsR16, rightXs[1], rightXs[2], getProbabilityKey('Semi Finals'), true, 'Quarter Finals');
+  const rightGroupsSF = projectRound(rightGroupsQF, rightXs[2], rightXs[3], getProbabilityKey('Finals'), true, 'Semi Finals');
 
   if (leftGroupsSF.length > 0 && rightGroupsSF.length > 0) {
     const finalY = (leftGroupsSF[0].yMid + rightGroupsSF[0].yMid) / 2;
