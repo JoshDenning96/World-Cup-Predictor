@@ -10,23 +10,37 @@ It simulates the World Cup thousands of times and tells you how likely each team
 
 You'll need to do this once. It takes about 5 minutes.
 
-### Step 1 — Check you have Python installed
+### Step 1 — Open a terminal
 
-Open **Terminal** (on Mac, press `Cmd + Space` and type "Terminal") and type:
+**On Mac:** Press `Cmd + Space`, type "Terminal" and hit Enter.
 
+**On Windows:** Press `Win + R`, type `cmd` and hit Enter. Or search for "Command Prompt" in the Start menu.
+
+### Step 2 — Check you have Python installed
+
+In the terminal, type:
+
+**Mac:**
 ```bash
 python3 --version
 ```
 
-If you see something like `Python 3.11.0` you're good. If you get an error, download Python from [python.org](https://www.python.org/downloads/) and install it, then come back here.
+**Windows:**
+```bash
+python --version
+```
 
-### Step 2 — Download the project
+If you see something like `Python 3.11.0` you're good. If you get an error, download Python from [python.org](https://www.python.org/downloads/) and install it. **On Windows, make sure to tick "Add Python to PATH"** during installation, then open a fresh Command Prompt and try again.
 
-Still in Terminal, run this to download the project to your computer:
+### Step 3 — Download the project
+
+Run this to download the project to your computer:
 
 ```bash
 git clone https://github.com/JoshDenning96/World-Cup-Predictor
 ```
+
+If you get a "git not found" error on Windows, download Git from [git-scm.com](https://git-scm.com/download/win), install it, then open a fresh Command Prompt and try again.
 
 Then move into the project folder:
 
@@ -34,23 +48,35 @@ Then move into the project folder:
 cd World-Cup-Predictor
 ```
 
-### Step 3 — Install the required packages
+### Step 4 — Install the required packages
 
+**Mac:**
 ```bash
 pip3 install -r requirements.txt
 ```
 
+**Windows:**
+```bash
+pip install -r requirements.txt
+```
+
 This downloads a few Python libraries the project needs. It only takes a minute.
 
-### Step 4 — Start the server
+### Step 5 — Start the server
 
+**Mac:**
 ```bash
 python3 server.py
 ```
 
-You should see something like `Serving website at http://127.0.0.1:8000`. Leave this Terminal window open — it needs to keep running.
+**Windows:**
+```bash
+python server.py
+```
 
-### Step 5 — Open the dashboard
+You should see something like `Serving website at http://127.0.0.1:8000`. Leave this terminal window open — it needs to keep running.
+
+### Step 6 — Open the dashboard
 
 Open your browser and go to:
 
@@ -60,7 +86,7 @@ That's it! You should see the dashboard.
 
 ---
 
-> **Next time** you want to use it, you only need Step 4 and 5 — just open Terminal, navigate to the folder (`cd World-Cup-Predictor`) and run `python3 server.py`.
+> **Next time** you want to use it, you only need Steps 5 and 6 — open a terminal, navigate to the folder (`cd World-Cup-Predictor`) and start the server.
 
 ---
 
