@@ -1,76 +1,85 @@
-# World Cup Predictor
+# World Cup 2026 Predictor
 
-A machine learning system for predicting FIFA World Cup match outcomes and tournament results.
+A Monte Carlo simulation dashboard for the FIFA World Cup 2026. Run simulations, track how win probabilities shift as the tournament progresses, and update the bracket with real results as matches are played.
 
 ## Features
-- Historical World Cup data analysis
-- Team performance metrics
-- Match outcome predictions
-- Interactive prediction interface
 
-## Installation
+- **Full simulation mode** — simulate the entire tournament from scratch using Elo ratings
+- **Actuals + simulation mode** — lock in real results as they happen and simulate forward from the current state
+- **Interactive bracket** — projected bracket with colour-coded win probabilities; green dots indicate positions confirmed by actual results
+- **Simulation history chart** — track how team win probabilities change across simulation runs over time
+- **Group stage tables** — expected standings and finishing probabilities per group
+- **Tournament & advance probability charts** — top contenders ranked by likelihood
+
+## How it works
+
+Match outcomes are determined using FIFA Elo ratings. The rating difference between two teams sets the win/draw/loss probabilities for each simulated match. Knockout draws are resolved as a 50/50 coin flip (simulating a penalty shootout). A −20 Elo point adjustment is applied by default to all qualified CONMEBOL teams.
+
+The simulation is run N times (user-selected) and probabilities reflect how often each outcome occurred — not a single prediction.
+
+## Getting started
+
+**1. Install dependencies**
 ```bash
 pip install -r requirements.txt
 ```
 
-## Usage
-```python
-from world_cup_predictor import WorldCupPredictor
-
-predictor = WorldCupPredictor()
-predictions = predictor.predict_match(team1, team2)
-```
-
-## CLI
-
-Run the pipeline and optionally simulate the full tournament using ELO-based probabilities.
-
-## Web visualization
-A static dashboard is available in the `website/` folder. It renders the latest simulation results using the exported data from `data/processed`.
-
-To use it:
+**2. Start the server**
 ```bash
-python3 scripts/export_simulation_json.py
-python3 -m http.server 8000 --directory website
+python3 server.py
 ```
 
-Then open `http://127.0.0.1:8000` in your browser.
+**3. Open the dashboard**
 
-The site loads the following JSON payload generated from the latest processed CSV outputs:
-- `elo_ratings`
-- `group_tables`
-- `tournament_simulation`
-- `group_probabilities`
+Navigate to [http://127.0.0.1:8000](http://127.0.0.1:8000) in your browser.
 
-## CLI
+## Entering actual results
 
-Run the pipeline and optionally simulate the full tournament using ELO-based probabilities.
+Switch to **Actuals + simulation** mode using the dropdown in the dashboard. The actuals panel shows tabs for each group (A–L) and each knockout round (R32, R16, QF, SF, Final).
 
-Group-stage simulation (default):
-```bash
-PYTHONPATH=src python -m world_cup_predictor.cli --simulations 200
+- **Group stage** — enter home and away scores for each match
+- **Knockout rounds** — click the winning team's button (score doesn't matter, only the winner advances)
+
+Once results are entered, click **Run simulation** to simulate the tournament forward from the current state. Bracket positions confirmed by actual results are shown with a green dot.
+
+To clear all entered results, use the **Reset all results** button in the actuals panel.
+
+## Project structure
+
 ```
-
-Full tournament simulation (ELO-driven):
-```bash
-PYTHONPATH=src python -m world_cup_predictor.cli --simulations 2000 --full-tournament
-```
-
-When `--full-tournament` is provided the CLI will run the full tournament simulation and include a `tournament_simulation` table in the output. It also writes a master workbook at `data/processed/master_simulation.xlsx` with these sheets:
-- `elo_ratings`
-- `predicted_group_tables`
-- `tournament_simulation`
-
-To persist results programmatically, call `simulate_full_tournament()` from `src/world_cup_predictor/simulator.py` and save the returned DataFrame to `data/processed/`.
-
-## Project Structure
 .
-├── src/world_cup_predictor/  # Source code
-├── tests/                     # Test suite
-├── notebooks/               # Jupyter notebooks
-├── data/                    # Data files
-├── models/                  # Trained models
-└── requirements.txt         # Dependencies
+├── server.py                        # Local web server + simulation API
+├── src/world_cup_predictor/
+│   ├── simulator.py                 # Monte Carlo tournament simulation
+│   ├── stat_models.py               # Elo match probability model
+│   └── cli.py                       # Command-line interface
+├── website/
+│   ├── index.html                   # Dashboard UI
+│   ├── app.js                       # Frontend logic
+│   ├── styles.css                   # Styles
+│   └── data/
+│       ├── master_simulation.json   # Latest simulation (loaded on page start)
+│       ├── actual_results.json      # Persisted actual match results
+│       └── saved_simulations/       # Simulation history (generated at runtime)
+├── data/raw/                        # FIFA 2026 schedule and fixture data
+└── tests/                           # Test suite
+```
+
+## CLI
+
+Run the simulation directly from the command line:
+
+```bash
+# Group stage only
+PYTHONPATH=src python -m world_cup_predictor.cli --simulations 200
+
+# Full tournament
+PYTHONPATH=src python -m world_cup_predictor.cli --simulations 1000 --full-tournament
+
+# With CONMEBOL adjustment
+PYTHONPATH=src python -m world_cup_predictor.cli --simulations 1000 --full-tournament --conmebol-offset -20
+```
 
 ## License
-MIT - see LICENSE file
+
+MIT
