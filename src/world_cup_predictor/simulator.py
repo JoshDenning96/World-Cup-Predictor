@@ -4,8 +4,6 @@ from __future__ import annotations
 from typing import Dict
 from collections import defaultdict
 import math
-import json
-from pathlib import Path
 
 import numpy as np
 import pandas as pd
@@ -16,15 +14,190 @@ import re
 
 _R32_WINNER_GROUP_ORDER = ["A", "B", "D", "E", "G", "I", "K", "L"]
 
-def _load_r32_third_place_assignments() -> dict[str, list[str]]:
-    """Load R32 third-place assignments from JSON file."""
-    json_path = Path(__file__).parent.parent.parent / "data" / "r32_third_place_assignments.json"
-    if not json_path.exists():
-        raise FileNotFoundError(f"R32 third-place assignments file not found: {json_path}")
-    with open(json_path, 'r') as f:
-        return json.load(f)
+def _parse_third_place_assignment_text(text: str) -> dict[str, list[str]]:
+    mapping = {}
+    for line in text.splitlines():
+        line = line.strip()
+        if not line or line.startswith("No.") or line.startswith("Third-placed"):
+            continue
+        tokens = line.split()
+        if len(tokens) < 10 or not all(tok.startswith("3") for tok in tokens[-8:]):
+            continue
+        group_tokens = "".join(tokens[1:-8]).replace(" ", "")
+        group_key = "".join(sorted(group_tokens))
+        mapping[group_key] = [tok[1:] for tok in tokens[-8:]]
+    return mapping
 
-ROUND_OF_32_THIRD_PLACE_ASSIGNMENT_MAP = _load_r32_third_place_assignments()
+_THIRD_PLACE_ASSIGNMENT_TABLE_TEXT = """
+1 EFGHIJKL 3E 3J 3I 3F 3H 3G 3L 3K
+2 D FGHIJKL 3H 3G 3I 3D 3J 3F 3L 3K
+3 DE GHIJKL 3E 3J 3I 3D 3H 3G 3L 3K
+4 DEF HIJKL 3E 3J 3I 3D 3H 3F 3L 3K
+5 DEFG IJKL 3E 3G 3I 3D 3J 3F 3L 3K
+6 DEFGH JKL 3E 3G 3J 3D 3H 3F 3L 3K
+7 DEFGHI KL 3E 3G 3I 3D 3H 3F 3L 3K
+8 DEFGHIJ L 3E 3G 3J 3D 3H 3F 3L 3I
+9 DEFGHIJK 3E 3G 3J 3D 3H 3F 3I 3K
+10 C FGHIJKL 3H 3G 3I 3C 3J 3F 3L 3K
+11 C E GHIJKL 3E 3J 3I 3C 3H 3G 3L 3K
+12 C EF HIJKL 3E 3J 3I 3C 3H 3F 3L 3K
+13 C EFG IJKL 3E 3G 3I 3C 3J 3F 3L 3K
+14 C EFGH JKL 3E 3G 3J 3C 3H 3F 3L 3K
+15 C EFGHI KL 3E 3G 3I 3C 3H 3F 3L 3K
+16 C EFGHIJ L 3E 3G 3J 3C 3H 3F 3L 3I
+17 C EFGHIJK 3E 3G 3J 3C 3H 3F 3I 3K
+18 CD GHIJKL 3H 3G 3I 3C 3J 3D 3L 3K
+19 CD F HIJKL 3C 3J 3I 3D 3H 3F 3L 3K
+20 CD FG IJKL 3C 3G 3I 3D 3J 3F 3L 3K
+21 CD FGH JKL 3C 3G 3J 3D 3H 3F 3L 3K
+22 CD FGHI KL 3C 3G 3I 3D 3H 3F 3L 3K
+23 CD FGHIJ L 3C 3G 3J 3D 3H 3F 3L 3I
+24 CD FGHIJK 3C 3G 3J 3D 3H 3F 3I 3K
+25 CDE HIJKL 3E 3J 3I 3C 3H 3D 3L 3K
+26 CDE G IJKL 3E 3G 3I 3C 3J 3D 3L 3K
+27 CDE GH JKL 3E 3G 3J 3C 3H 3D 3L 3K
+28 CDE GHI KL 3E 3G 3I 3C 3H 3D 3L 3K
+29 CDE GHIJ L 3E 3G 3J 3C 3H 3D 3L 3I
+30 CDE GHIJK 3E 3G 3J 3C 3H 3D 3I 3K
+31 CDEF IJKL 3C 3J 3E 3D 3I 3F 3L 3K
+32 CDEF H JKL 3C 3J 3E 3D 3H 3F 3L 3K
+33 CDEF HI KL 3C 3E 3I 3D 3H 3F 3L 3K
+34 CDEF HIJ L 3C 3J 3E 3D 3H 3F 3L 3I
+36 CDEFG JKL 3C 3G 3E 3D 3J 3F 3L 3K
+37 CDEFG I KL 3C 3G 3E 3D 3I 3F 3L 3K
+38 CDEFG IJ L 3C 3G 3E 3D 3J 3F 3L 3I
+39 CDEFG IJK 3C 3G 3E 3D 3J 3F 3I 3K
+40 CDEFGH KL 3C 3G 3E 3D 3H 3F 3L 3K
+41 CDEFGH J L 3C 3G 3J 3D 3H 3F 3L 3E
+42 CDEFGH JK 3C 3G 3J 3D 3H 3F 3E 3K
+43 CDEFGHI L 3C 3G 3E 3D 3H 3F 3L 3I
+44 CDEFGHI K 3C 3G 3E 3D 3H 3F 3I 3K
+45 CDEFGHIJ 3C 3G 3J 3D 3H 3F 3E 3I
+46 B FGHIJKL 3H 3J 3B 3F 3I 3G 3L 3K
+47 B E GHIJKL 3E 3J 3I 3B 3H 3G 3L 3K
+48 B EF HIJKL 3E 3J 3B 3F 3I 3H 3L 3K
+49 B EFG IJKL 3E 3J 3B 3F 3I 3G 3L 3K
+50 B EFGH JKL 3E 3J 3B 3F 3H 3G 3L 3K
+51 B EFGHI KL 3E 3G 3B 3F 3I 3H 3L 3K
+52 B EFGHIJ L 3E 3J 3B 3F 3H 3G 3L 3I
+53 B EFGHIJK 3E 3J 3B 3F 3H 3G 3I 3K
+54 B D GHIJKL 3H 3J 3B 3D 3I 3G 3L 3K
+55 B D F HIJKL 3H 3J 3B 3D 3I 3F 3L 3K
+56 B D FG IJKL 3I 3G 3B 3D 3J 3F 3L 3K
+57 B D FGH JKL 3H 3G 3B 3D 3J 3F 3L 3K
+58 B D FGHI KL 3H 3G 3B 3D 3I 3F 3L 3K
+59 B D FGHIJ L 3H 3G 3B 3D 3J 3F 3L 3I
+60 B D FGHIJK 3H 3G 3B 3D 3J 3F 3I 3K
+61 B DE HIJKL 3E 3J 3B 3D 3I 3H 3L 3K
+62 B DE G IJKL 3E 3J 3B 3D 3I 3G 3L 3K
+63 B DE GH JKL 3E 3J 3B 3D 3H 3G 3L 3K
+64 B DE GHI KL 3E 3G 3B 3D 3I 3H 3L 3K
+65 B DE GHIJ L 3E 3J 3B 3D 3H 3G 3L 3I
+66 B DE GHIJK 3E 3J 3B 3D 3H 3G 3I 3K
+67 B DEF IJKL 3E 3J 3B 3D 3I 3F 3L 3K
+68 B DEF H JKL 3E 3J 3B 3D 3H 3F 3L 3K
+69 B DEF HI KL 3E 3I 3B 3D 3H 3F 3L 3K
+70 B DEF HIJ L 3E 3J 3B 3D 3H 3F 3L 3I
+71 B DEF HIJK 3E 3J 3B 3D 3H 3F 3I 3K
+72 B DEFG JKL 3E 3G 3B 3D 3J 3F 3L 3K
+73 B DEFG I KL 3E 3G 3B 3D 3I 3F 3L 3K
+74 B DEFG IJ L 3E 3G 3B 3D 3J 3F 3L 3I
+75 B DEFG IJK 3E 3G 3B 3D 3J 3F 3I 3K
+76 B DEFGH KL 3E 3G 3B 3D 3H 3F 3L 3K
+77 B DEFGH J L 3H 3G 3B 3D 3J 3F 3L 3E
+78 B DEFGH JK 3H 3G 3B 3D 3J 3F 3E 3K
+79 B DEFGHI L 3E 3G 3B 3D 3H 3F 3L 3I
+80 B DEFGHI K 3E 3G 3B 3D 3H 3F 3I 3K
+81 B DEFGHIJ 3H 3G 3B 3D 3J 3F 3E 3I
+82 BC GHIJKL 3H 3J 3B 3C 3I 3G 3L 3K
+83 BC F HIJKL 3H 3J 3B 3C 3I 3F 3L 3K
+84 BC FG IJKL 3I 3G 3B 3C 3J 3F 3L 3K
+85 BC FGH JKL 3H 3G 3B 3C 3J 3F 3L 3K
+86 BC FGHI KL 3H 3G 3B 3C 3I 3F 3L 3K
+87 BC FGHIJ L 3H 3G 3B 3C 3J 3F 3L 3I
+88 BC FGHIJK 3H 3G 3B 3C 3J 3F 3I 3K
+89 BC E HIJKL 3E 3J 3B 3C 3I 3H 3L 3K
+90 BC E G IJKL 3E 3J 3B 3C 3I 3G 3L 3K
+91 BC E GH JKL 3E 3J 3B 3C 3H 3G 3L 3K
+92 BC E GHI KL 3E 3G 3B 3C 3I 3H 3L 3K
+93 BC E GHIJ L 3E 3J 3B 3C 3H 3G 3L 3I
+94 BC E GHIJK 3E 3J 3B 3C 3H 3G 3I 3K
+95 BC EF IJKL 3E 3J 3B 3C 3I 3F 3L 3K
+96 BC EF H JKL 3E 3J 3B 3C 3H 3F 3L 3K
+97 BC EF HI KL 3E 3I 3B 3C 3H 3F 3L 3K
+98 BC EF HIJ L 3E 3J 3B 3C 3H 3F 3L 3I
+99 BC EF HIJK 3E 3J 3B 3C 3H 3F 3I 3K
+100 BC EFG JKL 3E 3G 3B 3C 3J 3F 3L 3K
+101 BC EFG I KL 3E 3G 3B 3C 3I 3F 3L 3K
+102 BC EFG IJ L 3E 3G 3B 3C 3J 3F 3L 3I
+103 BC EFG IJK 3E 3G 3B 3C 3J 3F 3I 3K
+104 BC EFGH KL 3E 3G 3B 3C 3H 3F 3L 3K
+105 BC EFGH J L 3H 3G 3B 3C 3J 3F 3L 3E
+106 BC EFGH JK 3H 3G 3B 3C 3J 3F 3E 3K
+107 BC EFGHI L 3E 3G 3B 3C 3H 3F 3L 3I
+108 BC EFGHI K 3E 3G 3B 3C 3H 3F 3I 3K
+109 BC EFGHIJ 3H 3G 3B 3C 3J 3F 3E 3I
+110 BCD HIJKL 3H 3J 3B 3C 3I 3D 3L 3K
+111 BCD G IJKL 3I 3G 3B 3D 3J 3D 3L 3K
+112 BCD GH JKL 3H 3G 3B 3D 3J 3F 3L 3K
+113 BCD GHI KL 3H 3G 3B 3D 3I 3D 3L 3K
+114 BCD GHIJ L 3H 3G 3B 3D 3J 3D 3L 3I
+115 BCD GHIJK 3H 3G 3B 3D 3J 3D 3I 3K
+116 BCD F IJKL 3C 3J 3B 3D 3I 3F 3L 3K
+117 BCD F H JKL 3C 3J 3B 3D 3H 3F 3L 3K
+118 BCD F HI KL 3C 3I 3B 3D 3H 3F 3L 3K
+119 BCD F HIJ L 3C 3J 3B 3D 3H 3F 3L 3I
+120 BCD F HIJK 3C 3J 3B 3D 3H 3F 3I 3K
+121 BCD FG JKL 3C 3G 3B 3D 3J 3F 3L 3K
+122 BCD FG I KL 3C 3G 3B 3D 3I 3F 3L 3K
+123 BCD FG IJ L 3C 3G 3B 3D 3J 3F 3L 3I
+124 BCD FG IJK 3C 3G 3B 3D 3J 3F 3I 3K
+125 BCD FGH KL 3C 3G 3B 3D 3H 3F 3L 3K
+126 BCD FGH J L 3C 3G 3B 3D 3H 3F 3L 3J
+127 BCD FGH JK 3H 3G 3B 3C 3J 3F 3D 3K
+128 BCD FGHI L 3C 3G 3B 3D 3H 3F 3L 3I
+129 BCD FGHI K 3C 3G 3B 3D 3H 3F 3I 3K
+130 BCD FGHIJ 3H 3G 3B 3C 3J 3F 3D 3I
+131 BCDE IJKL 3E 3J 3B 3C 3I 3D 3L 3K
+132 BCDE H JKL 3E 3J 3B 3C 3H 3D 3L 3K
+133 BCDE HI KL 3E 3I 3B 3C 3H 3D 3L 3K
+134 BCDE HIJ L 3E 3J 3B 3C 3H 3D 3L 3I
+135 BCDE HIJK 3E 3J 3B 3C 3H 3D 3I 3K
+136 BCDE G JKL 3E 3G 3B 3C 3J 3F 3L 3K
+137 BCDE G I KL 3E 3G 3B 3C 3I 3D 3L 3K
+138 BCDE G IJ L 3E 3G 3B 3C 3J 3D 3L 3I
+139 BCDE G IJK 3E 3G 3B 3C 3J 3D 3I 3K
+140 BCDE GH KL 3E 3G 3B 3C 3H 3D 3L 3K
+141 BCDE GH J L 3H 3G 3B 3C 3J 3D 3L 3E
+142 BCDE GH JK 3H 3G 3B 3C 3J 3D 3E 3K
+143 BCDE GHI L 3E 3G 3B 3C 3H 3D 3L 3I
+144 BCDE GHI K 3E 3G 3B 3C 3H 3D 3I 3K
+145 BCDE GHIJ 3H 3G 3B 3C 3J 3D 3E 3I
+146 BCDEF JKL 3C 3J 3B 3D 3E 3F 3L 3K
+147 BCDEF I KL 3C 3E 3B 3D 3I 3F 3L 3K
+148 BCDEF IJ L 3C 3J 3B 3D 3E 3F 3L 3I
+149 BCDEF IJK 3C 3J 3B 3D 3E 3F 3I 3K
+150 BCDEF H KL 3C 3E 3B 3D 3H 3F 3L 3K
+151 BCDEF H J L 3C 3J 3B 3D 3H 3F 3L 3E
+152 BCDEF H JK 3C 3J 3B 3D 3H 3F 3E 3K
+153 BCDEF HI L 3C 3E 3B 3D 3H 3F 3L 3I
+154 BCDEF HI K 3C 3E 3B 3D 3H 3F 3I 3K
+155 BCDEF HIJ 3C 3J 3B 3D 3H 3F 3E 3I
+156 BCDEFG KL 3C 3G 3B 3D 3E 3F 3L 3K
+157 BCDEFG J L 3C 3G 3B 3D 3J 3F 3L 3E
+158 BCDEFG JK 3C 3G 3B 3D 3J 3F 3E 3K
+159 BCDEFG I L 3C 3G 3B 3D 3E 3F 3L 3I
+160 BCDEFG I K 3C 3G 3B 3D 3E 3F 3I 3K
+161 BCDEFG IJ 3C 3G 3B 3D 3J 3F 3E 3I
+162 BCDEFGH L 3C 3G 3B 3D 3H 3F 3L 3E
+163 BCDEFGH K 3C 3G 3B 3D 3H 3F 3E 3K
+164 BCDEFGH J 3H 3G 3B 3C 3J 3F 3D 3E
+165 BCDEFGHI 3C 3G 3B 3D 3H 3F 3E 3I
+"""
+
+ROUND_OF_32_THIRD_PLACE_ASSIGNMENT_MAP = _parse_third_place_assignment_text(
+    _THIRD_PLACE_ASSIGNMENT_TABLE_TEXT
+)
 
 
 def _normalize_group_letter(letter: str, groups) -> str | None:
@@ -238,6 +411,7 @@ def simulate_group_tables(
     strengths: pd.DataFrame,
     n_simulations: int = 500,
     elo_ratings=None,
+    actual_results: dict | None = None,
 ) -> pd.DataFrame:
     """Simulate group stage many times and return predicted group tables.
 
@@ -247,6 +421,9 @@ def simulate_group_tables(
 
     If `elo_ratings` is provided, match outcomes inside each simulation are
     sampled using the Elo model through `simulate_match(..., elo_ratings=elo_ratings)`.
+
+    If `actual_results` is provided (dict keyed by str(match_number)), those
+    matches use the fixed actual scores instead of being simulated.
     """
     if "group" not in schedule.columns:
         raise KeyError("Schedule must include a 'group' column")
@@ -257,7 +434,7 @@ def simulate_group_tables(
     groups = list(pd.unique(schedule["group"]))
     group_teams: Dict[str, list] = {}
     for g in groups:
-        homes = set(schedule.loc[schedule["group"] == g, "home_team"]) 
+        homes = set(schedule.loc[schedule["group"] == g, "home_team"])
         aways = set(schedule.loc[schedule["group"] == g, "away_team"])
         group_teams[g] = sorted(homes.union(aways))
 
@@ -265,6 +442,8 @@ def simulate_group_tables(
     rank_counts = {g: {t: [0] * len(group_teams[g]) for t in group_teams[g]} for g in group_teams}
     pts_sums = {g: {t: 0 for t in group_teams[g]} for g in group_teams}
     gd_sums = {g: {t: 0 for t in group_teams[g]} for g in group_teams}
+
+    _actuals = actual_results or {}
 
     for _ in range(n_simulations):
         all_results = []
@@ -278,9 +457,15 @@ def simulate_group_tables(
                 )
                 continue
 
-            sim = simulate_match(home_team, away_team, strengths, n_simulations=1, elo_ratings=elo_ratings)
-            home_goals = int(sim["home_goals"].iloc[0])
-            away_goals = int(sim["away_goals"].iloc[0])
+            _mn = match.get("match_number")
+            mn_key = str(int(_mn)) if _mn is not None and str(_mn) != "" else ""
+            if mn_key in _actuals:
+                home_goals = int(_actuals[mn_key]["home_goals"])
+                away_goals = int(_actuals[mn_key]["away_goals"])
+            else:
+                sim = simulate_match(home_team, away_team, strengths, n_simulations=1, elo_ratings=elo_ratings)
+                home_goals = int(sim["home_goals"].iloc[0])
+                away_goals = int(sim["away_goals"].iloc[0])
             all_results.append(
                 {
                     "group": match["group"],
@@ -350,25 +535,22 @@ def simulate_group_tables(
     return out
 
 
-def _parse_knockout_bracket(fixtures_schedule: pd.DataFrame) -> dict[int, tuple[int, int]]:
-    """Parse 'Winner match X v Winner match Y' rows into a bracket dependency map.
-
-    Returns {match_num: (home_source_match_num, away_source_match_num)}.
-    """
-    bracket: dict[int, tuple[int, int]] = {}
-    winner_re = re.compile(r"Winner match (\d+) v Winner match (\d+)", re.IGNORECASE)
-    for _, row in fixtures_schedule.iterrows():
-        teams_str = str(row.get("teams", "") or "")
-        m = winner_re.match(teams_str)
-        if not m:
-            continue
-        mn_str = str(row.get("match_number", "")).replace("Match", "").strip()
-        try:
-            match_num = int(mn_str)
-            bracket[match_num] = (int(m.group(1)), int(m.group(2)))
-        except ValueError:
-            pass
-    return bracket
+def _actual_knockout_winner(mn_key, home, away, actuals, simulate_fn):
+    """Return the winner of a knockout match, using actuals if available."""
+    if mn_key and mn_key in actuals:
+        a = actuals[mn_key]
+        w = str(a.get("winner", ""))
+        if w == "home":
+            return home
+        if w == "away":
+            return away
+        hg = int(a.get("home_goals", 0))
+        ag = int(a.get("away_goals", 0))
+        if hg > ag:
+            return home
+        if ag > hg:
+            return away
+    return simulate_fn(home, away)
 
 
 def simulate_full_tournament(
@@ -377,7 +559,7 @@ def simulate_full_tournament(
     n_simulations: int = 500,
     elo_ratings=None,
     return_group_tables: bool = False,
-    fixtures_schedule: pd.DataFrame | None = None,
+    actual_results: dict | None = None,
 ) -> pd.DataFrame | dict:
     """Simulate full tournament including knockout rounds.
 
@@ -400,26 +582,6 @@ def simulate_full_tournament(
         raise ValueError("No knockout matches found in schedule")
 
     round_order = list(dict.fromkeys(knockout["round_number"]))
-
-    # build bracket tree and match→stage lookup from fixtures if provided
-    bracket: dict[int, tuple[int, int]] = {}
-    match_stage: dict[int, str] = {}
-    if fixtures_schedule is not None:
-        bracket = _parse_knockout_bracket(fixtures_schedule)
-        for _, row in knockout.iterrows():
-            try:
-                mn = int(row["match_number"])
-                rnd = str(row["round_number"])
-                if "16" in rnd:
-                    match_stage[mn] = "Round of 16"
-                elif "Quarter" in rnd:
-                    match_stage[mn] = "Quarter Finals"
-                elif "Semi" in rnd:
-                    match_stage[mn] = "Semi Finals"
-                elif "Final" in rnd:
-                    match_stage[mn] = "Finals"
-            except (ValueError, TypeError, KeyError):
-                pass
 
     # counters for stages
     stages = [
@@ -528,6 +690,8 @@ def simulate_full_tournament(
             return home if np.random.rand() < hw / (hw + aw + 1e-12) else away
         return home if hg > ag else away
 
+    _actuals = actual_results or {}
+
     for _ in range(n_simulations):
         # simulate matches
         all_results = []
@@ -536,13 +700,21 @@ def simulate_full_tournament(
             a = match["away_team"]
             if h not in strengths.index or a not in strengths.index:
                 continue
-            sim = simulate_match(h, a, strengths, n_simulations=1, elo_ratings=elo_ratings)
+            _mn = match.get("match_number")
+            mn_key = str(int(_mn)) if _mn is not None and str(_mn) != "" else ""
+            if mn_key in _actuals:
+                home_score = int(_actuals[mn_key]["home_goals"])
+                away_score = int(_actuals[mn_key]["away_goals"])
+            else:
+                sim = simulate_match(h, a, strengths, n_simulations=1, elo_ratings=elo_ratings)
+                home_score = int(sim["home_goals"].iloc[0])
+                away_score = int(sim["away_goals"].iloc[0])
             all_results.append({
                 "group": match.get("group"),
                 "home_team": h,
                 "away_team": a,
-                "home_score": int(sim["home_goals"].iloc[0]),
-                "away_score": int(sim["away_goals"].iloc[0]),
+                "home_score": home_score,
+                "away_score": away_score,
             })
 
         results_df = pd.DataFrame(all_results)
@@ -575,7 +747,6 @@ def simulate_full_tournament(
 
         # initial knockout: process Round of 32 by resolving placeholders
         prev_winners = []
-        match_winners: dict[int, str] = {}
         for rnd in round_order:
             round_matches = knockout[knockout["round_number"] == rnd]
             # Round of 32: resolve slots directly from placeholders
@@ -621,7 +792,7 @@ def simulate_full_tournament(
                                 return team
                     return None
 
-                for _, match in round_matches.iterrows():
+                for _, match in round_matches.sort_values("match_number").iterrows():
                     h_slot = str(match.get("home_team", "")).strip()
                     a_slot = str(match.get("away_team", "")).strip()
 
@@ -629,75 +800,55 @@ def simulate_full_tournament(
                     away = resolve_r32_third_place(a_slot, h_slot)
 
                     if home is None or away is None:
-                        # cannot resolve; skip match
                         continue
 
                     stage_counts[home]["Round of 32"] += 1
                     stage_counts[away]["Round of 32"] += 1
 
-                    winner = resolve_knockout_winner(home, away)
+                    _mn = match.get("match_number")
+                    mn_key = str(int(_mn)) if _mn is not None and str(_mn) not in ("", "nan") else ""
+                    winner = _actual_knockout_winner(mn_key, home, away, _actuals, resolve_knockout_winner)
                     prev_winners.append(winner)
-                    try:
-                        match_winners[int(match["match_number"])] = winner
-                    except (ValueError, TypeError, KeyError):
-                        pass
 
             else:
-                if bracket:
-                    # skip — handled by the bracket tree after R32
-                    pass
-                else:
-                    # fallback: pair previous winners sequentially
-                    next_winners = []
-                    for i in range(0, len(prev_winners), 2):
-                        try:
-                            home = prev_winners[i]
-                            away = prev_winners[i + 1]
-                        except IndexError:
-                            continue
-                        if home is None or away is None:
-                            continue
+                # for later rounds, pair previous winners by sequential bracket position
+                next_winners = []
+                rm_sorted = list(round_matches.sort_values("match_number").iterrows())
+                for idx, (_, rm) in enumerate(rm_sorted):
+                    i = idx * 2
+                    try:
+                        home = prev_winners[i]
+                        away = prev_winners[i + 1]
+                    except IndexError:
+                        continue
+                    if home is None or away is None:
+                        continue
 
-                        if "16" in str(rnd):
-                            stage_counts[home]["Round of 16"] += 1
-                            stage_counts[away]["Round of 16"] += 1
-                        elif "Quarter" in str(rnd):
-                            stage_counts[home]["Quarter Finals"] += 1
-                            stage_counts[away]["Quarter Finals"] += 1
-                        elif "Semi" in str(rnd):
-                            stage_counts[home]["Semi Finals"] += 1
-                            stage_counts[away]["Semi Finals"] += 1
-                        elif "Final" in str(rnd):
-                            stage_counts[home]["Finals"] += 1
-                            stage_counts[away]["Finals"] += 1
+                    if "16" in str(rnd):
+                        stage_counts[home]["Round of 16"] += 1
+                        stage_counts[away]["Round of 16"] += 1
+                    elif "Quarter" in str(rnd):
+                        stage_counts[home]["Quarter Finals"] += 1
+                        stage_counts[away]["Quarter Finals"] += 1
+                    elif "Semi" in str(rnd):
+                        stage_counts[home]["Semi Finals"] += 1
+                        stage_counts[away]["Semi Finals"] += 1
+                    elif "Final" in str(rnd):
+                        stage_counts[home]["Finals"] += 1
+                        stage_counts[away]["Finals"] += 1
 
-                        winner = resolve_knockout_winner(home, away)
-                        next_winners.append(winner)
+                    _mn = rm.get("match_number")
+                    mn_key = str(int(_mn)) if _mn is not None and str(_mn) not in ("", "nan") else ""
+                    winner = _actual_knockout_winner(mn_key, home, away, _actuals, resolve_knockout_winner)
+                    next_winners.append(winner)
 
-                    prev_winners = next_winners
+                prev_winners = next_winners
 
-        # if bracket provided, simulate R16 through final using the official bracket tree
-        champ = None
-        if bracket and match_winners:
-            for match_num in sorted(bracket.keys()):
-                home_src, away_src = bracket[match_num]
-                home = match_winners.get(home_src)
-                away = match_winners.get(away_src)
-                if home is None or away is None:
-                    continue
-                stage = match_stage.get(match_num)
-                if stage:
-                    stage_counts[home][stage] += 1
-                    stage_counts[away][stage] += 1
-                winner = resolve_knockout_winner(home, away)
-                match_winners[match_num] = winner
-            final_match = max(bracket.keys())
-            champ = match_winners.get(final_match)
-        elif prev_winners:
+        # final winner
+        if prev_winners:
             champ = prev_winners[0]
-
-        if champ:
-            stage_counts[champ]["Winner"] += 1
+            if champ:
+                stage_counts[champ]["Winner"] += 1
 
     # assemble full tournament probabilities
     rows = []

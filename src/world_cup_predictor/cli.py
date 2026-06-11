@@ -96,6 +96,7 @@ def run_pipeline(
     n_simulations: int = 200,
     run_full_tournament: bool = False,
     conmebol_offset: float = 0.0,
+    actual_results: dict | None = None,
 ) -> dict:
     raw_dir = Path(raw_dir)
     raw_data = load_and_prepare_raw(raw_dir)
@@ -141,7 +142,7 @@ def run_pipeline(
             n_simulations=n_simulations,
             elo_ratings=elo_ratings,
             return_group_tables=True,
-            fixtures_schedule=raw_data.get("schedule_fixtures"),
+            actual_results=actual_results,
         )
         result["tournament_simulation"] = full_simulation["tournament_simulation"]
         result["group_tables"] = full_simulation["group_tables"]
@@ -151,6 +152,7 @@ def run_pipeline(
             strengths,
             n_simulations=n_simulations,
             elo_ratings=elo_ratings,
+            actual_results=actual_results,
         )
 
     # build elo vs fifa comparison but restrict to teams that have qualified (appear in group-stage schedule)

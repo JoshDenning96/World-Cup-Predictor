@@ -18,6 +18,7 @@ SOURCE_FILES = {
 }
 
 FIXTURES_FILE = ROOT / "data" / "raw" / "FIFA2026_schedule_Fixtures.csv"
+UTC_SCHEDULE_FILE = ROOT / "data" / "raw" / "fifa-world-cup-2026-UTC.csv"
 
 
 def parse_value(value: str) -> Any:
@@ -83,6 +84,33 @@ def _round_name(match_number: int) -> str:
     if match_number == 104:
         return "Finals"
     return ""
+
+
+def load_group_schedule(path: Path) -> list[dict[str, Any]]:
+    """Load group stage matches from the UTC schedule CSV."""
+    if not path.exists():
+        return []
+    rows: list[dict[str, Any]] = []
+    with path.open(newline="", encoding="utf-8-sig") as handle:
+        reader = csv.DictReader(handle)
+        for row in reader:
+            group = str(row.get("Group", "") or "").strip()
+            if not group:
+                continue
+            try:
+                mn = int(str(row.get("Match Number", "") or "").strip())
+            except ValueError:
+                continue
+            rows.append({
+                "match_number": mn,
+                "date": str(row.get("Date", "") or "").strip(),
+                "home_team": str(row.get("Home Team", "") or "").strip(),
+                "away_team": str(row.get("Away Team", "") or "").strip(),
+                "group": group,
+                "stadium": str(row.get("Location", "") or "").strip(),
+            })
+    rows.sort(key=lambda r: r["match_number"])
+    return rows
 
 
 def load_knockout_schedule(path: Path) -> list[dict[str, Any]]:
@@ -181,6 +209,7 @@ def export_json() -> None:
         output = {key: load_csv(CSV_DIR / filename) for key, filename in SOURCE_FILES.items()}
 
     output["knockout_schedule"] = load_knockout_schedule(FIXTURES_FILE)
+    output["group_schedule"] = load_group_schedule(UTC_SCHEDULE_FILE)
 
     OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)
     OUTPUT_PATH.write_text(json.dumps(output, indent=2), encoding="utf-8")

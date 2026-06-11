@@ -28,16 +28,8 @@
         <div class="simulation-controls">
           <label for="simulation-count">Simulations</label>
           <input id="simulation-count" type="number" min="1" value="200" />
-          <label for="conmebol-offset">CONMEBOL offset</label>
-          <input id="conmebol-offset" type="number" step="1" value="-20" min="-200" max="200" aria-describedby="conmebol-offset-help conmebol-offset-error" />
-          <div id="conmebol-offset-error" style="color:#fca5a5;font-size:12px;display:none;margin-top:4px;">Value out of range (-200 to 200)</div>
-          <div id="conmebol-offset-help" style="color:#94a3b8;font-size:12px;margin-top:4px;">Allowed range: -200 to 200 Elo points.</div>
           <button id="simulation-run-button" type="button">Run simulation</button>
           <span id="simulation-status" class="simulation-status">Loaded current dataset</span>
-        </div>
-        <div class="simulation-note">
-          <p><strong>CONMEBOL offset:</strong> Apply a uniform Elo adjustment to CONMEBOL (South America) teams that have qualified for the tournament. Values are in Elo points and are added to the teams' Elo ratings before running simulations. Example: <strong>-20</strong> subtracts 20 Elo points (penalises CONMEBOL teams); <strong>0</strong> applies no change; a positive value (e.g. <strong>+10</strong>) would boost those teams.</p>
-          <p style="margin-top:6px; color:#94a3b8; font-size:12px;">Use smaller-magnitude values (closer to 0) to keep CONMEBOL strength similar to computed Elo, or larger negative values to reduce their simulated strength relative to FIFA rankings.</p>
         </div>
         <div class="summary-grid" id="summary-cards"></div>
       </section>
@@ -86,7 +78,7 @@
         <div class="table-card">
           <table id="group-table">
             <thead>
-              <tr>
+              <tr id="group-table-head">
                 <th>Team</th>
                 <th>Rank</th>
                 <th>Avg. points</th>
