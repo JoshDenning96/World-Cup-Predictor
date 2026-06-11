@@ -2,6 +2,16 @@ const DATA_URL = "data/master_simulation.json";
 const API_RUN_URL = "/api/run_simulation";
 let state = {};
 
+// Order of 1st-place group slots in the r32_third_place_assignments.json value arrays.
+// Columns per the FIFA 2026 third-place table header: 1A, 1B, 1D, 1E, 1G, 1I, 1K, 1L
+const _R32_WINNER_GROUP_ORDER = ['A', 'B', 'D', 'E', 'G', 'I', 'K', 'L'];
+
+// Official 2026 FIFA WC bracket order for the 16 R32 match numbers.
+// Consecutive pairs feed the same R16 match:
+//   (73,76)→R16#89, (74,75)→R16#90, (77,80)→R16#91, (78,79)→R16#92  [left half]
+//   (83,86)→R16#93, (84,87)→R16#94, (81,82)→R16#95, (85,88)→R16#96  [right half]
+const _R32_BRACKET_ORDER = [73, 76, 74, 75, 77, 80, 78, 79, 83, 86, 84, 87, 81, 82, 85, 88];
+
 function replaceElement(el) {
   if (!el || !el.parentNode) return el;
   const clone = el.cloneNode(false);
@@ -739,6 +749,12 @@ async function renderBracket(data, count = 32) {
   }
 
   const viewW = 1700;
+  // Re-order r32Matches to follow the official bracket path so R16 pairings are correct.
+  const matchById = Object.fromEntries(r32Matches.map((m) => [m.id, m]));
+  const ordered = _R32_BRACKET_ORDER.map((id) => matchById[id]).filter(Boolean);
+  // Fall back to original order if the schedule doesn't contain all expected match numbers.
+  if (ordered.length === 16) r32Matches = ordered;
+
   const leftR32 = [];
   const rightR32 = [];
   r32Matches.slice(0, 8).forEach((match) => leftR32.push([match.home, match.away]));
