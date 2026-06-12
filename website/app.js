@@ -1877,15 +1877,13 @@ function buildHistoryChart(history) {
       scales: {
         x: {
           type: 'linear',
-          min: -0.5,
-          max: allRunsSorted.length - 0.5,
           ticks: {
             color: '#94a3b8',
             maxRotation: 30,
             autoSkip: true,
             maxTicksLimit: 10,
             stepSize: 1,
-            callback: v => xLabels[Math.round(v)] ?? '',
+            callback: v => Number.isInteger(v) ? (xLabels[v] ?? '') : '',
           },
           grid: { color: 'rgba(255,255,255,0.05)' },
         },
