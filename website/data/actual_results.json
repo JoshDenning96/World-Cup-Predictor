@@ -1,1 +1,12 @@
-[]
+[
+  {
+    "match_number": 1,
+    "home_goals": 2,
+    "away_goals": 0
+  },
+  {
+    "match_number": 2,
+    "home_goals": 2,
+    "away_goals": 1
+  }
+]
