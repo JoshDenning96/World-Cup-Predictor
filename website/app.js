@@ -879,7 +879,7 @@ function renderGroupTable(data, group) {
     if (gamesPlayed === gamesInGroup) {
       head.innerHTML = `<th>Team</th><th>Pos</th><th>Pts</th><th>GD</th><th>1st%</th><th>2nd%</th><th>3rd%</th><th>4th%</th>`;
     } else if (hasActuals) {
-      head.innerHTML = `<th>Team</th><th>Pos</th><th>Pts (${gamesPlayed}/${gamesInGroup})</th><th>GD</th><th>1st%</th><th>2nd%</th><th>3rd%</th><th>4th%</th>`;
+      head.innerHTML = `<th>Team</th><th>Pos</th><th>Proj. pts (${gamesPlayed}/${gamesInGroup})</th><th>Proj. GD</th><th>1st%</th><th>2nd%</th><th>3rd%</th><th>4th%</th>`;
     } else {
       head.innerHTML = `<th>Team</th><th>Rank</th><th>Avg. points</th><th>Goal diff</th><th>1st</th><th>2nd</th><th>3rd</th><th>4th</th>`;
     }
@@ -892,10 +892,10 @@ function renderGroupTable(data, group) {
     const rankCell = hasActuals
       ? `<td style="font-weight:700;color:${idx < 2 ? '#4ade80' : idx === 2 ? '#facc15' : '#94a3b8'}">${idx + 1}</td>`
       : `<td>${formatNumber(row.expected_rank, 2)}</td>`;
-    const ptsCell = hasActuals
+    const ptsCell = hasActuals && gamesPlayed === gamesInGroup
       ? `<td style="font-weight:600">${actual.pts}</td>`
       : `<td>${formatNumber(row.avg_points, 2)}</td>`;
-    const gdCell = hasActuals
+    const gdCell = hasActuals && gamesPlayed === gamesInGroup
       ? `<td>${actual.gf - actual.ga >= 0 ? '+' : ''}${actual.gf - actual.ga}</td>`
       : `<td>${formatNumber(row.avg_goal_difference, 2)}</td>`;
     return `<tr>
