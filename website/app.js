@@ -1827,18 +1827,24 @@ function buildHistoryChart(history) {
   const shown = ranked.slice(0, topN);
   if (highlight && !shown.includes(highlight)) shown.push(highlight);
 
+  // Build an ordered index of all runs sorted by timestamp.
+  // Each run gets an integer x position; the label is used as the tick text.
+  const allRunsSorted = [...history].sort((a, b) => a.timestamp.localeCompare(b.timestamp));
+  const runIndex = new Map(allRunsSorted.map((r, i) => [r.timestamp, i]));
+  const xLabels = allRunsSorted.map(r => r.label || fmtTimestamp(new Date(r.timestamp).getTime()));
+
   const datasets = [];
   shown.forEach((team, i) => {
     const color = HISTORY_COLORS[i % HISTORY_COLORS.length];
     const isHL  = team === highlight;
 
-    // Merge full-sim and actuals into one timeline per team, sorted by time
+    // Merge full-sim and actuals into one timeline per team, sorted by run index
     const allPts = [
       ...fullRuns.filter(r => r.win_probs[team] != null)
-        .map(r => ({ x: r.label || fmtTimestamp(new Date(r.timestamp).getTime()), y: +(r.win_probs[team] * 100).toFixed(2), sims: r.simulations, mode: 'full', ts: new Date(r.timestamp).getTime() })),
+        .map(r => ({ x: runIndex.get(r.timestamp), y: +(r.win_probs[team] * 100).toFixed(2), sims: r.simulations, mode: 'full', xLabel: r.label || fmtTimestamp(new Date(r.timestamp).getTime()) })),
       ...actualsRuns.filter(r => r.win_probs[team] != null)
-        .map(r => ({ x: r.label || fmtTimestamp(new Date(r.timestamp).getTime()), y: +(r.win_probs[team] * 100).toFixed(2), sims: r.simulations, mode: 'actuals', ts: new Date(r.timestamp).getTime() })),
-    ].sort((a, b) => a.ts - b.ts);
+        .map(r => ({ x: runIndex.get(r.timestamp), y: +(r.win_probs[team] * 100).toFixed(2), sims: r.simulations, mode: 'actuals', xLabel: r.label || fmtTimestamp(new Date(r.timestamp).getTime()) })),
+    ].sort((a, b) => a.x - b.x);
 
     if (allPts.length) {
       const lineColor  = isHL ? '#ffffff' : color;
@@ -1870,8 +1876,17 @@ function buildHistoryChart(history) {
       interaction: { mode: 'nearest', axis: 'x', intersect: false },
       scales: {
         x: {
-          type: 'category',
-          ticks: { color: '#94a3b8', maxRotation: 30, autoSkip: true, maxTicksLimit: 10 },
+          type: 'linear',
+          min: -0.5,
+          max: allRunsSorted.length - 0.5,
+          ticks: {
+            color: '#94a3b8',
+            maxRotation: 30,
+            autoSkip: true,
+            maxTicksLimit: 10,
+            stepSize: 1,
+            callback: v => xLabels[Math.round(v)] ?? '',
+          },
           grid: { color: 'rgba(255,255,255,0.05)' },
         },
         y: {
@@ -1891,7 +1906,7 @@ function buildHistoryChart(history) {
           borderColor: 'rgba(255,255,255,0.1)',
           borderWidth: 1,
           callbacks: {
-            title: items => items[0].raw.x,
+            title: items => items[0].raw.xLabel,
             label: item => {
               const d = item.raw;
               const tag = d.mode === 'full' ? ' (full sim)' : '';
