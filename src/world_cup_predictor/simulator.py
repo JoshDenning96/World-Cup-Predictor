@@ -354,28 +354,41 @@ def simulate_group_stage(
     teams = sorted(set(schedule["home_team"]).union(schedule["away_team"]))
     advance_counts = {team: 0 for team in teams}
 
-    for _ in range(n_simulations):
-        all_results = []
-        for _, match in schedule.iterrows():
-            home_team = match["home_team"]
-            away_team = match["away_team"]
-            if home_team not in strengths.index or away_team not in strengths.index:
-                warnings.warn(
-                    f"Skipping match with missing strengths: {home_team} vs {away_team}",
-                    UserWarning,
-                )
-                continue
+    # Pre-compute expected goals and batch-generate all Poisson outcomes.
+    _gs_records: list[dict] = []
+    _gs_exp_h: list[float] = []
+    _gs_exp_a: list[float] = []
+    for _, match in schedule.iterrows():
+        home_team = match["home_team"]
+        away_team = match["away_team"]
+        if home_team not in strengths.index or away_team not in strengths.index:
+            warnings.warn(
+                f"Skipping match with missing strengths: {home_team} vs {away_team}",
+                UserWarning,
+            )
+            continue
+        _eh, _ea = predict_poisson_scores(home_team, away_team, strengths, elo_ratings=elo_ratings)
+        _gs_exp_h.append(_eh)
+        _gs_exp_a.append(_ea)
+        _gs_records.append({"group": match["group"], "home_team": home_team, "away_team": away_team})
 
-            sim = simulate_match(home_team, away_team, strengths, n_simulations=1, elo_ratings=elo_ratings, home_advantage=home_advantage)
-            home_goals = int(sim["home_goals"].iloc[0])
-            away_goals = int(sim["away_goals"].iloc[0])
+    if _gs_exp_h:
+        _gs_hg_matrix = np.vstack([np.random.poisson(lam, n_simulations) for lam in _gs_exp_h])
+        _gs_ag_matrix = np.vstack([np.random.poisson(lam, n_simulations) for lam in _gs_exp_a])
+    else:
+        _gs_hg_matrix = np.empty((0, n_simulations), dtype=np.int64)
+        _gs_ag_matrix = np.empty((0, n_simulations), dtype=np.int64)
+
+    for _gs_iter in range(n_simulations):
+        all_results = []
+        for _ri, _rec in enumerate(_gs_records):
             all_results.append(
                 {
-                    "group": match["group"],
-                    "home_team": home_team,
-                    "away_team": away_team,
-                    "home_score": home_goals,
-                    "away_score": away_goals,
+                    "group": _rec["group"],
+                    "home_team": _rec["home_team"],
+                    "away_team": _rec["away_team"],
+                    "home_score": int(_gs_hg_matrix[_ri, _gs_iter]),
+                    "away_score": int(_gs_ag_matrix[_ri, _gs_iter]),
                 }
             )
 
@@ -451,32 +464,55 @@ def simulate_group_tables(
 
     _actuals = actual_results or {}
 
-    for _ in range(n_simulations):
-        all_results = []
-        for _, match in schedule.iterrows():
-            home_team = match["home_team"]
-            away_team = match["away_team"]
-            if home_team not in strengths.index or away_team not in strengths.index:
-                warnings.warn(
-                    f"Skipping match with missing strengths: {home_team} vs {away_team}",
-                    UserWarning,
-                )
-                continue
+    # Pre-compute expected goals per match and batch-generate all Poisson outcomes.
+    _gt_records: list[dict] = []
+    _gt_sim_idx: list[int] = []
+    _gt_exp_h: list[float] = []
+    _gt_exp_a: list[float] = []
+    for _, match in schedule.iterrows():
+        home_team = match["home_team"]
+        away_team = match["away_team"]
+        if home_team not in strengths.index or away_team not in strengths.index:
+            warnings.warn(
+                f"Skipping match with missing strengths: {home_team} vs {away_team}",
+                UserWarning,
+            )
+            continue
+        _mn = match.get("match_number")
+        mn_key = str(int(_mn)) if _mn is not None and str(_mn) not in ("", "nan") else ""
+        _rec = {"group": match["group"], "home_team": home_team, "away_team": away_team}
+        if mn_key in _actuals:
+            _rec["_fh"] = int(_actuals[mn_key]["home_goals"])
+            _rec["_fa"] = int(_actuals[mn_key]["away_goals"])
+            _gt_sim_idx.append(-1)
+        else:
+            _eh, _ea = predict_poisson_scores(home_team, away_team, strengths, elo_ratings=elo_ratings)
+            _gt_sim_idx.append(len(_gt_exp_h))
+            _gt_exp_h.append(_eh)
+            _gt_exp_a.append(_ea)
+        _gt_records.append(_rec)
 
-            _mn = match.get("match_number")
-            mn_key = str(int(_mn)) if _mn is not None and str(_mn) != "" else ""
-            if mn_key in _actuals:
-                home_goals = int(_actuals[mn_key]["home_goals"])
-                away_goals = int(_actuals[mn_key]["away_goals"])
+    if _gt_exp_h:
+        _gt_hg_matrix = np.vstack([np.random.poisson(lam, n_simulations) for lam in _gt_exp_h])
+        _gt_ag_matrix = np.vstack([np.random.poisson(lam, n_simulations) for lam in _gt_exp_a])
+    else:
+        _gt_hg_matrix = np.empty((0, n_simulations), dtype=np.int64)
+        _gt_ag_matrix = np.empty((0, n_simulations), dtype=np.int64)
+
+    for _gt_iter in range(n_simulations):
+        all_results = []
+        for _ri, _rec in enumerate(_gt_records):
+            _si = _gt_sim_idx[_ri]
+            if _si == -1:
+                home_goals, away_goals = _rec["_fh"], _rec["_fa"]
             else:
-                sim = simulate_match(home_team, away_team, strengths, n_simulations=1, elo_ratings=elo_ratings, home_advantage=home_advantage)
-                home_goals = int(sim["home_goals"].iloc[0])
-                away_goals = int(sim["away_goals"].iloc[0])
+                home_goals = int(_gt_hg_matrix[_si, _gt_iter])
+                away_goals = int(_gt_ag_matrix[_si, _gt_iter])
             all_results.append(
                 {
-                    "group": match["group"],
-                    "home_team": home_team,
-                    "away_team": away_team,
+                    "group": _rec["group"],
+                    "home_team": _rec["home_team"],
+                    "away_team": _rec["away_team"],
                     "home_score": home_goals,
                     "away_score": away_goals,
                 }
@@ -678,48 +714,68 @@ def simulate_full_tournament(
     def resolve_knockout_winner(home: str, away: str) -> str:
         if elo_ratings is not None:
             probs = predict_elo_match_probabilities(home, away, elo_ratings, home_advantage=home_advantage)
-            outcome = np.random.choice(
-                ["home", "draw", "away"],
-                p=[probs["home_win"], probs["draw"], probs["away_win"]],
-            )
-            if outcome == "home":
+            r = np.random.random()
+            if r < probs["home_win"]:
                 return home
-            if outcome == "away":
-                return away
-            # Drawn after 90 mins → penalty shootout is ~50/50
-            return home if np.random.rand() < 0.5 else away
+            if r < probs["home_win"] + probs["draw"]:
+                return home if np.random.random() < 0.5 else away
+            return away
 
         sim = simulate_match(home, away, strengths, n_simulations=1, elo_ratings=elo_ratings, home_advantage=home_advantage)
         hg = int(sim["home_goals"].iloc[0])
         ag = int(sim["away_goals"].iloc[0])
         if hg == ag:
-            # Drawn after 90 mins → penalty shootout is ~50/50
-            return home if np.random.rand() < 0.5 else away
+            return home if np.random.random() < 0.5 else away
         return home if hg > ag else away
 
     _actuals = actual_results or {}
 
+    # Pre-compute expected goals for every group match and batch-generate all
+    # Poisson outcomes at once. This avoids creating a pandas DataFrame per
+    # simulate_match call inside the hot loop (was O(n_matches * n_simulations)
+    # DataFrame allocations; now O(n_matches) numpy calls).
+    _grp_records: list[dict] = []
+    _grp_sim_idx: list[int] = []   # index into batch arrays, or -1 for actuals
+    _exp_h: list[float] = []
+    _exp_a: list[float] = []
+    for _, _match in group_sched.iterrows():
+        _h, _a = _match["home_team"], _match["away_team"]
+        if _h not in strengths.index or _a not in strengths.index:
+            continue
+        _mn = _match.get("match_number")
+        _mn_key = str(int(_mn)) if _mn is not None and str(_mn) not in ("", "nan") else ""
+        _rec = {"group": _match.get("group"), "home_team": _h, "away_team": _a}
+        if _mn_key in _actuals:
+            _rec["_fh"] = int(_actuals[_mn_key]["home_goals"])
+            _rec["_fa"] = int(_actuals[_mn_key]["away_goals"])
+            _grp_sim_idx.append(-1)
+        else:
+            _eh, _ea = predict_poisson_scores(_h, _a, strengths, elo_ratings=elo_ratings)
+            _grp_sim_idx.append(len(_exp_h))
+            _exp_h.append(_eh)
+            _exp_a.append(_ea)
+        _grp_records.append(_rec)
+
+    if _exp_h:
+        _hg_matrix = np.vstack([np.random.poisson(lam, n_simulations) for lam in _exp_h])
+        _ag_matrix = np.vstack([np.random.poisson(lam, n_simulations) for lam in _exp_a])
+    else:
+        _hg_matrix = np.empty((0, n_simulations), dtype=np.int64)
+        _ag_matrix = np.empty((0, n_simulations), dtype=np.int64)
+
     for _iter in range(n_simulations):
-        # simulate matches
         all_results = []
-        for _, match in group_sched.iterrows():
-            h = match["home_team"]
-            a = match["away_team"]
-            if h not in strengths.index or a not in strengths.index:
-                continue
-            _mn = match.get("match_number")
-            mn_key = str(int(_mn)) if _mn is not None and str(_mn) != "" else ""
-            if mn_key in _actuals:
-                home_score = int(_actuals[mn_key]["home_goals"])
-                away_score = int(_actuals[mn_key]["away_goals"])
+        for _ri, _rec in enumerate(_grp_records):
+            _si = _grp_sim_idx[_ri]
+            if _si == -1:
+                home_score, away_score = _rec["_fh"], _rec["_fa"]
             else:
-                sim = simulate_match(h, a, strengths, n_simulations=1, elo_ratings=elo_ratings, home_advantage=home_advantage)
-                home_score = int(sim["home_goals"].iloc[0])
-                away_score = int(sim["away_goals"].iloc[0])
+                home_score = int(_hg_matrix[_si, _iter])
+                away_score = int(_ag_matrix[_si, _iter])
             all_results.append({
-                "group": match.get("group"),
-                "home_team": h,
-                "away_team": a,
+                "group": _rec["group"],
+                "home_team": _rec["home_team"],
+                "away_team": _rec["away_team"],
                 "home_score": home_score,
                 "away_score": away_score,
             })
