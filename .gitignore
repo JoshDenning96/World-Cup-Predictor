@@ -15,7 +15,6 @@ build/
 *.swp
 *.swo
 
-data/raw/*
 data/processed/*
 models/*
 !.gitkeep
