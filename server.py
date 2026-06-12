@@ -4,6 +4,7 @@ from __future__ import annotations
 import csv
 import datetime
 import json
+import re
 import socket
 import sys
 import threading
@@ -284,7 +285,9 @@ class SimulationHandler(SimpleHTTPRequestHandler):
                 SAVE_DIR.mkdir(parents=True, exist_ok=True)
                 timestamp = datetime.datetime.utcnow().strftime("%Y%m%dT%H%M%SZ")
                 mode_tag = "actuals" if use_actuals else "full"
-                filename = f"simulation_{mode_tag}_{simulations}_{timestamp}.json"
+                safe_label = re.sub(r"[^\w\-]", "_", run_label)[:40] if run_label else ""
+                label_part = f"_{safe_label}" if safe_label else ""
+                filename = f"simulation_{mode_tag}_{simulations}{label_part}_{timestamp}.json"
                 save_path = SAVE_DIR / filename
                 output = {
                     "simulations": simulations,
