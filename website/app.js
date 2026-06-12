@@ -518,9 +518,17 @@ function injectSimulationModeControls() {
   modeSelect.value = simulationMode;
   modeSelect.style.cssText = 'min-width:180px;padding:8px 10px;border-radius:8px;border:1px solid rgba(255,255,255,0.18);background:rgba(15,23,42,0.85);color:#f8fafc;';
 
+  const labelInput = document.createElement('input');
+  labelInput.type = 'text';
+  labelInput.id = 'simulation-label';
+  labelInput.placeholder = 'Run label (e.g. Group MD1)';
+  labelInput.maxLength = 80;
+  labelInput.style.cssText = 'min-width:180px;padding:8px 10px;border-radius:8px;border:1px solid rgba(255,255,255,0.18);background:rgba(15,23,42,0.85);color:#f8fafc;font-size:0.95rem;';
+
   const runBtn = document.getElementById('simulation-run-button');
   controls.insertBefore(modeLabel, runBtn);
   controls.insertBefore(modeSelect, runBtn);
+  controls.insertBefore(labelInput, runBtn);
 
   // Panel
   const actualsPanel = document.createElement('div');
@@ -973,6 +981,7 @@ async function runSimulation(simulations) {
         conmebol_offset: conmebolOffset,
         use_actuals: simulationMode === 'actuals',
         actual_results: simulationMode === 'actuals' ? Object.values(actualResultsCache) : [],
+        label: document.getElementById('simulation-label')?.value.trim() || '',
       }),
     });
     if (!startResp.ok) {
@@ -1826,10 +1835,10 @@ function buildHistoryChart(history) {
     // Merge full-sim and actuals into one timeline per team, sorted by time
     const allPts = [
       ...fullRuns.filter(r => r.win_probs[team] != null)
-        .map(r => ({ x: new Date(r.timestamp).getTime(), y: +(r.win_probs[team] * 100).toFixed(2), sims: r.simulations, mode: 'full' })),
+        .map(r => ({ x: r.label || fmtTimestamp(new Date(r.timestamp).getTime()), y: +(r.win_probs[team] * 100).toFixed(2), sims: r.simulations, mode: 'full', ts: new Date(r.timestamp).getTime() })),
       ...actualsRuns.filter(r => r.win_probs[team] != null)
-        .map(r => ({ x: new Date(r.timestamp).getTime(), y: +(r.win_probs[team] * 100).toFixed(2), sims: r.simulations, mode: 'actuals' })),
-    ].sort((a, b) => a.x - b.x);
+        .map(r => ({ x: r.label || fmtTimestamp(new Date(r.timestamp).getTime()), y: +(r.win_probs[team] * 100).toFixed(2), sims: r.simulations, mode: 'actuals', ts: new Date(r.timestamp).getTime() })),
+    ].sort((a, b) => a.ts - b.ts);
 
     if (allPts.length) {
       const lineColor  = isHL ? '#ffffff' : color;
@@ -1861,8 +1870,8 @@ function buildHistoryChart(history) {
       interaction: { mode: 'nearest', axis: 'x', intersect: false },
       scales: {
         x: {
-          type: 'linear',
-          ticks: { callback: v => fmtTimestamp(v), color: '#94a3b8', maxTicksLimit: 7 },
+          type: 'category',
+          ticks: { color: '#94a3b8', maxRotation: 30, autoSkip: true, maxTicksLimit: 10 },
           grid: { color: 'rgba(255,255,255,0.05)' },
         },
         y: {
@@ -1882,7 +1891,7 @@ function buildHistoryChart(history) {
           borderColor: 'rgba(255,255,255,0.1)',
           borderWidth: 1,
           callbacks: {
-            title: items => fmtTimestamp(items[0].parsed.x),
+            title: items => items[0].raw.x,
             label: item => {
               const d = item.raw;
               const tag = d.mode === 'full' ? ' (full sim)' : '';

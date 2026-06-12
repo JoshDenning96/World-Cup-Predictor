@@ -244,6 +244,7 @@ class SimulationHandler(SimpleHTTPRequestHandler):
             conmebol_offset = float(payload.get("conmebol_offset", DEFAULT_CONMEBOL_OFFSET))
             use_actuals = bool(payload.get("use_actuals", False))
             actuals_list = payload.get("actual_results", [])
+            run_label = str(payload.get("label", "")).strip()[:80]
         except Exception as exc:
             self.send_error(400, f"Invalid request body: {exc}")
             return
@@ -289,6 +290,7 @@ class SimulationHandler(SimpleHTTPRequestHandler):
                     "simulations": simulations,
                     "conmebol_offset": conmebol_offset,
                     "use_actuals": use_actuals,
+                    "label": run_label,
                     "tournament_simulation": tournament_simulation,
                     "group_tables": group_tables,
                     "group_probabilities": group_probabilities,
@@ -371,6 +373,7 @@ class SimulationHandler(SimpleHTTPRequestHandler):
                     if win_probs and max(win_probs.values(), default=0) > 0:
                         history.append({
                             "timestamp": ts,
+                            "label": str(data.get("label", "")).strip(),
                             "simulations": int(data.get("simulations", 0)),
                             "mode": "actuals" if data.get("use_actuals") else "full",
                             "win_probs": win_probs,
