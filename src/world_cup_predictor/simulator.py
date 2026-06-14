@@ -463,10 +463,16 @@ def simulate_group_tables(
     gd_sums = {g: {t: 0 for t in group_teams[g]} for g in group_teams}
 
     _actuals = actual_results or {}
+    _use_elo_sim = elo_ratings is not None
 
-    # Pre-compute expected goals per match and batch-generate all Poisson outcomes.
+    # Pre-compute per-match probabilities and batch-generate outcomes.
+    # When elo_ratings are provided, win/draw/loss is sampled from Elo
+    # probabilities (consistent with the knockout model and display layer).
+    # Goal counts are drawn from fixed Poisson distributions conditioned on
+    # the outcome so goal-difference tiebreakers remain meaningful.
     _gt_records: list[dict] = []
     _gt_sim_idx: list[int] = []
+    _gt_elo_probs: list[tuple] = []
     _gt_exp_h: list[float] = []
     _gt_exp_a: list[float] = []
     for _, match in schedule.iterrows():
@@ -486,12 +492,23 @@ def simulate_group_tables(
             _rec["_fa"] = int(_actuals[mn_key]["away_goals"])
             _gt_sim_idx.append(-1)
         else:
-            _eh, _ea = predict_poisson_scores(home_team, away_team, strengths, elo_ratings=elo_ratings)
-            _gt_sim_idx.append(len(_gt_exp_h))
-            _gt_exp_h.append(_eh)
-            _gt_exp_a.append(_ea)
+            if _use_elo_sim:
+                _ep = predict_elo_match_probabilities(home_team, away_team, elo_ratings, home_advantage=home_advantage)
+                _gt_sim_idx.append(len(_gt_elo_probs))
+                _gt_elo_probs.append((_ep["home_win"], _ep["draw"], _ep["away_win"]))
+            else:
+                _eh, _ea = predict_poisson_scores(home_team, away_team, strengths, home_advantage=home_advantage)
+                _gt_sim_idx.append(len(_gt_exp_h))
+                _gt_exp_h.append(_eh)
+                _gt_exp_a.append(_ea)
         _gt_records.append(_rec)
 
+    if _use_elo_sim and _gt_elo_probs:
+        _n_elo = len(_gt_elo_probs)
+        _gt_r_matrix = np.random.random((_n_elo, n_simulations))
+        _gt_margin_matrix = np.random.poisson(1.0, (_n_elo, n_simulations)) + 1
+        _gt_loser_matrix = np.random.poisson(0.8, (_n_elo, n_simulations))
+        _gt_draw_matrix = np.random.poisson(1.1, (_n_elo, n_simulations))
     if _gt_exp_h:
         _gt_hg_matrix = np.vstack([np.random.poisson(lam, n_simulations) for lam in _gt_exp_h])
         _gt_ag_matrix = np.vstack([np.random.poisson(lam, n_simulations) for lam in _gt_exp_a])
@@ -505,6 +522,20 @@ def simulate_group_tables(
             _si = _gt_sim_idx[_ri]
             if _si == -1:
                 home_goals, away_goals = _rec["_fh"], _rec["_fa"]
+            elif _use_elo_sim:
+                hw, dr, _ = _gt_elo_probs[_si]
+                r = _gt_r_matrix[_si, _gt_iter]
+                if r < hw:
+                    margin = int(_gt_margin_matrix[_si, _gt_iter])
+                    loser = int(_gt_loser_matrix[_si, _gt_iter])
+                    home_goals, away_goals = loser + margin, loser
+                elif r < hw + dr:
+                    g = int(_gt_draw_matrix[_si, _gt_iter])
+                    home_goals = away_goals = g
+                else:
+                    margin = int(_gt_margin_matrix[_si, _gt_iter])
+                    loser = int(_gt_loser_matrix[_si, _gt_iter])
+                    home_goals, away_goals = loser, loser + margin
             else:
                 home_goals = int(_gt_hg_matrix[_si, _gt_iter])
                 away_goals = int(_gt_ag_matrix[_si, _gt_iter])
@@ -730,12 +761,16 @@ def simulate_full_tournament(
 
     _actuals = actual_results or {}
 
-    # Pre-compute expected goals for every group match and batch-generate all
-    # Poisson outcomes at once. This avoids creating a pandas DataFrame per
-    # simulate_match call inside the hot loop (was O(n_matches * n_simulations)
-    # DataFrame allocations; now O(n_matches) numpy calls).
+    _use_elo_sim = elo_ratings is not None
+
+    # Pre-compute per-match probabilities and batch-generate outcomes for the
+    # group stage.  When elo_ratings are provided, outcomes are drawn from Elo
+    # win/draw/loss probabilities (matching the knockout-round model); goal
+    # counts are sampled from fixed Poisson distributions conditioned on the
+    # outcome so goal-difference tiebreakers remain meaningful.
     _grp_records: list[dict] = []
-    _grp_sim_idx: list[int] = []   # index into batch arrays, or -1 for actuals
+    _grp_sim_idx: list[int] = []
+    _grp_elo_probs: list[tuple] = []
     _exp_h: list[float] = []
     _exp_a: list[float] = []
     for _, _match in group_sched.iterrows():
@@ -750,12 +785,23 @@ def simulate_full_tournament(
             _rec["_fa"] = int(_actuals[_mn_key]["away_goals"])
             _grp_sim_idx.append(-1)
         else:
-            _eh, _ea = predict_poisson_scores(_h, _a, strengths, elo_ratings=elo_ratings)
-            _grp_sim_idx.append(len(_exp_h))
-            _exp_h.append(_eh)
-            _exp_a.append(_ea)
+            if _use_elo_sim:
+                _ep = predict_elo_match_probabilities(_h, _a, elo_ratings, home_advantage=home_advantage)
+                _grp_sim_idx.append(len(_grp_elo_probs))
+                _grp_elo_probs.append((_ep["home_win"], _ep["draw"], _ep["away_win"]))
+            else:
+                _eh, _ea = predict_poisson_scores(_h, _a, strengths, home_advantage=home_advantage)
+                _grp_sim_idx.append(len(_exp_h))
+                _exp_h.append(_eh)
+                _exp_a.append(_ea)
         _grp_records.append(_rec)
 
+    if _use_elo_sim and _grp_elo_probs:
+        _n_grp_elo = len(_grp_elo_probs)
+        _grp_r_matrix = np.random.random((_n_grp_elo, n_simulations))
+        _grp_margin_matrix = np.random.poisson(1.0, (_n_grp_elo, n_simulations)) + 1
+        _grp_loser_matrix = np.random.poisson(0.8, (_n_grp_elo, n_simulations))
+        _grp_draw_matrix = np.random.poisson(1.1, (_n_grp_elo, n_simulations))
     if _exp_h:
         _hg_matrix = np.vstack([np.random.poisson(lam, n_simulations) for lam in _exp_h])
         _ag_matrix = np.vstack([np.random.poisson(lam, n_simulations) for lam in _exp_a])
@@ -769,6 +815,20 @@ def simulate_full_tournament(
             _si = _grp_sim_idx[_ri]
             if _si == -1:
                 home_score, away_score = _rec["_fh"], _rec["_fa"]
+            elif _use_elo_sim:
+                hw, dr, _ = _grp_elo_probs[_si]
+                r = _grp_r_matrix[_si, _iter]
+                if r < hw:
+                    margin = int(_grp_margin_matrix[_si, _iter])
+                    loser = int(_grp_loser_matrix[_si, _iter])
+                    home_score, away_score = loser + margin, loser
+                elif r < hw + dr:
+                    g = int(_grp_draw_matrix[_si, _iter])
+                    home_score = away_score = g
+                else:
+                    margin = int(_grp_margin_matrix[_si, _iter])
+                    loser = int(_grp_loser_matrix[_si, _iter])
+                    home_score, away_score = loser, loser + margin
             else:
                 home_score = int(_hg_matrix[_si, _iter])
                 away_score = int(_ag_matrix[_si, _iter])

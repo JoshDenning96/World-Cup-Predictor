@@ -859,9 +859,14 @@ function renderGroupTable(data, group) {
     .filter((row) => row.group === group)
     .sort((a, b) => a.expected_rank - b.expected_rank);
 
-  // If actuals exist, sort teams by actual standing (pts → GD → GF → alpha)
+  const simByTeam = Object.fromEntries(simRows.map((r) => [r.team, r]));
+
+  // simRows is already sorted by expected_rank, which conditions on actual results and
+  // projects remaining games — use that order for partial actuals.
+  // Only switch to actual-pts sort when the group is complete (all games played),
+  // where standings are definitive.
   let orderedTeams = simRows.map((r) => r.team);
-  if (hasActuals) {
+  if (hasActuals && gamesPlayed === gamesInGroup) {
     orderedTeams = [...orderedTeams].sort((a, b) => {
       const sa = actualStats[a] || { pts: 0, gf: 0, ga: 0 };
       const sb = actualStats[b] || { pts: 0, gf: 0, ga: 0 };
@@ -869,7 +874,7 @@ function renderGroupTable(data, group) {
       const gda = sa.gf - sa.ga, gdb = sb.gf - sb.ga;
       if (gdb !== gda) return gdb - gda;
       if (sb.gf !== sa.gf) return sb.gf - sa.gf;
-      return a.localeCompare(b);
+      return (simByTeam[a]?.expected_rank ?? 99) - (simByTeam[b]?.expected_rank ?? 99);
     });
   }
 
@@ -884,8 +889,6 @@ function renderGroupTable(data, group) {
       head.innerHTML = `<th>Team</th><th>Rank</th><th>Avg. points</th><th>Goal diff</th><th>1st</th><th>2nd</th><th>3rd</th><th>4th</th>`;
     }
   }
-
-  const simByTeam = Object.fromEntries(simRows.map((r) => [r.team, r]));
   const body = orderedTeams.map((team, idx) => {
     const row = simByTeam[team] || {};
     const actual = actualStats[team] || { pts: 0, gf: 0, ga: 0 };
