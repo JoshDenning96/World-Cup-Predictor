@@ -1822,7 +1822,7 @@ function buildHistoryChart(history) {
   if (emptyEl) emptyEl.style.display = 'none';
 
   // Pick teams to display
-  const topN = parseInt(document.getElementById('history-view-select')?.value || '5', 10);
+  const viewValue = document.getElementById('history-view-select')?.value || '5';
   const highlight = document.getElementById('history-team-select')?.value || '';
 
   // Rank teams by max win_prob across all runs
@@ -1836,7 +1836,34 @@ function buildHistoryChart(history) {
     [...ranked].sort((a, b) => a.localeCompare(b)).forEach(t => { const o = document.createElement('option'); o.value = t; o.textContent = t; sel.appendChild(o); });
   }
 
-  const shown = ranked.slice(0, topN);
+  // Populate group options in the view selector once (after simulation data is available)
+  const viewSel = document.getElementById('history-view-select');
+  if (viewSel && !viewSel.querySelector('option[data-group]') && state.group_tables?.length) {
+    const groups = [...new Set(state.group_tables.map(r => r.group))].sort();
+    const sep = document.createElement('option');
+    sep.disabled = true; sep.textContent = '──────────';
+    viewSel.appendChild(sep);
+    groups.forEach(g => {
+      const o = document.createElement('option');
+      o.value = g; o.textContent = g; o.dataset.group = '1';
+      viewSel.appendChild(o);
+    });
+  }
+
+  // Determine which teams to show: a specific group or the top-N by win probability
+  const isGroupView = !!(viewSel?.querySelector(`option[value="${CSS.escape(viewValue)}"][data-group]`));
+  let shown;
+  if (isGroupView) {
+    const groupTeams = (state.group_tables || [])
+      .filter(r => r.group === viewValue)
+      .sort((a, b) => (a.expected_rank || 99) - (b.expected_rank || 99))
+      .map(r => r.team)
+      .filter(t => t in maxProb);
+    shown = groupTeams;
+  } else {
+    const topN = parseInt(viewValue, 10) || 5;
+    shown = ranked.slice(0, topN);
+  }
   if (highlight && !shown.includes(highlight)) shown.push(highlight);
 
   // Build an ordered index of all runs sorted by timestamp.
