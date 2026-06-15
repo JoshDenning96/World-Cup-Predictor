@@ -214,18 +214,26 @@ function computeThirdPlaceQualifiers() {
     else { groupStats[g][home].pts += 1; groupStats[g][away].pts += 1; }
   });
 
-  // Get 3rd-place team per group — only for groups that have at least one actual result.
-  // Groups with zero actuals would produce alphabetically-sorted placeholder teams which
-  // would duplicate with simulation-predicted group winners/runners-up in the bracket.
-  const groupsWithActuals = new Set(
-    groupScheduleCache
-      .filter((m) => actualResultsCache[String(m.match_number)])
-      .map((m) => m.group.replace(/^Group\s+/i, '').trim())
+  // Only use actual standings for groups where ALL matches have been played.
+  // Partial matchday results give misleading 3rd-place rankings (e.g. alphabetical
+  // tiebreaks after MD1 can seat the wrong team, or conflict with the simulation
+  // projection for 2nd place).
+  const byGroup = {};
+  groupScheduleCache.forEach((m) => {
+    const g = m.group.replace(/^Group\s+/i, '').trim();
+    if (!byGroup[g]) byGroup[g] = { total: 0, done: 0 };
+    byGroup[g].total++;
+    if (actualResultsCache[String(m.match_number)]) byGroup[g].done++;
+  });
+  const groupsComplete = new Set(
+    Object.entries(byGroup)
+      .filter(([, c]) => c.total > 0 && c.done === c.total)
+      .map(([g]) => g)
   );
 
   const thirdPlaceTeams = [];
   Object.keys(groupStats).forEach((g) => {
-    if (!groupsWithActuals.has(g)) return;
+    if (!groupsComplete.has(g)) return;
     const ranked = Object.keys(groupStats[g]).sort((a, b) => {
       const sa = groupStats[g][a], sb = groupStats[g][b];
       if (sb.pts !== sa.pts) return sb.pts - sa.pts;
