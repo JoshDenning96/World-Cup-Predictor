@@ -25,6 +25,12 @@ CONMEBOL_QUALIFIED_TEAMS = {
     "Paraguay",
 }
 
+# 2026 host nations receive a modest Elo boost to reflect home-crowd advantage.
+# 50 points ≈ half the typical neutral-to-home shift, discounted because the
+# tournament is spread across 16 venues in 3 countries rather than a single host.
+HOST_NATIONS_2026 = {"United States", "Canada", "Mexico"}
+HOST_ADVANTAGE_ELO = 50.0
+
 
 def _elo_ratings_to_df(elo_ratings) -> pd.DataFrame:
     if isinstance(elo_ratings, pd.Series):
@@ -114,6 +120,12 @@ def run_pipeline(
         offset=conmebol_offset,
         eligible_teams=conmebol_eligible_teams if conmebol_eligible_teams else None,
     )
+
+    # Apply host-nation advantage (baked into Elo so it flows through both
+    # group stage and knockout simulation automatically).
+    host_teams_present = [t for t in HOST_NATIONS_2026 if t in elo_ratings]
+    for team in host_teams_present:
+        elo_ratings[team] = float(elo_ratings[team]) + HOST_ADVANTAGE_ELO
 
     first_match = raw_data["schedule_utc"].iloc[0]
     first_match_probabilities = calculate_match_probabilities(

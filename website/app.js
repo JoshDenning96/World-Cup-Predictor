@@ -1281,9 +1281,10 @@ async function renderBracket(data, count = 32) {
     if (!match) return null;
     const pos = Number(match[1]);
     const letter = match[2];
-    // Actual group standings take priority
+    // Only use actual standings once the group is fully played — partial
+    // standings mid-group would seed the bracket with an incomplete snapshot.
     const actualKey = Object.keys(actualStandings).find((k) => k === `Group ${letter}` || k.endsWith(` ${letter}`));
-    if (actualKey && actualStandings[actualKey]?.[pos - 1]) {
+    if (actualKey && groupComplete[actualKey] && actualStandings[actualKey]?.[pos - 1]) {
       const teamName = actualStandings[actualKey][pos - 1];
       return { team: teamName, ...(probMap[teamName] || {}) };
     }

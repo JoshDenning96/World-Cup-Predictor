@@ -170,7 +170,10 @@
             <strong>Monte Carlo simulation.</strong> Each run simulates the full FIFA 2026 tournament a user-selected number of times from the current state. Probabilities (e.g. "32% chance of winning") are simply how often each outcome occurred across all simulations — not a single prediction. More simulations give smoother, more stable probabilities.
           </div>
           <div>
-            <strong>Elo-based match model.</strong> Each match is resolved using FIFA Elo ratings. The rating difference between two teams determines the win/draw/loss probabilities. No home-advantage adjustment is applied. Draws are possible in the group stage; in knockout rounds a drawn match is resolved as a 50/50 coin flip (simulating a penalty shootout).
+            <strong>Elo-based match model.</strong> Each match is resolved using FIFA Elo ratings. The rating difference between two teams determines the win/draw/loss probabilities. Draws are possible in the group stage; in knockout rounds a drawn match is resolved as a 50/50 coin flip (simulating a penalty shootout).
+          </div>
+          <div>
+            <strong>Host-nation advantage.</strong> USA, Canada, and Mexico each receive a +50 Elo point boost to reflect home-crowd advantage. This is set at half the typical neutral-to-home shift (~100 points) because the tournament is spread across 16 venues in three countries rather than a single host nation. The boost applies in both the group stage and knockout rounds.
           </div>
           <div>
             <strong>CONMEBOL adjustment.</strong> A −45 Elo point offset is applied by default to all qualified CONMEBOL teams. This acts as a scepticism dial, reducing South American teams' projected strength relative to their raw Elo rating.
@@ -205,6 +208,6 @@
       </section>
     </div>
 
-    <script src="app.js?v=9"></script>
+    <script src="app.js?v=10"></script>
   </body>
 </html>
