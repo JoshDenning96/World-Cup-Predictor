@@ -1825,7 +1825,7 @@ function buildHistoryChart(history) {
   // Populate highlight selector once
   const sel = document.getElementById('history-team-select');
   if (sel && sel.options.length === 1) {
-    ranked.forEach(t => { const o = document.createElement('option'); o.value = t; o.textContent = t; sel.appendChild(o); });
+    [...ranked].sort((a, b) => a.localeCompare(b)).forEach(t => { const o = document.createElement('option'); o.value = t; o.textContent = t; sel.appendChild(o); });
   }
 
   const shown = ranked.slice(0, topN);
