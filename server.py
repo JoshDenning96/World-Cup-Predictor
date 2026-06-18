@@ -380,6 +380,7 @@ class SimulationHandler(SimpleHTTPRequestHandler):
                             "simulations": int(data.get("simulations", 0)),
                             "mode": "actuals" if data.get("use_actuals") else "full",
                             "win_probs": win_probs,
+                            "url": f"data/saved_simulations/{f.name}",
                         })
                 except Exception:
                     pass

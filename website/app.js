@@ -1017,6 +1017,8 @@ async function runSimulation(simulations) {
         renderDashboard(data);
         const saved = data.saved_filename ? ` Saved to ${data.saved_filename}` : "";
         setSimulationStatus(`Loaded ${simulationCount} simulations.${saved}`);
+        const bracketSel = document.getElementById('bracket-sim-select');
+        if (bracketSel) bracketSel.value = 'current';
         loadSimulationHistory();
         break;
       }
@@ -1962,16 +1964,50 @@ async function loadSimulationHistory() {
     if (!resp.ok) throw new Error(resp.status);
     const history = await resp.json();
     buildHistoryChart(history);
+    populateBracketSimSelect(history);
 
     if (!_historyListenersAttached) {
       _historyListenersAttached = true;
       ['history-view-select', 'history-team-select'].forEach(id => {
         document.getElementById(id)?.addEventListener('change', () => loadSimulationHistory());
       });
+      document.getElementById('bracket-sim-select')?.addEventListener('change', async (e) => {
+        const url = e.target.value;
+        if (!url || url === 'current') {
+          renderBracket(state, 32).catch(() => {});
+          return;
+        }
+        try {
+          const r = await fetch(url);
+          if (!r.ok) throw new Error(r.status);
+          const data = await r.json();
+          renderBracket(data, 32).catch(() => {});
+        } catch (err) {
+          console.warn('Could not load simulation for bracket:', err);
+        }
+      });
     }
   } catch (err) {
     console.warn('Could not load simulation history:', err);
   }
+}
+
+function populateBracketSimSelect(history) {
+  const sel = document.getElementById('bracket-sim-select');
+  if (!sel) return;
+  const current = sel.value;
+  sel.innerHTML = '<option value="current">Current</option>';
+  [...history].reverse().forEach(run => {
+    if (!run.url) return;
+    const o = document.createElement('option');
+    o.value = run.url;
+    const modeTag = run.mode === 'actuals' ? 'actuals' : 'full sim';
+    const date = run.timestamp ? run.timestamp.replace('T', ' ').replace('Z', '').slice(0, 16) : '';
+    o.textContent = `${run.label || 'Simulation'} — ${modeTag} — ${run.simulations} runs${date ? ' (' + date + ')' : ''}`;
+    sel.appendChild(o);
+  });
+  // Restore previous selection if it still exists, otherwise default to current
+  if ([...sel.options].some(o => o.value === current)) sel.value = current;
 }
 
 async function initializeDashboard() {

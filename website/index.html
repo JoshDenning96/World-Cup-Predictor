@@ -123,11 +123,18 @@
 
       <section class="section">
         <div class="section-heading">
-          <h2>Bracket projection</h2>
-          <p>Projected bracket. Left bar and border colour indicate tournament win probability — gold = strong favourite, grey = low probability. <span style="display:inline-flex;align-items:center;gap:4px;"><svg width="10" height="10" viewBox="0 0 10 10"><circle cx="5" cy="5" r="4" fill="rgba(34,197,94,0.9)"/></svg> green dot = confirmed actual result.</span></p>
+          <div>
+            <h2>Bracket projection</h2>
+            <p>Projected bracket. Left bar and border colour indicate tournament win probability — gold = strong favourite, grey = low probability. <span style="display:inline-flex;align-items:center;gap:4px;"><svg width="10" height="10" viewBox="0 0 10 10"><circle cx="5" cy="5" r="4" fill="rgba(34,197,94,0.9)"/></svg> green dot = confirmed actual result.</span></p>
+          </div>
+          <div class="chart-controls">
+            <label for="bracket-sim-select">Simulation:</label>
+            <select id="bracket-sim-select">
+              <option value="current">Current</option>
+            </select>
+          </div>
         </div>
         <div class="bracket-card table-card">
-          <!-- Full 32-team bracket — no selector needed -->
           <div class="bracket-container">
             <svg id="bracket-svg" viewBox="0 0 1100 600" preserveAspectRatio="xMidYMid meet"></svg>
           </div>
@@ -208,6 +215,6 @@
       </section>
     </div>
 
-    <script src="app.js?v=14"></script>
+    <script src="app.js?v=15"></script>
   </body>
 </html>
