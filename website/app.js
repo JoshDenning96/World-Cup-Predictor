@@ -1854,12 +1854,10 @@ function buildHistoryChart(history) {
   const isGroupView = !!(viewSel?.querySelector(`option[value="${CSS.escape(viewValue)}"][data-group]`));
   let shown;
   if (isGroupView) {
-    const groupTeams = (state.group_tables || [])
+    shown = (state.group_tables || [])
       .filter(r => r.group === viewValue)
       .sort((a, b) => (a.expected_rank || 99) - (b.expected_rank || 99))
-      .map(r => r.team)
-      .filter(t => t in maxProb);
-    shown = groupTeams;
+      .map(r => r.team);
   } else {
     const topN = parseInt(viewValue, 10) || 5;
     shown = ranked.slice(0, topN);
