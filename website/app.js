@@ -1971,21 +1971,6 @@ async function loadSimulationHistory() {
       ['history-view-select', 'history-team-select'].forEach(id => {
         document.getElementById(id)?.addEventListener('change', () => loadSimulationHistory());
       });
-      document.getElementById('bracket-sim-select')?.addEventListener('change', async (e) => {
-        const url = e.target.value;
-        if (!url || url === 'current') {
-          renderBracket(state, 32).catch(() => {});
-          return;
-        }
-        try {
-          const r = await fetch(url);
-          if (!r.ok) throw new Error(r.status);
-          const data = await r.json();
-          renderBracket(data, 32).catch(() => {});
-        } catch (err) {
-          console.warn('Could not load simulation for bracket:', err);
-        }
-      });
     }
   } catch (err) {
     console.warn('Could not load simulation history:', err);
@@ -2033,6 +2018,26 @@ async function initializeDashboard() {
     if (simulationMode === 'actuals') {
       renderBracket(loadedState, 32).catch(() => {});
     }
+
+    // Populate bracket sim selector immediately — don't wait for history section to scroll into view
+    fetch(API_HISTORY_URL).then(r => r.json()).then(h => populateBracketSimSelect(h)).catch(() => {});
+
+    // Bracket sim selector change handler
+    document.getElementById('bracket-sim-select')?.addEventListener('change', async (e) => {
+      const url = e.target.value;
+      if (!url || url === 'current') {
+        renderBracket(state, 32).catch(() => {});
+        return;
+      }
+      try {
+        const r = await fetch(url);
+        if (!r.ok) throw new Error(r.status);
+        const data = await r.json();
+        renderBracket(data, 32).catch(() => {});
+      } catch (err) {
+        console.warn('Could not load simulation for bracket:', err);
+      }
+    });
 
     const simulationButton = document.getElementById("simulation-run-button");
     if (simulationButton) {
