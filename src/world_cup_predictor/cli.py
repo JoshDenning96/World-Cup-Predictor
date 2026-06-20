@@ -16,6 +16,18 @@ from .stat_models import (
 import re
 from typing import List
 
+# Maps schedule/FIFA names → historical names used in match result data
+_SCHEDULE_TO_HISTORICAL_NAME = {
+    "USA": "United States",
+    "Türkiye": "Turkey",
+    "Czechia": "Czech Republic",
+    "Korea Republic": "South Korea",
+    "IR Iran": "Iran",
+    "Côte d'Ivoire": "Cote d'Ivoire",
+    "Congo DR": "DR Congo",
+    "Cabo Verde": "Cape Verde",
+}
+
 CONMEBOL_QUALIFIED_TEAMS = {
     "Argentina",
     "Brazil",
@@ -110,6 +122,13 @@ def run_pipeline(
 
     strengths = fit_poisson_attack_defense(raw_data["results"])
     raw_elo_ratings = fit_elo_ratings(raw_data["results"])
+
+    # Add schedule-name aliases for teams whose historical name differs
+    for schedule_name, historical_name in _SCHEDULE_TO_HISTORICAL_NAME.items():
+        if historical_name in strengths.index and schedule_name not in strengths.index:
+            strengths.loc[schedule_name] = strengths.loc[historical_name]
+        if historical_name in raw_elo_ratings and schedule_name not in raw_elo_ratings:
+            raw_elo_ratings[schedule_name] = raw_elo_ratings[historical_name]
 
     qualified_teams = _get_qualified_teams(raw_data.get("schedule_utc"))
     conmebol_eligible_teams = _get_known_conmebol_qualified_teams(qualified_teams)

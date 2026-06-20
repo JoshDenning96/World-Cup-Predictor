@@ -3,6 +3,7 @@ from __future__ import annotations
 
 from typing import Dict
 from collections import defaultdict
+from itertools import groupby as _groupby
 import math
 
 import numpy as np
@@ -302,6 +303,42 @@ def calculate_match_probabilities(
     return {"home_win": home_win / total, "draw": draw / total, "away_win": away_win / total}
 
 
+def _h2h_sort_key(team: str, tied_teams: list[str], results: pd.DataFrame):
+    h2h = results[
+        results["home_team"].isin(tied_teams) & results["away_team"].isin(tied_teams)
+    ]
+    pts = 0
+    gd = 0
+    for _, row in h2h.iterrows():
+        if row["home_team"] == team:
+            pts += 3 if row["home_score"] > row["away_score"] else 1 if row["home_score"] == row["away_score"] else 0
+            gd += row["home_score"] - row["away_score"]
+        elif row["away_team"] == team:
+            pts += 3 if row["away_score"] > row["home_score"] else 1 if row["away_score"] == row["home_score"] else 0
+            gd += row["away_score"] - row["home_score"]
+    return (pts, gd)
+
+
+def sort_standings(standings: pd.DataFrame, results: pd.DataFrame) -> pd.DataFrame:
+    """Sort group standings by: points, head-to-head points, head-to-head GD, overall GD, overall goals scored."""
+    sorted_by_pts = sorted(standings.index.tolist(), key=lambda t: -standings.loc[t, "points"])
+    final_order = []
+    for _, grp in _groupby(sorted_by_pts, key=lambda t: standings.loc[t, "points"]):
+        tied = list(grp)
+        if len(tied) == 1:
+            final_order.extend(tied)
+        else:
+            h2h_keys = {t: _h2h_sort_key(t, tied, results) for t in tied}
+            tied.sort(key=lambda t: (
+                -h2h_keys[t][0],
+                -h2h_keys[t][1],
+                -standings.loc[t, "goal_difference"],
+                -standings.loc[t, "goals_for"],
+            ))
+            final_order.extend(tied)
+    return standings.loc[final_order]
+
+
 def aggregate_group_standings(results: pd.DataFrame) -> pd.DataFrame:
     """Compute group standings from played results."""
     results = results.copy()
@@ -329,7 +366,7 @@ def aggregate_group_standings(results: pd.DataFrame) -> pd.DataFrame:
 
     standings = home_stats.add(away_stats, fill_value=0)
     standings["goal_difference"] = standings["goals_for"] - standings["goals_against"]
-    standings = standings.sort_values(["points", "goal_difference", "goals_for"], ascending=[False, False, False])
+    standings = sort_standings(standings, results)
     return standings.astype({"points": int, "played": int, "goals_for": int, "goals_against": int, "goal_difference": int})
 
 
@@ -478,12 +515,6 @@ def simulate_group_tables(
     for _, match in schedule.iterrows():
         home_team = match["home_team"]
         away_team = match["away_team"]
-        if home_team not in strengths.index or away_team not in strengths.index:
-            warnings.warn(
-                f"Skipping match with missing strengths: {home_team} vs {away_team}",
-                UserWarning,
-            )
-            continue
         _mn = match.get("match_number")
         mn_key = str(int(_mn)) if _mn is not None and str(_mn) not in ("", "nan") else ""
         _rec = {"group": match["group"], "home_team": home_team, "away_team": away_team}
@@ -491,6 +522,12 @@ def simulate_group_tables(
             _rec["_fh"] = int(_actuals[mn_key]["home_goals"])
             _rec["_fa"] = int(_actuals[mn_key]["away_goals"])
             _gt_sim_idx.append(-1)
+        elif home_team not in strengths.index or away_team not in strengths.index:
+            warnings.warn(
+                f"Skipping match with missing strengths: {home_team} vs {away_team}",
+                UserWarning,
+            )
+            continue
         else:
             if _use_elo_sim:
                 _ep = predict_elo_match_probabilities(home_team, away_team, elo_ratings, home_advantage=home_advantage)
@@ -572,7 +609,7 @@ def simulate_group_tables(
                         "goals_against": 0,
                         "goal_difference": 0,
                     }
-            standings = standings.sort_values(["points", "goal_difference", "goals_for"], ascending=[False, False, False])
+            standings = sort_standings(standings, gr)
 
             for pos, team in enumerate(standings.index.tolist(), start=1):
                 rank_counts[g][team][pos - 1] += 1
@@ -775,8 +812,6 @@ def simulate_full_tournament(
     _exp_a: list[float] = []
     for _, _match in group_sched.iterrows():
         _h, _a = _match["home_team"], _match["away_team"]
-        if _h not in strengths.index or _a not in strengths.index:
-            continue
         _mn = _match.get("match_number")
         _mn_key = str(int(_mn)) if _mn is not None and str(_mn) not in ("", "nan") else ""
         _rec = {"group": _match.get("group"), "home_team": _h, "away_team": _a}
@@ -784,6 +819,8 @@ def simulate_full_tournament(
             _rec["_fh"] = int(_actuals[_mn_key]["home_goals"])
             _rec["_fa"] = int(_actuals[_mn_key]["away_goals"])
             _grp_sim_idx.append(-1)
+        elif _h not in strengths.index or _a not in strengths.index:
+            continue
         else:
             if _use_elo_sim:
                 _ep = predict_elo_match_probabilities(_h, _a, elo_ratings, home_advantage=home_advantage)
@@ -851,7 +888,7 @@ def simulate_full_tournament(
             for t in group_teams[g]:
                 if t not in st.index:
                     st.loc[t] = {"points": 0, "played": 0, "goals_for": 0, "goals_against": 0, "goal_difference": 0}
-            st = st.sort_values(["points", "goal_difference", "goals_for"], ascending=[False, False, False])
+            st = sort_standings(st, gr)
             standings_by_group[g] = st
 
         # accumulate group-table statistics from this simulated group stage
@@ -859,10 +896,11 @@ def simulate_full_tournament(
             if g not in standings_by_group:
                 continue
             st = standings_by_group[g].copy()
+            gr = results_df[results_df["group"] == g]
             for t in teams:
                 if t not in st.index:
                     st.loc[t] = {"points": 0, "played": 0, "goals_for": 0, "goals_against": 0, "goal_difference": 0}
-            st = st.sort_values(["points", "goal_difference", "goals_for"], ascending=[False, False, False])
+            st = sort_standings(st, gr)
             for pos, team in enumerate(st.index.tolist(), start=1):
                 group_rank_counts[g][team][pos - 1] += 1
                 group_pts_sums[g][team] += int(st.loc[team, "points"])
@@ -923,6 +961,7 @@ def simulate_full_tournament(
                     away = resolve_r32_third_place(a_slot, h_slot)
 
                     if home is None or away is None:
+                        prev_winners.append(None)
                         continue
 
                     stage_counts[home]["Round of 32"] += 1
