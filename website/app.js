@@ -9,6 +9,7 @@ let simulationMode = 'full'; // 'full' | 'actuals'
 let actualResultsCache = {}; // keyed by String(match_number)
 let groupScheduleCache = []; // loaded once on startup
 let _actualsActiveTab = 'Group A';
+let _bracketAssignmentMap = null;
 
 // FIFA/schedule names → simulation dataset names.
 // The group schedule uses official FIFA names; the simulation uses its own variants.
@@ -299,7 +300,7 @@ function computeThirdPlaceQualifiers() {
   return result;
 }
 
-function resolveKnockoutSlot(slot, groupStandings, knockoutResolved, thirdPlaceAssignment) {
+function resolveKnockoutSlot(slot, groupStandings, knockoutResolved, thirdPlaceAssignment, oppositeSlot) {
   if (!slot) return slot;
 
   // 1A / 2B — group winner or runner-up
@@ -319,6 +320,15 @@ function resolveKnockoutSlot(slot, groupStandings, knockoutResolved, thirdPlaceA
   const m3 = /^3([A-L]+)$/.exec(slot);
   if (m3) {
     if (thirdPlaceAssignment?.[slot]) return thirdPlaceAssignment[slot];
+    // Use the bracket's FIFA-table assignment map when available
+    if (_bracketAssignmentMap && oppositeSlot && /^1[A-L]$/.test(String(oppositeSlot).trim())) {
+      const winnerGroup = String(oppositeSlot).trim()[1];
+      const thirdGroupLetter = _bracketAssignmentMap[winnerGroup];
+      if (thirdGroupLetter) {
+        const team = simulationGroupRank(thirdGroupLetter, 2);
+        if (team) return team;
+      }
+    }
     return `Best 3rd (${m3[1].split('').join('/')})`;
   }
 
@@ -354,7 +364,6 @@ function resolveKnockoutSlot(slot, groupStandings, knockoutResolved, thirdPlaceA
 
 function buildKnockoutResolution() {
   const groupStandings = computeActualGroupStandings();
-  const thirdPlaceAssignment = computeThirdPlaceQualifiers();
   const byMn = {};
   (state.knockout_schedule || []).forEach((m) => { byMn[String(m.match_number)] = m; });
   const resolved = {};
@@ -363,8 +372,8 @@ function buildKnockoutResolution() {
     if (resolved[mn]) return;
     const m = byMn[mn];
     if (!m) return;
-    const home = resolveKnockoutSlot(m.home, groupStandings, resolved, thirdPlaceAssignment);
-    const away = resolveKnockoutSlot(m.away, groupStandings, resolved, thirdPlaceAssignment);
+    const home = resolveKnockoutSlot(m.home, groupStandings, resolved, {}, m.away);
+    const away = resolveKnockoutSlot(m.away, groupStandings, resolved, {}, m.home);
     const ar = actualResultsCache[mn];
     let winner = null;
     if (ar) {
@@ -865,7 +874,7 @@ function renderGroupTable(data, group) {
 
   const simRows = data.group_tables
     .filter((row) => row.group === group)
-    .sort((a, b) => a.expected_rank - b.expected_rank);
+    .sort((a, b) => (a.expected_rank || 99) - (b.expected_rank || 99));
 
   const simByTeam = Object.fromEntries(simRows.map((r) => [r.team, r]));
 
@@ -1167,7 +1176,7 @@ async function loadData() {
   }
 }
 
-async function renderBracket(data, count = 32) {
+async function renderBracket(data, count = 32, applyActuals = null) {
   // Wait for assignment table to load
   let assignmentTableCache = null;
   async function loadR32ThirdPlaceAssignments() {
@@ -1248,7 +1257,8 @@ async function renderBracket(data, count = 32) {
   Object.keys(groupMap).forEach((g) => groupMap[g].sort((a, b) => (a.expected_rank || 99) - (b.expected_rank || 99)));
 
   // In actuals mode, seed the bracket with entered results; in full-sim mode use only simulation.
-  const useActuals = simulationMode === 'actuals';
+  // applyActuals can override: false = pure simulation (e.g. historical runs), null = follow simulationMode.
+  const useActuals = applyActuals !== null ? applyActuals : simulationMode === 'actuals';
   const actualStandings     = useActuals ? computeActualGroupStandings() : {};
   const actualThirdPlaceMap = useActuals ? computeThirdPlaceQualifiers()  : {};
   const actualKo            = useActuals ? buildKnockoutResolution()       : {};
@@ -1416,6 +1426,7 @@ async function renderBracket(data, count = 32) {
   }
 
   const assignmentMap = buildRoundOf32ThirdPlaceAssignmentMap();
+  if (assignmentMap) _bracketAssignmentMap = assignmentMap;
 
 
 
@@ -1427,21 +1438,12 @@ async function renderBracket(data, count = 32) {
       return { team: slotText };
     }
 
-    // Actual third-place assignment takes priority
-    if (actualThirdPlaceMap[slotText]) {
-      const team = actualThirdPlaceMap[slotText];
-      if (!usedThird.has(team)) {
-        usedThird.add(team);
-        return { team, ...(probMap[team] || {}) };
-      }
-    }
-
     if (assignmentMap && /^1[A-L]$/.test(String(oppositeSlot).trim())) {
       const winnerGroup = String(oppositeSlot).trim()[1];
       const thirdGroupLetter = assignmentMap[winnerGroup];
       const thirdGroupName = normalizeGroupName(thirdGroupLetter);
       const thirdRow = thirdGroupName ? getThirdPlaceRow(thirdGroupName) : null;
-      if (thirdRow) {
+      if (thirdRow && !usedThird.has(thirdRow.team)) {
         usedThird.add(thirdRow.team);
         return { team: thirdRow.team, ...(probMap[thirdRow.team] || {}) };
       }
@@ -1928,6 +1930,7 @@ function buildHistoryChart(history) {
         },
         y: {
           min: 0,
+          max: Math.ceil(Math.max(...Object.values(maxProb)) * 100 / 5) * 5,
           ticks: { callback: v => v + '%', color: '#94a3b8' },
           grid: { color: 'rgba(255,255,255,0.05)' },
         },
@@ -2033,7 +2036,7 @@ async function initializeDashboard() {
         const r = await fetch(url);
         if (!r.ok) throw new Error(r.status);
         const data = await r.json();
-        renderBracket(data, 32).catch(() => {});
+        renderBracket(data, 32, false).catch(() => {});
       } catch (err) {
         console.warn('Could not load simulation for bracket:', err);
       }

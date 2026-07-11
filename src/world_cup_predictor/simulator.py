@@ -641,7 +641,7 @@ def simulate_group_tables(
             rows.append(row)
 
     out = pd.DataFrame(rows)
-    out = out.sort_values(["group", "expected_rank"]) .reset_index(drop=True)
+    out = out.sort_values(["group", "expected_rank"], ascending=[True, True]).reset_index(drop=True)
     return out
 
 
@@ -672,6 +672,7 @@ def simulate_full_tournament(
     actual_results: dict | None = None,
     home_advantage: float = 0.0,
     progress_callback=None,
+    knockout_bracket: dict | None = None,
 ) -> pd.DataFrame | dict:
     """Simulate full tournament including knockout rounds.
 
@@ -908,6 +909,7 @@ def simulate_full_tournament(
 
         # initial knockout: process Round of 32 by resolving placeholders
         prev_winners = []
+        winners_by_match = {}
         for rnd in round_order:
             round_matches = knockout[knockout["round_number"] == rnd]
             # Round of 32: resolve slots directly from placeholders
@@ -971,18 +973,41 @@ def simulate_full_tournament(
                     mn_key = str(int(_mn)) if _mn is not None and str(_mn) not in ("", "nan") else ""
                     winner = _actual_knockout_winner(mn_key, home, away, _actuals, resolve_knockout_winner)
                     prev_winners.append(winner)
+                    if mn_key:
+                        winners_by_match[int(mn_key)] = winner
 
             else:
-                # for later rounds, pair previous winners by sequential bracket position
+                # pair winners using knockout_bracket structure when available,
+                # otherwise fall back to sequential bracket position
                 next_winners = []
                 rm_sorted = list(round_matches.sort_values("match_number").iterrows())
                 for idx, (_, rm) in enumerate(rm_sorted):
-                    i = idx * 2
-                    try:
-                        home = prev_winners[i]
-                        away = prev_winners[i + 1]
-                    except IndexError:
-                        continue
+                    _mn = rm.get("match_number")
+                    mn_key = str(int(_mn)) if _mn is not None and str(_mn) not in ("", "nan") else ""
+                    mn_int = int(mn_key) if mn_key else None
+
+                    if knockout_bracket and mn_int in knockout_bracket:
+                        h_slot, a_slot = knockout_bracket[mn_int]
+                        if str(h_slot).startswith("RU") and str(a_slot).startswith("RU"):
+                            # Third-place play-off (losers of the semifinals). It
+                            # shares a round label with the Final in the source
+                            # schedule but isn't part of the bracket progression,
+                            # so it must not count toward reaching "Finals" or
+                            # toward the champion determination below.
+                            continue
+                        def _resolve_w(slot):
+                            m = re.match(r'^W(\d+)$', str(slot).strip())
+                            return winners_by_match.get(int(m.group(1))) if m else None
+                        home = _resolve_w(h_slot)
+                        away = _resolve_w(a_slot)
+                    else:
+                        i = idx * 2
+                        try:
+                            home = prev_winners[i]
+                            away = prev_winners[i + 1]
+                        except IndexError:
+                            continue
+
                     if home is None or away is None:
                         continue
 
@@ -999,10 +1024,10 @@ def simulate_full_tournament(
                         stage_counts[home]["Finals"] += 1
                         stage_counts[away]["Finals"] += 1
 
-                    _mn = rm.get("match_number")
-                    mn_key = str(int(_mn)) if _mn is not None and str(_mn) not in ("", "nan") else ""
                     winner = _actual_knockout_winner(mn_key, home, away, _actuals, resolve_knockout_winner)
                     next_winners.append(winner)
+                    if mn_int is not None:
+                        winners_by_match[mn_int] = winner
 
                 prev_winners = next_winners
 
@@ -1048,7 +1073,7 @@ def simulate_full_tournament(
                 row[f"prob_{i}"] = p
             group_rows.append(row)
 
-    group_tables = pd.DataFrame(group_rows).sort_values(["group", "expected_rank"]).reset_index(drop=True)
+    group_tables = pd.DataFrame(group_rows).sort_values(["group", "expected_rank"], ascending=[True, True]).reset_index(drop=True)
 
     if return_group_tables:
         return {"tournament_simulation": tournament_df, "group_tables": group_tables}

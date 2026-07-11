@@ -262,6 +262,16 @@ class SimulationHandler(SimpleHTTPRequestHandler):
         with _jobs_lock:
             _jobs[job_id] = {"progress": 0.0, "done": False, "result": None, "error": None}
 
+        knockout_schedule = load_knockout_schedule(FIXTURES_FILE)
+        import re as _re
+        knockout_bracket = {}
+        for ks_match in knockout_schedule:
+            mn = ks_match.get("match_number")
+            h = str(ks_match.get("home", "")).strip()
+            a = str(ks_match.get("away", "")).strip()
+            if mn and _re.match(r'^(W|RU)\d+$', h) and _re.match(r'^(W|RU)\d+$', a):
+                knockout_bracket[int(mn)] = (h, a)
+
         def _run():
             def on_progress(completed, total):
                 with _jobs_lock:
@@ -275,6 +285,7 @@ class SimulationHandler(SimpleHTTPRequestHandler):
                     conmebol_offset=conmebol_offset,
                     actual_results=actual_results,
                     progress_callback=on_progress,
+                    knockout_bracket=knockout_bracket,
                 )
                 tournament_simulation = result["tournament_simulation"].to_dict(orient="records")
                 group_tables = result["group_tables"].to_dict(orient="records")
